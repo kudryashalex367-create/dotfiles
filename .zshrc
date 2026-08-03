@@ -1,3 +1,4 @@
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -113,20 +114,23 @@ source $ZSH/oh-my-zsh.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# Скачивание ВИДЕО в MP4 в папку ~/Видео
 # Алиас для скачивания ВИДЕО в MP4 (выбирает лучшее видео MP4 + лучший звук M4A и склеивает)
 alias y='yt-dlp -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/best" --merge-output-format mp4'
 
-# Алиас для скачивания АУДИО в MP3 (максимальное качество VBR 0)
 alias ya='yt-dlp -x --audio-format mp3 --audio-quality 0'
-
+# Алиас для скачивания АУДИО в MP3 (максимальное качество VBR 0)
 # Created by `pipx` on 2026-07-28 18:43:18
 export PATH="$PATH:/home/zev1ce/.local/bin"
 
 # --- Aider + Gemini Setup ---
-export GEMINI_API_KEY="AIzaSyBpUxn-ao6tByFT1UE6iV6VFmb0jt_Or2g"
+export GEMINI_API_KEY=""
 
 # Основная команда (Gemini 3.1 Flash Lite - 500 запросов/день)
 alias aider-proxy='HTTP_PROXY=http://127.0.0.1:12334 HTTPS_PROXY=http://127.0.0.1:12334 ALL_PROXY=socks5://127.0.0.1:12334 aider --model gemini/gemini-3.1-flash-lite'
 
 # Для сложных задач (Gemini 3.5 Flash - 20 запросов/день)
 alias aider-smart='HTTP_PROXY=http://127.0.0.1:12334 HTTPS_PROXY=http://127.0.0.1:12334 ALL_PROXY=socks5://127.0.0.1:12334 aider --model gemini/gemini-3-flash-preview'
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+fastfetch
+export LFS=/mnt/lfs
