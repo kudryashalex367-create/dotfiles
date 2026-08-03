@@ -1,0 +1,9 @@
+bibata-cursor-theme
+gnome-rounded-blur
+gnome-shell-extension-blur-my-shell
+gnome-shell-extension-compiz-windows-effect-git
+gnome-shell-extension-dash-to-dock
+google-chrome
+tg-ws-proxy-bin
+yay
+yay-debug
