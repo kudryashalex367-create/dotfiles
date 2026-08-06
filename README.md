@@ -1,61 +1,72 @@
-# 🌌 Arch Linux Dotfiles by zev1ce
-> *«I use Arch, btw.»*
+# Arch Linux Dotfiles by zev1ce
+> "I use Arch, btw."
 
-Добро пожаловать в мой репозиторий конфигурационных файлов (dotfiles). 
-Здесь хранится идеальный, минималистичный и молниеносный сетап моей рабочей станции, основанный на концепции **Git Bare Repository**.
+Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная сборка рабочей станции, основанная на концепции Git Bare Repository.
 
-## 💻 Характеристики системы
-* **OS:** Arch Linux (x86_64)
-* **Kernel:** `linux-zen` (Low-latency)
-* **DE/WM:** GNOME (Pure Core) / Wayland
-* **Terminal:** Kitty
-* **Shell:** Zsh + Oh My Zsh + Powerlevel10k
-* **Bootloader:** systemd-boot
+## Характеристики системы
+* OS: Arch Linux (x86_64)
+* Kernel: linux-zen
+* DE/WM: GNOME (Pure Core) / Wayland
+* Terminal: Kitty
+* Shell: Zsh + Oh My Zsh + Powerlevel10k
+* Bootloader: systemd-boot
 
----
+## 1. Быстрая установка (Восстановление на чистой ОС)
 
-## 🚀 1. Быстрая установка (Восстановление на чистой ОС)
-
-Этот метод позволяет развернуть все мои настройки на любом новом ПК за 1 минуту без создания симлинков и мусорных папок.
+Этот метод позволяет развернуть все настройки на новом компьютере за пару минут без создания мусорных папок и символических ссылок.
 
 ### Шаг 1. Установка базовых зависимостей
-Устанавливаем Git, Zsh и скачиваем фреймворк Oh My Zsh:
+Устанавливаем систему контроля версий, командную оболочку и скачиваем фреймворк Oh My Zsh:
 ```bash
 sudo pacman -S git zsh curl
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-Шаг 2. Клонирование темы и плагинов Zsh
-Скачиваем Powerlevel10k, автодополнение и подсветку синтаксиса:
-code
-Bash
+
+### Шаг 2. Клонирование темы и плагинов Zsh
+Скачиваем Powerlevel10k, плагины автодополнения и подсветки синтаксиса:
+
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-Шаг 3. Загрузка базы данных Dotfiles (Bare Repo)
-Клонируем историю Git в скрытую папку .cfg (чтобы не замусоривать домашний каталог папкой .git):
+
+Шаг 3. Загрузка базы данных Dotfiles
+Клонируем историю Git в скрытую папку .cfg, чтобы не замусоривать домашний каталог папкой .git:
 code
 Bash
 git clone --bare https://github.com/kudryashalex367-create/dotfiles.git $HOME/.cfg
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-Шаг 4. Распаковка конфигов
-Удаляем стандартные файлы (чтобы избежать конфликтов) и физически извлекаем конфиги на диск:
+
+Шаг 4. Распаковка конфигураций
+Удаляем стандартные файлы инициализации оболочки для избежания конфликтов и извлекаем конфиги из базы Git на диск:
 code
 Bash
 rm -f ~/.zshrc ~/.bashrc ~/.p10k.zsh
 config checkout
 config config --local status.showUntrackedFiles no
-Шаг 5. Применение и запуск!
-Меняем дефолтный шелл на Zsh и перезапускаем терминал:
+
+Шаг 5. Применение настроек
+Изменяем командную оболочку по умолчанию на Zsh и перезапускаем ее:
 code
 Bash
 chsh -s /usr/bin/zsh
 exec zsh
-📦 2. Восстановление всех программ (В 1 клик)
-В репозитории лежат файлы pkglist_repo.txt и pkglist_aur.txt. Чтобы автоматически установить весь мой софт на новую систему:
-Официальные пакеты Arch:
+
+2. Восстановление пакетов
+В репозитории сохранены файлы со списками установленных программ. Чтобы восстановить их списком:
+Официальные пакеты Arch Linux:
 code
 Bash
 sudo pacman -S --needed - < ~/.config/pkglist_repo.txt
-Пакеты из AUR (требуется yay):
+Пакеты из пользовательского репозитория (AUR):
 code
 Bash
 yay -S --needed - < ~/.config/pkglist_aur.txt
+
+3. Обновление конфигураций
+Управление репозиторием осуществляется через алиас config.
+Проверить статус измененных файлов:
+config status
+Добавить новый файл в индекс:
+config add ~/.config/путь_к_файлу
+Создать коммит и отправить изменения на сервер:
+config commit -am "Update configs"
+config push
