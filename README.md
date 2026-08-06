@@ -1,28 +1,19 @@
-# ❄️ Arch Linux Dotfiles by zev1ce
-
-> *"I use Arch, btw."*
-
-Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная сборка рабочей станции, основанная на концепции **Git Bare Repository**.
-
-## 💻 Характеристики системы
-
-* 🐧 **OS:** Arch Linux (x86_64)
-* ⚙️ **Kernel:** linux-zen
-* 🖥️ **DE/WM:** GNOME (Pure Core) / Wayland
-* ⌨️ **Terminal:** Kitty
-* 🐚 **Shell:** Zsh + Oh My Zsh + Powerlevel10k
-* 🚀 **Bootloader:** systemd-boot
-
----
-
-## 🛠 1. Быстрая установка (Восстановление на чистой ОС)
-
+❄️ Arch Linux Dotfiles by zev1ce
+"I use Arch, btw."
+Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная сборка рабочей станции, основанная на концепции Git Bare Repository.
+💻 Характеристики системы
+🐧 OS: Arch Linux (x86_64)
+⚙️ Kernel: linux-zen
+🖥️ DE/WM: GNOME (Pure Core) / Wayland
+⌨️ Terminal: Kitty
+🐚 Shell: Zsh + Oh My Zsh + Powerlevel10k
+🚀 Bootloader: systemd-boot
+🛠 1. Быстрая установка (Восстановление на чистой ОС)
 Этот метод позволяет развернуть все настройки на новом компьютере за пару минут без создания мусорных папок и символических ссылок.
-
-### Шаг 1. Установка базовых зависимостей
+Шаг 1. Установка базовых зависимостей
 Устанавливаем систему контроля версий, командную оболочку и скачиваем фреймворк Oh My Zsh:
-
-```bash
+code
+Bash
 sudo pacman -S git zsh curl
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
 Шаг 2. Клонирование темы и плагинов Zsh
