@@ -1,0 +1,70 @@
+/* ╔══════════════════════════════════════════════════════════════╗
+   ║             SWAYNC STYLE — Monochrome Obsidian               ║
+   ╚══════════════════════════════════════════════════════════════╝ */
+
+* {
+    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-weight: bold;
+}
+
+.notification-row {
+    outline: none;
+}
+
+.notification {
+    background: #09090b;
+    border: 1px solid #27272a;
+    border-radius: 10px;
+    margin: 6px 12px;
+    box-shadow: none;
+}
+
+.notification-content {
+    background: transparent;
+    padding: 10px;
+}
+
+.close-button {
+    background: #18181b;
+    color: #ffffff;
+    border-radius: 6px;
+}
+
+.close-button:hover {
+    background: #27272a;
+}
+
+.notification-default-app-icon {
+    color: #ffffff;
+}
+
+.summary {
+    color: #ffffff;
+    font-size: 13px;
+}
+
+.body {
+    color: #a1a1aa;
+    font-size: 12px;
+}
+
+/* Центральная шторка управления */
+.control-center {
+    background: rgba(9, 9, 11, 0.95);
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    color: #e4e4e7;
+    padding: 14px;
+}
+
+.widget-title {
+    color: #ffffff;
+    font-size: 16px;
+}
+
+.widget-title > button {
+    background: #18181b;
+    color: #ffffff;
+    border-radius: 6px;
+    border: 1px solid #27272a;
+}
