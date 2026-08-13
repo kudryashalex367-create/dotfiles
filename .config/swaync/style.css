@@ -14,7 +14,7 @@
 .notification {
     background: #09090b;
     border: 1px solid #27272a;
-    border-radius: 20px;
+    border-radius: 16px;
     margin: 6px 12px;
     box-shadow: none;
 }
@@ -52,7 +52,7 @@
 .control-center {
     background: rgba(9, 9, 11, 0.95);
     border: 1px solid #27272a;
-    border-radius: 20px;
+    border-radius: 16px;
     color: #e4e4e7;
     padding: 14px;
 }
