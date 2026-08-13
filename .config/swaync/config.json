@@ -1,0 +1,60 @@
+{
+  "$schema": "/etc/xdg/swaync/configSchema.json",
+  "positionX": "right",
+  "positionY": "top",
+  "layer": "overlay",
+  "control-center-layer": "top",
+  "layer-shell": true,
+  "cssPriority": "application",
+  "control-center-margin-top": 10,
+  "control-center-margin-bottom": 10,
+  "control-center-margin-right": 10,
+  "control-center-margin-left": 0,
+  "control-center-width": 380,
+  "control-center-height": 600,
+  "fit-to-screen": true,
+  "relative-timestamps": true,
+  "control-center-service": true,
+  "widget-config": {
+    "title": {
+      "text": "Control Center",
+      "clear-all-button": true,
+      "button-text": "Clear All"
+    },
+    "dnd": {
+      "text": "Do Not Disturb"
+    },
+    "mpris": {
+      "image-size": 60,
+      "image-radius": 8
+    },
+    "volume": {
+      "label": "󰕾 ",
+      "show-per-app": true
+    },
+    "backlight": {
+      "label": "󰃠 "
+    },
+    "buttons-grid": {
+      "buttons": [
+        {
+          "label": "󰕾 Mute",
+          "command": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+        },
+        {
+          "label": "󰍬 Mic Mute",
+          "command": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        }
+      ]
+    }
+  },
+  "widgets": [
+    "title",
+    "dnd",
+    "buttons-grid",
+    "mpris",
+    "volume",
+    "backlight",
+    "notifications"
+  ]
+}

@@ -14,7 +14,7 @@
 window#waybar {
     background: rgba(9, 9, 11, 0.85);
     border: 1px solid #27272a;
-    border-radius: 10px;
+    border-radius: 16px;
     color: #e4e4e7;
 }
 
@@ -71,7 +71,6 @@ window#waybar {
 /* Модуль уведомлений SwayNC */
 #custom-notification {
     color: #ffffff;
-    cursor: pointer;
 }
 
 #wireplumber, #network {

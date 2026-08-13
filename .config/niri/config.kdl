@@ -86,14 +86,13 @@ layout {
 
 // ── Правила для окон ────────────────────────────────────────────
 window-rule {
-    geometry-corner-radius 10
+    geometry-corner-radius 20
     clip-to-geometry true
 }
 
 prefer-no-csd
 
 // ── Автозапуск Сервисов, Прокси и Курсора ───────────────────────
-spawn-at-startup "waybar"
 spawn-at-startup "swaync"
 spawn-at-startup "swaybg" "-i" "/home/zev1ce/Загрузки/wallhaven-gw55w7.png" "-m" "fill"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
@@ -123,7 +122,7 @@ binds {
     Mod+D { spawn "fuzzel"; }
     Mod+Q { close-window; }
     Mod+Shift+E { quit; }
-    Mod+L { spawn "hyprlock"; }
+    Mod+L { spawn "sh" "-c" "niri msg action switch-layout 0 && hyprlock"; }
     Mod+N { spawn "swaync-client" "-t" "-sw"; }
     Mod+V { spawn "bash" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
 
