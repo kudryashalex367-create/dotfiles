@@ -84,57 +84,87 @@
 ```bash
 sudo pacman -S git zsh curl
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-Шаг 2. Клонирование темы и плагинов Zsh
+```
+
+### Шаг 2. Клонирование темы и плагинов Zsh
+
 Скачиваем Powerlevel10k, плагины автодополнения и подсветки синтаксиса:
-code
-Bash
+
+```bash
 git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
-Шаг 3. Загрузка базы данных Dotfiles
-Клонируем историю Git в скрытую папку .cfg, чтобы не замусоривать домашний каталог папкой .git, и задаем временный алиас:
-code
-Bash
+```
+
+### Шаг 3. Загрузка базы данных Dotfiles
+
+Клонируем историю Git в скрытую папку `.cfg`, чтобы не замусоривать домашний каталог папкой `.git`, и задаем временный алиас:
+
+```bash
 git clone --bare https://github.com/kudryashalex367-create/dotfiles.git $HOME/.cfg
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-Шаг 4. Распаковка конфигураций
+```
+
+### Шаг 4. Распаковка конфигураций
+
 Удаляем стандартные файлы инициализации оболочки для избежания конфликтов и извлекаем конфиги из базы Git на диск:
-code
-Bash
+
+```bash
 rm -f ~/.zshrc ~/.bashrc ~/.p10k.zsh
 config checkout
 config config --local status.showUntrackedFiles no
-Шаг 5. Применение настроек
+```
+
+### Шаг 5. Применение настроек
+
 Изменяем командную оболочку по умолчанию на Zsh:
-code
-Bash
+
+```bash
 chsh -s /usr/bin/zsh
 exec zsh
-📦 2. Восстановление пакетов
+```
+
+---
+
+## 📦 2. Восстановление пакетов
+
 В репозитории сохранены файлы со списками установленных программ. Чтобы восстановить их списком, выполните следующие команды:
-Официальные пакеты Arch Linux (pacman):
-code
-Bash
+
+**Официальные пакеты Arch Linux (pacman):**
+
+```bash
 sudo pacman -S --needed - < ~/.config/pkglist_repo.txt
-Пакеты из пользовательского репозитория (AUR):
-(Убедитесь, что у вас установлен yay)
-code
-Bash
+```
+
+**Пакеты из пользовательского репозитория (AUR):**
+
+*(Убедитесь, что у вас установлен `yay`)*
+
+```bash
 yay -S --needed - < ~/.config/pkglist_aur.txt
-🔄 3. Управление конфигурациями
-Управление репозиторием осуществляется через алиас config (он уже прописан в восстановленном .zshrc). Работа с ним полностью аналогична работе с обычным git.
+```
+
+---
+
+## 🔄 3. Управление конфигурациями
+
+Управление репозиторием осуществляется через алиас `config` (он уже прописан в восстановленном `.zshrc`). Работа с ним полностью аналогична работе с обычным `git`.
+
 Проверить статус измененных файлов:
-code
-Bash
+
+```bash
 config status
+```
+
 Добавить измененный или новый файл в индекс:
-code
-Bash
+
+```bash
 config add ~/.config/путь_к_файлу
+```
+
 Создать коммит и отправить изменения на сервер:
-code
-Bash
+
+```bash
 config commit -m "Update configs"
 config push
-code
-Code
+```
