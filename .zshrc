@@ -1,5 +1,5 @@
 if [[ $- == *i* ]]; then
-    fastfetch
+    fastfetch -l arch_small
 fi
 
 typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
