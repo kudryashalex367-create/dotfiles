@@ -4,7 +4,7 @@
 
 // ── Переменные Окружения (Курсор и Прокси Hiddify) ───────────────
 environment {
-    XCURSOR_THEME "Bibata-Modern-Classic"
+    XCURSOR_THEME "Bibata-Modern-Ice"
     XCURSOR_SIZE "24"
     
     // Прокси Hiddify (порт 12334)
@@ -84,6 +84,54 @@ layout {
     }
 }
 
+// ── Анимации (Пружинная Физика под 144 Гц) ──────────────────────
+animations {
+    // Общий коэффициент скорости (1.0 = нормальная скорость, меньше 1.0 = быстрее)
+    slowdown 1.1
+
+    // 1. Скроллинг рабочих столов Вверх/Вниз (Win + Up/Down)
+    workspace-switch {
+        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+    }
+
+    // 2. Горизонтальный скроллинг колонок (Win + Left/Right)
+    horizontal-view-movement {
+        spring damping-ratio=1.0 stiffness=950 epsilon=0.0001
+    }
+
+    // 3. Перемещение окон и колонок местами
+    window-movement {
+        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+    }
+
+    // 4. Изменение размера и растягивание колонок (Win + R, Win + F)
+    window-resize {
+        spring damping-ratio=1.0 stiffness=850 epsilon=0.0001
+    }
+
+    // 5. Открытие нового окна (мягкий кубический разгон)
+    window-open {
+        duration-ms 180
+        curve "ease-out-cubic"
+    }
+
+    // 6. Закрытие окна
+    window-close {
+        duration-ms 150
+        curve "ease-out-quad"
+    }
+
+    // 7. Открытие и закрытие Обзора (Win + O)
+    overview-open-close {
+        spring damping-ratio=1.0 stiffness=950 epsilon=0.0001
+    }
+
+    // 8. Появление оверлея скриншота (Ctrl + Shift + S)
+    screenshot-ui-open {
+        duration-ms 150
+        curve "ease-out-quad"
+    }
+}
 // ── Правила для окон ────────────────────────────────────────────
 window-rule {
     geometry-corner-radius 16
@@ -98,7 +146,6 @@ spawn-at-startup "swaybg" "-i" "/home/zev1ce/Загрузки/wallhaven-gw55w7.p
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
 spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets"
-spawn-at-startup "swaybg" "-i" "/home/zev1ce/Загрузки/wallhaven-gw55w7.png" "-m" "fill"
 // Автопрописка системного прокси Hiddify в GNOME
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy" "mode" "manual"
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.http" "host" "127.0.0.1"
@@ -110,7 +157,7 @@ spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.socks" "port" "12334"
 spawn-at-startup "xwayland-satellite"
 
 // Установка курсора Bibata для всех GTK приложений
-spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-theme" "Bibata-Modern-Classic"
+spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-theme" "Bibata-Modern-Ice"
 spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-size" "24"
 
 screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
@@ -170,8 +217,6 @@ binds {
     XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
     XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
-    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "set" "10%+"; }
-    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "set" "10%-"; }
 
     // Скриншоты
     Ctrl+Shift+S { screenshot; }

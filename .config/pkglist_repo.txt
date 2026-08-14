@@ -34,6 +34,8 @@ nano
 nautilus
 networkmanager
 niri
+noto-fonts
+noto-fonts-emoji
 nvtop
 pipewire
 pipewire-pulse
@@ -46,12 +48,16 @@ swaybg
 swaync
 tealdeer
 telegram-desktop
+ttf-jetbrains-mono-nerd
+ttf-nerd-fonts-symbols
+ttf-nerd-fonts-symbols-mono
 ttyper
 vlc
 vulkan-radeon
 wget
 wireplumber
 wl-clipboard
+woff2-font-awesome
 xwayland-satellite
 yt-dlp
 zram-generator

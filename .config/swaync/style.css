@@ -1,85 +1,22 @@
 /* ╔══════════════════════════════════════════════════════════════╗
-   ║             SWAYNC STYLE — Monochrome Obsidian               ║
+   ║        SWAYNC STYLE PRO — Monochrome Obsidian & Zinc        ║
    ╚══════════════════════════════════════════════════════════════╝ */
 
 * {
-    font-family: "JetBrainsMono Nerd Font", monospace;
+    font-family: "JetBrainsMono Nerd Font", "Symbols Nerd Font", "Font Awesome 6 Free", monospace;
     font-weight: bold;
-}
-
-.notification-row {
+    border: none;
     outline: none;
-}
-
-.notification {
-    background: rgba(9, 9, 11, 0.88);
-    border: 1px solid #27272a;
-    border-radius: 16px;
-    margin: 6px 12px;
     box-shadow: none;
+    text-shadow: none;
 }
 
-.notification-content {
-    background: transparent;
-    padding: 10px;
-}
-
-.close-button {
-    background: #18181b;
-    color: #ffffff;
-    border-radius: 6px;
-}
-
-.close-button:hover {
-    background: #27272a;
-}
-
-.notification-default-app-icon {
-    color: #ffffff;
-}
-
-.summary {
-    color: #ffffff;
-    font-size: 13px;
-}
-
-.body {
-    color: #a1a1aa;
-    font-size: 12px;
-}
-
-/* Центральная шторка управления */
-.control-center {
-    background: rgba(9, 9, 11, 0.88);
-    border: 1px solid #27272a;
-    border-radius: 16px;
-    color: #e4e4e7;
-    padding: 14px;
-}
-
-.widget-title {
-    color: #ffffff;
-    font-size: 16px;
-}
-
-.widget-title > button {
-    background: #18181b;
-    color: #ffffff;
-    border-radius: 6px;
-    border: 1px solid #27272a;
-}
-
-/* 1. Сбрасываем подложку blank-window, которая затеняет экран и ломает прозрачность */
-.blank-window,
-#blank-window,
-window#swaync-blank-window {
-    background: transparent !important;
-    background-color: transparent !important;
-}
-
-/* 2. Уничтожаем дефолтный фон темы GTK для всех контейнеров шторки */
+/* ── Сброс дефолтных подложек GTK ─────────────────────────────── */
 window,
 window > box,
+.blank-window,
+#blank-window,
+window#swaync-blank-window,
 .control-center-window,
 #swaync-control-center,
 .control-center-list,
@@ -89,8 +26,308 @@ window > box,
     box-shadow: none !important;
 }
 
-/* 3. Принудительно красим ТОЛЬКО саму шторку в правильный полупрозрачный Zinc */
+/* ── Главный контейнер Шторки Управления ──────────────────────── */
 .control-center {
-    background: rgba(9, 9, 11, 0.88) !important;
-    background-color: rgba(9, 9, 11, 0.88) !important;
+    background: rgba(9, 9, 11, 0.92) !important;
+    border: 1px solid #27272a !important;
+    border-radius: 16px !important;
+    color: #e4e4e7;
+    padding: 16px;
+}
+
+/* ── Заголовок (Title & Clear All) ─────────────────────────────── */
+.widget-title {
+    margin-bottom: 12px;
+}
+
+.widget-title > label {
+    color: #ffffff;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+}
+
+.widget-title > button {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 8px;
+    color: #a1a1aa;
+    font-size: 11px;
+    padding: 4px 10px;
+    transition: all 0.15s ease-in-out;
+}
+
+.widget-title > button:hover {
+    background: #27272a;
+    border-color: #3f3f46;
+    color: #ffffff;
+}
+
+/* ── Сетка быстрых кнопок (Buttons Grid) ───────────────────────── */
+.widget-buttons-grid {
+    margin-bottom: 12px;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 10px;
+    color: #d4d4d8;
+    padding: 8px 12px;
+    font-size: 11.5px;
+    min-width: 155px;
+    margin: 3px;
+    transition: all 0.15s ease-in-out;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:hover {
+    background: #27272a;
+    border-color: #ffffff;
+    color: #ffffff;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:active,
+.widget-buttons-grid > flowbox > flowboxchild > button.active {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #09090b;
+}
+
+/* ── Ползунки Слайдеров (Громкость и Яркость) ─────────────────── */
+.widget-volume,
+.widget-backlight {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    padding: 8px 14px;
+    margin-bottom: 8px;
+}
+
+.widget-volume > label,
+.widget-backlight > label {
+    font-size: 16px;
+    color: #ffffff;
+    margin-right: 12px;
+}
+
+/* Дорожка ползунка */
+scale {
+    margin: 0 4px;
+}
+
+scale trough {
+    background: #27272a;
+    border-radius: 6px;
+    min-height: 8px;
+    min-width: 8px;
+}
+
+/* Заполненная часть ползунка */
+scale highlight {
+    background: #ffffff;
+    border-radius: 6px;
+}
+
+/* Скрываем громоздкую круглую ручку ползунка для минимализма */
+scale slider {
+    min-width: 0px;
+    min-height: 0px;
+    opacity: 0;
+    background: transparent;
+}
+
+/* ── Медиаплеер (MPRIS Player) ─────────────────────────────────── */
+.widget-mpris {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 12px;
+}
+
+.widget-mpris-player {
+    padding: 0;
+    margin: 0;
+}
+
+.widget-mpris-album-art {
+    border-radius: 10px;
+    border: 1px solid #27272a;
+    margin-right: 12px;
+}
+
+.widget-mpris-title {
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.widget-mpris-subtitle {
+    color: #a1a1aa;
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+/* Кнопки управления плеером (Назад, Плей, Вперед) */
+.widget-mpris > box > button {
+    background: #27272a;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    color: #ffffff;
+    padding: 6px 12px;
+    margin: 0 4px;
+    transition: all 0.15s ease-in-out;
+}
+
+.widget-mpris > box > button:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #09090b;
+}
+
+/* ── Тумблер "Не беспокоить" (DND) ─────────────────────────────── */
+.widget-dnd {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+}
+
+.widget-dnd > label {
+    color: #d4d4d8;
+    font-size: 12.5px;
+}
+
+/* Стилизация переключателя (Switch) */
+switch {
+    background: #27272a;
+    border: 1px solid #3f3f46;
+    border-radius: 14px;
+    min-width: 44px;
+    min-height: 22px;
+}
+
+switch:checked {
+    background: #ffffff;
+    border-color: #ffffff;
+}
+
+switch slider {
+    background: #a1a1aa;
+    border-radius: 10px;
+    min-width: 16px;
+    min-height: 16px;
+    margin: 2px;
+}
+
+switch:checked slider {
+    background: #09090b;
+}
+
+/* ── Карточки Уведомлений (Notifications) ──────────────────────── */
+.notification-row {
+    outline: none;
+    margin: 0;
+    padding: 0;
+}
+
+.notification {
+    background: rgba(18, 18, 21, 0.95);
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    margin: 6px 0;
+    padding: 10px 12px;
+    transition: all 0.15s ease-in-out;
+}
+
+.notification:hover {
+    border-color: #3f3f46;
+}
+
+/* Уведомления разной степени важности */
+.notification.low {
+    border-color: #27272a;
+}
+
+.notification.normal {
+    border-color: #3f3f46;
+}
+
+.notification.critical {
+    border: 1.5px solid #ffffff;
+    background: rgba(24, 24, 27, 0.98);
+}
+
+.notification-content {
+    background: transparent;
+    padding: 0;
+}
+
+.summary {
+    color: #ffffff;
+    font-size: 12.5px;
+    font-weight: bold;
+}
+
+.body {
+    color: #a1a1aa;
+    font-size: 11.5px;
+    margin-top: 3px;
+}
+
+.time {
+    color: #71717a;
+    font-size: 10px;
+}
+
+/* Кнопка закрытия уведомления */
+.close-button {
+    background: #27272a;
+    color: #a1a1aa;
+    border-radius: 6px;
+    padding: 2px;
+    margin: 2px;
+    transition: all 0.15s ease;
+}
+
+.close-button:hover {
+    background: #ffffff;
+    color: #09090b;
+}
+
+/* Кнопки действий внутри уведомлений */
+.notification-action-buttons {
+    margin-top: 8px;
+}
+
+.notification-action-button {
+    background: #27272a;
+    border: 1px solid #3f3f46;
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 11px;
+    padding: 4px 8px;
+    margin-right: 6px;
+    transition: all 0.15s ease;
+}
+
+.notification-action-button:hover {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #09090b;
+}
+
+/* ── Тонкий Скроллбар ─────────────────────────────────────────── */
+scrollbar {
+    background: transparent;
+    width: 4px;
+}
+
+scrollbar slider {
+    background: #27272a;
+    border-radius: 4px;
+}
+
+scrollbar slider:hover {
+    background: #3f3f46;
 }

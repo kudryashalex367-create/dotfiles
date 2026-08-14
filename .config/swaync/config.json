@@ -6,15 +6,22 @@
   "control-center-layer": "top",
   "layer-shell": true,
   "cssPriority": "application",
-  "control-center-margin-top": 10,
-  "control-center-margin-bottom": 10,
-  "control-center-margin-right": 10,
+  "control-center-margin-top": 12,
+  "control-center-margin-bottom": 12,
+  "control-center-margin-right": 12,
   "control-center-margin-left": 0,
   "control-center-width": 380,
-  "control-center-height": 600,
+  "control-center-height": 620,
   "fit-to-screen": true,
   "relative-timestamps": true,
   "control-center-service": true,
+  "notification-window-width": 360,
+  "keyboard-shortcuts": true,
+  "image-visibility": "when-available",
+  "transition-time": 200,
+  "hide-on-clear": false,
+  "hide-on-action": true,
+
   "widget-config": {
     "title": {
       "text": "Control Center",
@@ -25,36 +32,60 @@
       "text": "Do Not Disturb"
     },
     "mpris": {
-      "image-size": 60,
-      "image-radius": 8
+      "image-size": 68,
+      "image-radius": 12
     },
     "volume": {
-      "label": "󰕾 ",
-      "show-per-app": true
+      "label": " ",
+      "show-per-app": true,
+      "show-per-app-icon": true
     },
     "backlight": {
-      "label": "󰃠 "
+      "label": " ",
+      "device": "amdgpu_bl1",
+      "sub-device": "amdgpu_bl0"
     },
     "buttons-grid": {
-      "buttons": [
+      "actions": [
         {
-          "label": "󰕾 Mute",
+          "label": "  Mute Audio",
+          "type": "toggle",
+          "active": false,
           "command": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
         },
         {
-          "label": "󰍬 Mic Mute",
+          "label": "  Mute Mic",
+          "type": "toggle",
+          "active": false,
           "command": "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"
+        },
+        {
+          "label": "  Wi-Fi",
+          "command": "kitty --class float_kitty -e nmtui"
+        },
+        {
+          "label": "  Bluetooth",
+          "command": "kitty --class float_kitty -e bluetoothctl"
+        },
+        {
+          "label": "  Screenshot",
+          "command": "swaync-client -t -sw && niri msg action screenshot"
+        },
+        {
+          "label": "  Lock",
+          "command": "swaync-client -t -sw && niri msg action switch-layout 0 && hyprlock"
         }
       ]
     }
   },
+
   "widgets": [
     "title",
-    "dnd",
     "buttons-grid",
-    "mpris",
     "volume",
     "backlight",
+    "mpris",
+    "dnd",
     "notifications"
   ]
 }
