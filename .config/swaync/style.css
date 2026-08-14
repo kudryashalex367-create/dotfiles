@@ -12,7 +12,7 @@
 }
 
 .notification {
-    background: #09090b;
+    background: rgba(9, 9, 11, 0.88);
     border: 1px solid #27272a;
     border-radius: 16px;
     margin: 6px 12px;
@@ -50,7 +50,7 @@
 
 /* Центральная шторка управления */
 .control-center {
-    background: rgba(9, 9, 11, 0.95);
+    background: rgba(9, 9, 11, 0.88);
     border: 1px solid #27272a;
     border-radius: 16px;
     color: #e4e4e7;
@@ -67,4 +67,30 @@
     color: #ffffff;
     border-radius: 6px;
     border: 1px solid #27272a;
+}
+
+/* 1. Сбрасываем подложку blank-window, которая затеняет экран и ломает прозрачность */
+.blank-window,
+#blank-window,
+window#swaync-blank-window {
+    background: transparent !important;
+    background-color: transparent !important;
+}
+
+/* 2. Уничтожаем дефолтный фон темы GTK для всех контейнеров шторки */
+window,
+window > box,
+.control-center-window,
+#swaync-control-center,
+.control-center-list,
+.control-center-list-box {
+    background: transparent !important;
+    background-color: transparent !important;
+    box-shadow: none !important;
+}
+
+/* 3. Принудительно красим ТОЛЬКО саму шторку в правильный полупрозрачный Zinc */
+.control-center {
+    background: rgba(9, 9, 11, 0.88) !important;
+    background-color: rgba(9, 9, 11, 0.88) !important;
 }
