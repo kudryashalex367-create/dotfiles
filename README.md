@@ -20,6 +20,22 @@
 * 🖱️ **Cursor:** Bibata-Modern-Classic
 * 🚀 **Bootloader:** systemd-boot
 
+## 📸 Скриншоты
+
+### 🖥️ Рабочий стол
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/bae138cb-6868-48d4-814f-cfd28c70a686" />
+
+
+### 💻 Терминал
+
+<img width="1919" height="1080" alt="image" src="https://github.com/user-attachments/assets/35a36861-3e0f-4418-90df-c903e853a02c" />
+
+
+### 🚀 Меню приложений
+
+<img width="1185" height="747" alt="image" src="https://github.com/user-attachments/assets/7d4ec151-c699-4140-9595-d48643947e63" />
+
 ---
 
 ## ⌨️ Горячие клавиши Niri (Hotkeys)
