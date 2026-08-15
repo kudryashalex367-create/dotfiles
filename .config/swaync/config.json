@@ -24,7 +24,7 @@
 
   "widget-config": {
     "title": {
-      "text": "17:24  ·  Суббота, 15 авг",
+      "text": "22:27  ·  Суббота, 15 авг",
       "clear-all-button": true,
       "button-text": "Clear All"
     },
@@ -38,7 +38,7 @@
       ]
     },
     "dnd": {
-      "text": "17:24  ·  Суббота, 15 авг"
+      "text": "22:27  ·  Суббота, 15 авг"
     },
     "mpris": {
       "image-size": 68,

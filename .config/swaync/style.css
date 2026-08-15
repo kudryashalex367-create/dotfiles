@@ -1,5 +1,5 @@
 /* ╔══════════════════════════════════════════════════════════════╗
-   ║        SWAYNC STYLE PRO — Monochrome Obsidian & Zinc        ║
+   ║     SWAYNC OBSIDIAN MATTE — High-Contrast Solid Theme        ║
    ╚══════════════════════════════════════════════════════════════╝ */
 
 * {
@@ -11,7 +11,7 @@
     text-shadow: none;
 }
 
-/* ── Сброс дефолтных подложек GTK ─────────────────────────────── */
+/* ── 1. Сброс дефолтных подложек GTK ──────────────────────────── */
 window,
 window > box,
 .blank-window,
@@ -26,16 +26,17 @@ window#swaync-blank-window,
     box-shadow: none !important;
 }
 
-/* ── Главный контейнер Шторки Управления ──────────────────────── */
+/* ── 2. Главный контейнер Шторки (Плотный глубокий графит) ────── */
 .control-center {
-    background: rgba(9, 9, 11, 0.92) !important;
+    background: #0f0e13 !important;
     border: 1px solid #27272a !important;
     border-radius: 16px !important;
     color: #e4e4e7;
     padding: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8);
 }
 
-/* ── Заголовок (Title & Clear All) ─────────────────────────────── */
+/* ── 3. Заголовок (Title & Clear All) ──────────────────────────── */
 .widget-title {
     margin-bottom: 12px;
 }
@@ -62,30 +63,7 @@ window#swaync-blank-window,
     color: #ffffff;
 }
 
-/* ── Виджет Часов и Даты (Clock & Date Banner) ─────────────────── */
-.clock {
-    margin-bottom: 12px;
-}
-
-.clock > flowbox > flowboxchild > button {
-    background: #18181b;
-    border: 1px solid #27272a;
-    border-radius: 12px;
-    color: #ffffff;
-    padding: 10px 14px;
-    font-size: 13.5px;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    min-width: 330px;
-    transition: all 0.15s ease-in-out;
-}
-
-.clock > flowbox > flowboxchild > button:hover {
-    background: #27272a;
-    border-color: #3f3f46;
-}
-
-/* ── Сетка быстрых кнопок (Buttons Grid) ───────────────────────── */
+/* ── 4. Сетка быстрых кнопок (Buttons Grid) ────────────────────── */
 .widget-buttons-grid {
     margin-bottom: 12px;
 }
@@ -115,7 +93,7 @@ window#swaync-blank-window,
     color: #09090b;
 }
 
-/* ── Ползунки Слайдеров (Громкость и Яркость) ─────────────────── */
+/* ── 5. Слайдеры Громкости и Яркости ───────────────────────────── */
 .widget-volume,
 .widget-backlight {
     background: #18181b;
@@ -155,7 +133,7 @@ scale slider {
     background: transparent;
 }
 
-/* ── Медиаплеер (MPRIS Player) ─────────────────────────────────── */
+/* ── 6. Медиаплеер (MPRIS Player) ──────────────────────────────── */
 .widget-mpris {
     background: #18181b;
     border: 1px solid #27272a;
@@ -203,7 +181,7 @@ scale slider {
     color: #09090b;
 }
 
-/* ── Тумблер "Не беспокоить" (DND) ─────────────────────────────── */
+/* ── 7. Тумблер DND (Не беспокоить) ────────────────────────────── */
 .widget-dnd {
     background: #18181b;
     border: 1px solid #27272a;
@@ -242,7 +220,7 @@ switch:checked slider {
     background: #09090b;
 }
 
-/* ── Карточки Уведомлений (Notifications) ──────────────────────── */
+/* ── 8. Всплывающие Уведомления (Notifications) ─────────────────── */
 .notification-row {
     outline: none;
     margin: 0;
@@ -250,7 +228,7 @@ switch:checked slider {
 }
 
 .notification {
-    background: rgba(18, 18, 21, 0.95);
+    background: #18181b;
     border: 1px solid #27272a;
     border-radius: 12px;
     margin: 6px 0;
@@ -272,7 +250,7 @@ switch:checked slider {
 
 .notification.critical {
     border: 1.5px solid #ffffff;
-    background: rgba(24, 24, 27, 0.98);
+    background: #27272a;
 }
 
 .notification-content {
@@ -332,7 +310,7 @@ switch:checked slider {
     color: #09090b;
 }
 
-/* ── Тонкий Скроллбар ─────────────────────────────────────────── */
+/* ── 9. Тонкий Скроллбар ────────────────────────────────────────── */
 scrollbar {
     background: transparent;
     width: 4px;

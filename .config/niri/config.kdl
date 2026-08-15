@@ -33,6 +33,20 @@ output "HDMI-A-1" {
 output "eDP-1" {
     mode "1920x1080@144.000"
 }
+// ── Глобальная настройка GPU-Блюра (Obsidian Frosted Acrylic) ────
+blur {
+    // Количество проходов (3 = идеальная глубина без просадок FPS)
+    passes 3
+
+    // Радиус размытия
+    offset 3.5
+
+    // Текстурное зерно против полос на черном фоне
+    noise 0.02
+
+    // Честный монохромный контраст
+    saturation 1.0
+}
 
 // ── Ввод и Раскладка Клавиатуры ─────────────────────────────────
 input {
@@ -84,58 +98,71 @@ layout {
     }
 }
 
-// ── Анимации (Пружинная Физика под 144 Гц) ──────────────────────
 animations {
-    // Общий коэффициент скорости (1.0 = нормальная скорость, меньше 1.0 = быстрее)
-    slowdown 1.1
+    // Растягиваем время на 20% для наслаждения каждым кадром на 144 Гц
+    slowdown 1.2
 
     // 1. Скроллинг рабочих столов Вверх/Вниз (Win + Up/Down)
+    // Магнитное вертикальное скольжение с мягкой посадкой
     workspace-switch {
-        spring damping-ratio=1.0 stiffness=1000 epsilon=0.0001
+        spring damping-ratio=1.04 stiffness=620 epsilon=0.0001
     }
 
-    // 2. Горизонтальный скроллинг колонок (Win + Left/Right)
+    // 2. Горизонтальная лента колонок (Win + Left/Right)
+    // Ощущение тяжелой гранитной плиты, скользящей по маслу
     horizontal-view-movement {
-        spring damping-ratio=1.0 stiffness=950 epsilon=0.0001
+        spring damping-ratio=1.04 stiffness=560 epsilon=0.0001
     }
 
-    // 3. Перемещение окон и колонок местами
+    // 3. Перемещение окон и колонок местами (Win + Shift + Arrows)
     window-movement {
-        spring damping-ratio=1.0 stiffness=900 epsilon=0.0001
+        spring damping-ratio=1.02 stiffness=580 epsilon=0.0001
     }
 
     // 4. Изменение размера и растягивание колонок (Win + R, Win + F)
+    // Эффект упругого эластичного расширения
     window-resize {
-        spring damping-ratio=1.0 stiffness=850 epsilon=0.0001
+        spring damping-ratio=1.05 stiffness=500 epsilon=0.0001
     }
 
-    // 5. Открытие нового окна (мягкий кубический разгон)
+    // 5. Открытие нового окна (Win + Enter / запуск программ)
+    // Быстрый старт с шелковым экспоненциальным затуханием (280 мс)
     window-open {
+        duration-ms 280
+        curve "ease-out-expo"
+    }
+
+    // 6. Закрытие окна (Win + Q)
+    // Мягкое растворение за 180 мс
+    window-close {
         duration-ms 180
         curve "ease-out-cubic"
     }
 
-    // 6. Закрытие окна
-    window-close {
-        duration-ms 150
-        curve "ease-out-quad"
-    }
-
-    // 7. Открытие и закрытие Обзора (Win + O)
+    // 7. Обзор рабочих столов (Win + O)
+    // Кинематографичный отлет камеры назад
     overview-open-close {
-        spring damping-ratio=1.0 stiffness=950 epsilon=0.0001
+        spring damping-ratio=1.04 stiffness=600 epsilon=0.0001
     }
 
-    // 8. Появление оверлея скриншота (Ctrl + Shift + S)
+    // 8. Появление интерфейса скриншота (Ctrl + Shift + S)
     screenshot-ui-open {
-        duration-ms 150
-        curve "ease-out-quad"
+        duration-ms 180
+        curve "ease-out-cubic"
     }
 }
+
+
 // ── Правила для окон ────────────────────────────────────────────
 window-rule {
     geometry-corner-radius 16
     clip-to-geometry true
+
+    // Включаем аппаратный блюр фона под полупрозрачными окнами
+    background-effect {
+        blur true
+        xray false
+    }
 }
 
 prefer-no-csd
@@ -245,3 +272,20 @@ layer-rule {
     }
 }
 
+// ── Аппаратный Блюр для SwayNC (Шторка и Уведомления) ────────────
+layer-rule {
+    match namespace="^swaync-cjntrol-center$"
+    background-effect {
+        blur true
+        xray false
+    }
+}
+
+// ── Блюр для всплывающих уведомлений (Popups) ─────────────────────
+layer-rule {
+    match namespace="^swaync-notification-window$"
+    background-effect {
+        blur true
+        xray false
+    }
+}
