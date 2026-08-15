@@ -177,11 +177,13 @@ binds {
     Mod+O { toggle-overview; }
     Mod+Slash { show-hotkey-overlay; }
 
-    // Навигация по колонкам (Влево / Вправо)
+    // Навигация по колонкам
     Mod+Left  { focus-column-left; }
     Mod+Right { focus-column-right; }
     Mod+Shift+Left  { move-column-left; }
     Mod+Shift+Right { move-column-right; }
+    Mod+Alt+Down { focus-window-down; }
+    Mod+Alt+Up   { focus-window-up; }    
 
     // Навигация по Рабочим Столам (Вверх / Вниз на Win + Стрелки)
     Mod+Down { focus-workspace-down; }

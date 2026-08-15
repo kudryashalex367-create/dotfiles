@@ -26,7 +26,7 @@ alias set-wall='awww img'
 
 # Git Bare Dotfiles Manager
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-
+alias phone='adb forward tcp:8022 tcp:8022 && ssh -p 8022 localhost'
 # Local Bin & Pipx
 export PATH="$PATH:$HOME/.local/bin"
 
@@ -34,5 +34,3 @@ export PATH="$PATH:$HOME/.local/bin"
 export GEMINI_API_KEY=""
 alias aider-proxy='HTTP_PROXY=http://127.0.0.1:12334 HTTPS_PROXY=http://127.0.0.1:12334 ALL_PROXY=socks5://127.0.0.1:12334 aider --model gemini/gemini-3.1-flash-lite'
 alias aider-smart='HTTP_PROXY=http://127.0.0.1:12334 HTTPS_PROXY=http://127.0.0.1:12334 ALL_PROXY=socks5://127.0.0.1:12334 aider --model gemini/gemini-3-flash-preview'
-
-# System fetch on interactive shell start
