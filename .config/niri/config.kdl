@@ -272,20 +272,3 @@ layer-rule {
     }
 }
 
-// ── Аппаратный Блюр для SwayNC (Шторка и Уведомления) ────────────
-layer-rule {
-    match namespace="^swaync-cjntrol-center$"
-    background-effect {
-        blur true
-        xray false
-    }
-}
-
-// ── Блюр для всплывающих уведомлений (Popups) ─────────────────────
-layer-rule {
-    match namespace="^swaync-notification-window$"
-    background-effect {
-        blur true
-        xray false
-    }
-}
