@@ -11,7 +11,7 @@
   "control-center-margin-right": 12,
   "control-center-margin-left": 0,
   "control-center-width": 380,
-  "control-center-height": 620,
+  "control-center-height": 680,
   "fit-to-screen": true,
   "relative-timestamps": true,
   "control-center-service": true,
@@ -24,12 +24,21 @@
 
   "widget-config": {
     "title": {
-      "text": "Control Center",
+      "text": "17:24  ·  Суббота, 15 авг",
       "clear-all-button": true,
       "button-text": "Clear All"
     },
+    "buttons-grid#clock": {
+      "actions": [
+        {
+          "label": "  --:--",
+          "update-command": "date +'%H:%M   ·   %A, %d %B'",
+          "command": ""
+        }
+      ]
+    },
     "dnd": {
-      "text": "Do Not Disturb"
+      "text": "17:24  ·  Суббота, 15 авг"
     },
     "mpris": {
       "image-size": 68,

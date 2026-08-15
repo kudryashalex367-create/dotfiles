@@ -62,6 +62,29 @@ window#swaync-blank-window,
     color: #ffffff;
 }
 
+/* ── Виджет Часов и Даты (Clock & Date Banner) ─────────────────── */
+.clock {
+    margin-bottom: 12px;
+}
+
+.clock > flowbox > flowboxchild > button {
+    background: #18181b;
+    border: 1px solid #27272a;
+    border-radius: 12px;
+    color: #ffffff;
+    padding: 10px 14px;
+    font-size: 13.5px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    min-width: 330px;
+    transition: all 0.15s ease-in-out;
+}
+
+.clock > flowbox > flowboxchild > button:hover {
+    background: #27272a;
+    border-color: #3f3f46;
+}
+
 /* ── Сетка быстрых кнопок (Buttons Grid) ───────────────────────── */
 .widget-buttons-grid {
     margin-bottom: 12px;
@@ -109,7 +132,6 @@ window#swaync-blank-window,
     margin-right: 12px;
 }
 
-/* Дорожка ползунка */
 scale {
     margin: 0 4px;
 }
@@ -121,13 +143,11 @@ scale trough {
     min-width: 8px;
 }
 
-/* Заполненная часть ползунка */
 scale highlight {
     background: #ffffff;
     border-radius: 6px;
 }
 
-/* Скрываем громоздкую круглую ручку ползунка для минимализма */
 scale slider {
     min-width: 0px;
     min-height: 0px;
@@ -167,7 +187,6 @@ scale slider {
     margin-bottom: 8px;
 }
 
-/* Кнопки управления плеером (Назад, Плей, Вперед) */
 .widget-mpris > box > button {
     background: #27272a;
     border: 1px solid #3f3f46;
@@ -198,7 +217,6 @@ scale slider {
     font-size: 12.5px;
 }
 
-/* Стилизация переключателя (Switch) */
 switch {
     background: #27272a;
     border: 1px solid #3f3f46;
@@ -244,7 +262,6 @@ switch:checked slider {
     border-color: #3f3f46;
 }
 
-/* Уведомления разной степени важности */
 .notification.low {
     border-color: #27272a;
 }
@@ -280,7 +297,6 @@ switch:checked slider {
     font-size: 10px;
 }
 
-/* Кнопка закрытия уведомления */
 .close-button {
     background: #27272a;
     color: #a1a1aa;
@@ -295,7 +311,6 @@ switch:checked slider {
     color: #09090b;
 }
 
-/* Кнопки действий внутри уведомлений */
 .notification-action-buttons {
     margin-top: 8px;
 }

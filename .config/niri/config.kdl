@@ -170,8 +170,8 @@ binds {
     Mod+Q { close-window; }
     Mod+Shift+E { quit; }
     Mod+L { spawn "sh" "-c" "niri msg action switch-layout 0 && hyprlock"; }
-    Mod+N { spawn "swaync-client" "-t" "-sw"; }
     Mod+V { spawn "bash" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
+    Mod+N { spawn "sh" "-c" "CUR_TIME=$(date +'%H:%M  ·  %A, %d %b') && sed -i \"s/\\\"text\\\": \\\".*\\\"/\\\"text\\\": \\\"$CUR_TIME\\\"/\" ~/.config/swaync/config.json && swaync-client -R && swaync-client -t -sw"; }
 
     // Обзор (Overview) и Окно Подсказок
     Mod+O { toggle-overview; }
