@@ -24,12 +24,12 @@
 
 ### 🖥️ Рабочий стол
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/bae138cb-6868-48d4-814f-cfd28c70a686" />
+<img width="1905" height="1080" alt="image" src="https://github.com/user-attachments/assets/d55193c7-4c57-46ad-af1a-4f9a4ea944ac" />
 
 
 ### 💻 Терминал
 
-<img width="1919" height="1080" alt="image" src="https://github.com/user-attachments/assets/35a36861-3e0f-4418-90df-c903e853a02c" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/961d6da1-2007-448a-84fb-b265fdbc7342" />
 
 
 ### 🚀 Меню приложений
