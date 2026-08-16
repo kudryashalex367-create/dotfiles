@@ -126,7 +126,6 @@ animations {
     }
 
     // 5. Открытие нового окна (Win + Enter / запуск программ)
-    // 5. Открытие нового окна (Быстрое появление уже с размытием)
     window-open {
         duration-ms 140
         curve "ease-out-cubic"
@@ -160,7 +159,7 @@ window-rule {
     // Включаем аппаратный блюр фона под полупрозрачными окнами
     background-effect {
         blur true
-        xray false
+        xray true
     }
 }
 
