@@ -23,6 +23,11 @@ alias ya='yt-dlp -x --audio-format mp3 --audio-quality 0'
 
 # Установка черно-белых обоев одной командой (через awww)
 alias set-wall='awww img'
+# ── Aesthetic Desk Launchers ─────────────────────────────────────
+alias matrix='cmatrix -b -C white -u 3'
+alias lava='lavat -c white -s 2 -R 1'
+alias zen='cbonsai -l -i -w 3 -m "zev1ce"'
+alias clock='tty-clock -s -c -b -C 7'
 
 # Git Bare Dotfiles Manager
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'

@@ -1,4 +1,5 @@
 amd-ucode
+android-tools
 aria2
 awww
 base

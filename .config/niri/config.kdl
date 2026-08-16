@@ -126,19 +126,18 @@ animations {
     }
 
     // 5. Открытие нового окна (Win + Enter / запуск программ)
-    // Быстрый старт с шелковым экспоненциальным затуханием (280 мс)
+    // 5. Открытие нового окна (Быстрое появление уже с размытием)
     window-open {
-        duration-ms 280
-        curve "ease-out-expo"
-    }
-
-    // 6. Закрытие окна (Win + Q)
-    // Мягкое растворение за 180 мс
-    window-close {
-        duration-ms 180
+        duration-ms 140
         curve "ease-out-cubic"
     }
 
+    // 6. Закрытие окна
+    window-close {
+        duration-ms 110
+        curve "ease-out-quad"
+    }
+ 
     // 7. Обзор рабочих столов (Win + O)
     // Кинематографичный отлет камеры назад
     overview-open-close {
