@@ -9,7 +9,7 @@
 ## 💻 Характеристики системы
 
 * 🐧 **OS:** Arch Linux (x86_64)
-* ⚙️ **Kernel:** `linux-zen` (7.1.8-zen)
+* ⚙️ **Kernel:** `linux-cachyos` (7.1.8-cachy)
 * 🧠 **CPU:** AMD Ryzen 5 5600H (6C/12T, up to 4.28 GHz)
 * 🎮 **GPU:** AMD Radeon Vega / Cezanne (`amdgpu`)
 * 🖥️ **Display:** 1920x1080 @ 144 Hz
@@ -29,7 +29,7 @@
 
 ### 💻 Терминал
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/0a5f0e30-0034-405f-ba91-30a8a292fecf" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/96df9e4a-d542-4191-b649-bcd6dc5dc3cc" />
 
 
 ### 🚀 Меню приложений
