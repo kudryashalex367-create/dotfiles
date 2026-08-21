@@ -140,7 +140,8 @@ binds {
     Mod+L { spawn "sh" "-c" "niri msg action switch-layout 0 && hyprlock"; }
     Mod+V { spawn "bash" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
     Mod+N { spawn "sh" "-c" "CUR_TIME=$(date +'%H:%M  ·  %A, %d %b') && sed -i \"s/\\\"text\\\": \\\".*\\\"/\\\"text\\\": \\\"$CUR_TIME\\\"/\" ~/.config/swaync/config.json && swaync-client -R && swaync-client -t -sw"; }
-    Mod+W { spawn "wall-picker"; }
+    // Замени строку Mod+W на эту:
+    Mod+W { spawn "bash" "-c" "$HOME/.local/bin/wall-picker"; }
 
     Mod+O { toggle-overview; }
     Mod+Slash { show-hotkey-overlay; }
