@@ -39,15 +39,17 @@
 ### 🖥️ Рабочий стол Niri (Монохромная лента)
 
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4dc6d6f2-6cf9-4a72-9a5f-c849a56d28a6" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4a54cc88-c4c2-41d3-a47b-bef85a56129a" />
 
 ### 💻 Kitty
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/68703c54-4b7c-4a81-bcb5-080dfed36607" />
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/39362c46-1053-49dc-9835-1cf21e67c367" />
 
 ### 🚀 Меню приложений Fuzzel
 
-<img width="1269" height="743" alt="image" src="https://github.com/user-attachments/assets/9f3d762f-c84c-44ac-9617-1d753f863434" />
+
+<img width="1322" height="759" alt="image" src="https://github.com/user-attachments/assets/68476370-ff93-418a-9c68-d41634494f43" />
 
 ---
 
