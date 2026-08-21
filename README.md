@@ -38,15 +38,16 @@
 
 ### 🖥️ Рабочий стол Niri (Монохромная лента)
 
-<img width="1920" height="1080" alt="desktop" src="https://github.com/user-attachments/assets/f19bef82-01e9-4a4e-a071-72bc22242b40" />
 
-### 💻 Двухузловая система: Arch Linux x86_64 + Android ARM64
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/4dc6d6f2-6cf9-4a72-9a5f-c849a56d28a6" />
 
-<img width="1920" height="1080" alt="terminal" src="https://github.com/user-attachments/assets/96df9e4a-d542-4191-b649-bcd6dc5dc3cc" />
+### 💻 Kitty
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/68703c54-4b7c-4a81-bcb5-080dfed36607" />
 
 ### 🚀 Меню приложений Fuzzel
 
-<img width="1185" height="747" alt="fuzzel" src="https://github.com/user-attachments/assets/7d4ec151-c699-4140-9595-d48643947e63" />
+<img width="1269" height="743" alt="image" src="https://github.com/user-attachments/assets/9f3d762f-c84c-44ac-9617-1d753f863434" />
 
 ---
 
