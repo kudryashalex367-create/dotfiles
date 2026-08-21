@@ -1,13 +1,6 @@
-// ╔══════════════════════════════════════════════════════════════╗
-// ║          NIRI CONFIG — FIXED MONOCHROME OBSIDIAN             ║
-// ╚══════════════════════════════════════════════════════════════╝
-
-// ── Переменные Окружения (Курсор и Прокси Hiddify) ───────────────
 environment {
     XCURSOR_THEME "Bibata-Modern-Ice"
     XCURSOR_SIZE "24"
-    
-    // Прокси Hiddify (порт 12334)
     http_proxy "http://127.0.0.1:12334"
     https_proxy "http://127.0.0.1:12334"
     all_proxy "socks5://127.0.0.1:12334"
@@ -16,14 +9,11 @@ environment {
     ALL_PROXY "socks5://127.0.0.1:12334"
 }
 
-// ── Тема Курсора ───────────────────────────────────────────────
 cursor {
     xcursor-theme "Bibata-Modern-Ice"
     xcursor-size 24
 }
 
-// ── Настройка Монитора (144 Гц) ─────────────────────────────────
-// Проверить имя выхода можно командой: niri msg outputs
 output "DP-2" {
     mode "1920x1080@144.000"
 }
@@ -33,22 +23,14 @@ output "HDMI-A-1" {
 output "eDP-1" {
     mode "1920x1080@144.000"
 }
-// ── Глобальная настройка GPU-Блюра (Obsidian Frosted Acrylic) ────
+
 blur {
-    // Количество проходов (3 = идеальная глубина без просадок FPS)
     passes 3
-
-    // Радиус размытия
     offset 3.5
-
-    // Текстурное зерно против полос на черном фоне
     noise 0.02
-
-    // Честный монохромный контраст
     saturation 1.0
 }
 
-// ── Ввод и Раскладка Клавиатуры ─────────────────────────────────
 input {
     keyboard {
         xkb {
@@ -56,40 +38,30 @@ input {
             options "grp:win_space_toggle"
         }
     }
-
     touchpad {
         tap
         natural-scroll
         accel-speed 0.2
     }
-
     mouse {
         accel-speed -0.4
     }
 }
 
-// ── Настройки Отображения ───────────────────────────────────────
 layout {
     gaps 10
-
     preset-column-widths {
         proportion 0.33333
         proportion 0.5
         proportion 0.66667
     }
-
     default-column-width { proportion 0.5; }
-
-    focus-ring {
-        off
-    }
-
+    focus-ring { off; }
     border {
         width 2
         active-color "#ffffff"
         inactive-color "#27272a"
     }
-
     struts {
         top 0
         bottom 0
@@ -99,64 +71,39 @@ layout {
 }
 
 animations {
-    // Растягиваем время на 20% для наслаждения каждым кадром на 144 Гц
     slowdown 1.2
-
-    // 1. Скроллинг рабочих столов Вверх/Вниз (Win + Up/Down)
-    // Магнитное вертикальное скольжение с мягкой посадкой
     workspace-switch {
         spring damping-ratio=1.04 stiffness=620 epsilon=0.0001
     }
-
-    // 2. Горизонтальная лента колонок (Win + Left/Right)
-    // Ощущение тяжелой гранитной плиты, скользящей по маслу
     horizontal-view-movement {
         spring damping-ratio=1.04 stiffness=560 epsilon=0.0001
     }
-
-    // 3. Перемещение окон и колонок местами (Win + Shift + Arrows)
     window-movement {
         spring damping-ratio=1.02 stiffness=580 epsilon=0.0001
     }
-
-    // 4. Изменение размера и растягивание колонок (Win + R, Win + F)
-    // Эффект упругого эластичного расширения
     window-resize {
         spring damping-ratio=1.05 stiffness=500 epsilon=0.0001
     }
-
-    // 5. Открытие нового окна (Win + Enter / запуск программ)
     window-open {
         duration-ms 140
         curve "ease-out-cubic"
     }
-
-    // 6. Закрытие окна
     window-close {
         duration-ms 110
         curve "ease-out-quad"
     }
- 
-    // 7. Обзор рабочих столов (Win + O)
-    // Кинематографичный отлет камеры назад
     overview-open-close {
         spring damping-ratio=1.04 stiffness=600 epsilon=0.0001
     }
-
-    // 8. Появление интерфейса скриншота (Ctrl + Shift + S)
     screenshot-ui-open {
         duration-ms 180
         curve "ease-out-cubic"
     }
 }
 
-
-// ── Правила для окон ────────────────────────────────────────────
 window-rule {
     geometry-corner-radius 16
     clip-to-geometry true
-
-    // Включаем аппаратный блюр фона под полупрозрачными окнами
     background-effect {
         blur true
         xray true
@@ -165,13 +112,12 @@ window-rule {
 
 prefer-no-csd
 
-// ── Автозапуск Сервисов, Прокси и Курсора ───────────────────────
 spawn-at-startup "swaync"
-spawn-at-startup "swaybg" "-i" "/home/zev1ce/Загрузки/wallhaven-gw55w7.png" "-m" "fill"
+spawn-at-startup "awww-daemon"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
 spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets"
-// Автопрописка системного прокси Hiddify в GNOME
+
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy" "mode" "manual"
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.http" "host" "127.0.0.1"
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.http" "port" "12334"
@@ -181,15 +127,12 @@ spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.socks" "host" "127.0.
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.socks" "port" "12334"
 spawn-at-startup "xwayland-satellite"
 
-// Установка курсора Bibata для всех GTK приложений
 spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-theme" "Bibata-Modern-Ice"
 spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-size" "24"
 
 screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
 
-// ── Горячие Клавиши (Binds) ─────────────────────────────────────
 binds {
-    // Основные приложения и утилиты
     Mod+Return { spawn "kitty"; }
     Mod+D { spawn "fuzzel"; }
     Mod+Q { close-window; }
@@ -197,28 +140,23 @@ binds {
     Mod+L { spawn "sh" "-c" "niri msg action switch-layout 0 && hyprlock"; }
     Mod+V { spawn "bash" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
     Mod+N { spawn "sh" "-c" "CUR_TIME=$(date +'%H:%M  ·  %A, %d %b') && sed -i \"s/\\\"text\\\": \\\".*\\\"/\\\"text\\\": \\\"$CUR_TIME\\\"/\" ~/.config/swaync/config.json && swaync-client -R && swaync-client -t -sw"; }
+    Mod+W { spawn "wall-picker"; }
 
-    // Обзор (Overview) и Окно Подсказок
     Mod+O { toggle-overview; }
     Mod+Slash { show-hotkey-overlay; }
 
-    // Навигация по колонкам
     Mod+Left  { focus-column-left; }
     Mod+Right { focus-column-right; }
     Mod+Shift+Left  { move-column-left; }
     Mod+Shift+Right { move-column-right; }
     Mod+Alt+Down { focus-window-down; }
-    Mod+Alt+Up   { focus-window-up; }    
+    Mod+Alt+Up   { focus-window-up; }
 
-    // Навигация по Рабочим Столам (Вверх / Вниз на Win + Стрелки)
     Mod+Down { focus-workspace-down; }
     Mod+Up   { focus-workspace-up; }
-
-    // Перемещение колонок на Рабочий Стол (Вверх / Вниз)
     Mod+Shift+Down { move-column-to-workspace-down; }
     Mod+Shift+Up   { move-column-to-workspace-up; }
 
-    // Управление шириной и фокусировкой
     Mod+R { switch-preset-column-width; }
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
@@ -227,7 +165,6 @@ binds {
     Mod+Minus { consume-window-into-column; }
     Mod+Equal { expel-window-from-column; }
 
-    // Прямой переход по номерам рабочих столов (1..5)
     Mod+1 { focus-workspace 1; }
     Mod+2 { focus-workspace 2; }
     Mod+3 { focus-workspace 3; }
@@ -240,12 +177,10 @@ binds {
     Mod+Shift+4 { move-column-to-workspace 4; }
     Mod+Shift+5 { move-column-to-workspace 5; }
 
-    // Мультимедиа и громкость (Восстановленные полные команды)
     XF86AudioRaiseVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
     XF86AudioLowerVolume allow-when-locked=true { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
     XF86AudioMute        allow-when-locked=true { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
 
-    // Скриншоты
     Ctrl+Shift+S { screenshot; }
     Ctrl+Print { screenshot-screen; }
     Alt+Print { screenshot-window; }
@@ -257,7 +192,6 @@ window-rule {
 }
 
 window-rule {
-    // Всплывающие окна Steam (список друзей, настройки) делаем плавающими, если нужно
     match title="^Friends List$"
     open-floating true
 }
@@ -269,4 +203,3 @@ layer-rule {
         xray false
     }
 }
-

@@ -24,21 +24,12 @@
 
   "widget-config": {
     "title": {
-      "text": "15:08  ·  Понедельник, 17 авг",
+      "text": "Control Center",
       "clear-all-button": true,
       "button-text": "Clear All"
     },
-    "buttons-grid#clock": {
-      "actions": [
-        {
-          "label": "  --:--",
-          "update-command": "date +'%H:%M   ·   %A, %d %B'",
-          "command": ""
-        }
-      ]
-    },
     "dnd": {
-      "text": "15:08  ·  Понедельник, 17 авг"
+      "text": "Do Not Disturb"
     },
     "mpris": {
       "image-size": 68,
