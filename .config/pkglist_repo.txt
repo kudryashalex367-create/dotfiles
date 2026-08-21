@@ -1,5 +1,6 @@
 amd-ucode
 android-tools
+android-udev
 aria2
 awww
 base

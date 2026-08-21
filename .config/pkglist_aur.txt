@@ -5,4 +5,5 @@ gnome-shell-extension-blur-my-shell
 gnome-shell-extension-compiz-windows-effect-git
 google-chrome
 lavat-git
+wallust-git
 yay-debug
