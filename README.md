@@ -1,56 +1,71 @@
-# 🖤 Arch Linux Dotfiles by zev1ce — Monochrome Noir
+# 🖤 Arch Linux Dotfiles by zev1ce — Monochrome Obsidian
 
-> *"I use Arch, btw." — Minimalist Scrollable-Tiling & Hybrid Desktop Setup.*
+> *"I use Arch, btw." — Minimalist 144Hz Scrollable-Tiling & Hybrid Dual-Session Workstation.*
 
-Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная, сочная и высокопроизводительная сборка рабочей станции на базе **Niri WM** и **GNOME**, выполненная в строгом ахроматическом стиле **Monochrome Zinc & Obsidian**. Управление конфигурациями реализовано через концепцию **Git Bare Repository**.
+Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная, сочная и сверхпроизводительная сборка рабочей станции на базе скроллингового тайлинга **Niri WM** и классического окружения **GNOME**, выполненная в строгом ахроматическом стиле **Monochrome Zinc & Obsidian**. Управление конфигурациями реализовано через концепцию **Git Bare Repository**.
 
 ---
 
 ## 💻 Характеристики системы
 
 * 🐧 **OS:** Arch Linux (x86_64)
-* ⚙️ **Kernel:** `linux-cachyos` (7.1.8-cachyos)
-* 🧠 **CPU:** AMD Ryzen 5 5600H (6C/12T, up to 4.28 GHz)
-* 🎮 **GPU:** AMD Radeon Vega / Cezanne (`amdgpu`)
-* 🖥️ **Display:** 1920x1080 @ 144 Hz
-* 🪟 **WM/DE:** Niri (Scrollable Tiling Wayland) / GNOME (Pure Core)
-* ⌨️ **Terminal:** Kitty (Monochrome Obsidian Theme)
-* 🐚 **Shell:** Zsh + Oh My Zsh + Powerlevel10k
-* 🎨 **UI Suite:** Waybar, Fuzzel, SwayNC, Hyprlock, Swaybg
-* 🖱️ **Cursor:** Bibata-Modern-Classic
+* ⚙️ **Kernel:** `linux-cachyos` (7.1.8-1-cachyos с планировщиком BORE и набором инструкций `x86-64-v3`)
+* 🧠 **CPU:** AMD Ryzen 5 5600H (6C/12T, Zen 3, up to 4.28 GHz)
+* 🎮 **GPU:** AMD Radeon Vega 7 / Cezanne (Открытый драйвер `amdgpu` + Vulkan RADV)
+* 🖥️ **Display:** 1920x1080 @ 144 Hz (Аппаратная V-Blank синхронизация)
+* 🪟 **WM/DE:** Niri 26.04 (Rust Scrollable Tiling) / GNOME (Pure Core)
+* ⌨️ **Terminal:** Kitty (GPU-ускорение, JetBrains Mono Nerd Font, WGPU-блюр)
+* 🐚 **Shell:** Zsh 5.9.2 + Oh My Zsh + Powerlevel10k (Lean 8-colors)
+* 🎨 **UI Suite:** Fuzzel, SwayNC (Matte Control Center), Hyprlock, awww (144Hz Wallpaper Engine)
+* 🖱️ **Cursor:** Bibata-Modern-Ice (24px во всех слоях системы)
 * 🚀 **Bootloader:** systemd-boot
+
+---
+
+## 🌌 Ключевые особенности сборки
+
+* 🖤 **Безбаровый Дзен (Barless Setup):** 100% площади экрана отдано контенту и коду — никаких лишних панелей задач и рамок.
+* 🌊 **Кинематографичные пружины (Cinematic Silk 144Hz):** Все перемещения окон, скроллинг ленты и зум рассчитываются на пружинной физике Rust в реальном времени.
+* 🧊 **Аппаратный WGPU-блюр (Frosted Acrylic):** Двойной проход Kawase-размытия в режиме `xray true` для мгновенного появления окон без задержек.
+* 🎛️ **Центр управления SwayNC:** Плотная матовая панель в стиле Obsidian с живыми часами и датой в шапке, ползунками громкости/яркости и универсальными глифами.
+* 🔒 **Двухэтажный Hyprlock:** Монументальная вертикальная типографика часов (Nothing OS / Google Pixel style) с защитой от ввода пароля на русской раскладке.
+* 🖼️ **Интерактивная смена обоев (`Win + W`):** Быстрый селектор на Fuzzel с плавной анимацией шторки на 144 Гц через `awww` и авто-синхронизацией с GNOME.
+* 📱 **Мобильный мост Termux:** Прямая связь со смартфоном по ADB/SSH с поддержкой 8-поточного скачивания видео/аниме/музыки через `aria2c`.
+
+---
 
 ## 📸 Скриншоты
 
-### 🖥️ Рабочий стол
+### 🖥️ Рабочий стол Niri (Монохромная лента)
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/f19bef82-01e9-4a4e-a071-72bc22242b40" />
+<img width="1920" height="1080" alt="desktop" src="https://github.com/user-attachments/assets/f19bef82-01e9-4a4e-a071-72bc22242b40" />
 
+### 💻 Двухузловая система: Arch Linux x86_64 + Android ARM64
 
-### 💻 Терминал
+<img width="1920" height="1080" alt="terminal" src="https://github.com/user-attachments/assets/96df9e4a-d542-4191-b649-bcd6dc5dc3cc" />
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/96df9e4a-d542-4191-b649-bcd6dc5dc3cc" />
+### 🚀 Меню приложений Fuzzel
 
-
-### 🚀 Меню приложений
-
-<img width="1185" height="747" alt="image" src="https://github.com/user-attachments/assets/7d4ec151-c699-4140-9595-d48643947e63" />
+<img width="1185" height="747" alt="fuzzel" src="https://github.com/user-attachments/assets/7d4ec151-c699-4140-9595-d48643947e63" />
 
 ---
 
 ## ⌨️ Горячие клавиши Niri (Hotkeys)
 
-Клавиша `Super` — это клавиша `Windows` на клавиатуре.
+Клавиша `Super` (`Mod`) — это клавиша `Windows` на клавиатуре.
 
 ### 🚀 Запуск приложений и системных утилит
 | Комбинация | Действие |
 | :--- | :--- |
 | `Super + Enter` | Открыть терминал Kitty |
 | `Super + D` | Меню приложений (Fuzzel) |
+| `Super + W` | Интерактивный выбор обоев из `~/wallpapers` (Fuzzel + awww) |
 | `Super + V` | История буфера обмена (Cliphist + Fuzzel) |
-| `Super + N` | Шторка уведомлений и быстрых настроек (SwayNC) |
-| `Super + L` | Заблокировать экран (Hyprlock) |
-| `Super + Space` | Переключение языка клавиатуры (ENG / RUS) |
+| `Super + N` | Центр управления и уведомлений с часами (SwayNC) |
+| `Super + L` | Заблокировать экран (Hyprlock с авто-сбросом раскладки на US) |
+| `Super + O` | Обзор всех рабочих столов (Overview) |
+| `Super + /` | Показать интерактивную справку по горячим клавишам |
+| `Super + Space` | Переключение раскладки клавиатуры (US / RU) |
 
 ### 🧱 Управление окнами и колонками
 | Комбинация | Действие |
@@ -59,43 +74,42 @@
 | `Super + Shift + E` | Выйти из Niri (Завершить сессию) |
 | `Super + F` | Развернуть колонку во всю ширину |
 | `Super + Shift + F` | Полноэкранный режим (Fullscreen) |
-| `Super + R` | Изменить ширину колонки (33% ➔ 50% ➔ 66%) |
+| `Super + R` | Переключить ширину колонки (33% ➔ 50% ➔ 66%) |
 | `Super + C` | Отцентрировать текущую колонку |
-| `Super + -` | Объединить окно в одну колонку с соседним |
-| `Super + =` | Выгнать окно из общей колонки в отдельную |
+| `Super + -` | Затянуть соседнее окно в текущую колонку (Вертикальный стек) |
+| `Super + =` | Вытолкнуть окно из колонки в отдельную |
 
 ### 🧭 Навигация и перемещение
 | Комбинация | Действие |
 | :--- | :--- |
 | `Super + ← / →` | Переход между колонками (влево / вправо) |
-| `Super + ↑ / ↓` | Переход между окнами в колонке (вверх / вниз) |
 | `Super + Shift + ← / →` | Переместить колонку влево / вправо |
-| `Super + Shift + ↑ / ↓` | Переместить окно вверх / вниз в колонке |
+| `Super + Alt + ↓ / ↑` | Переход между окнами внутри одной колонки (вверх / вниз) |
+| `Super + Alt + Shift + ↓ / ↑` | Поменять окна местами внутри одной колонки |
 
 ### 🔢 Рабочие столы (Workspaces)
 | Комбинация | Действие |
 | :--- | :--- |
-| `Super + 1..5` | Переключиться на рабочий стол 1..5 |
-| `Super + Shift + 1..5` | Перенести окно на рабочий стол 1..5 |
+| `Super + ↓ / ↑` | Переход на рабочий стол ниже / выше |
+| `Super + Shift + ↓ / ↑` | Перенести текущую колонку на рабочий стол ниже / выше |
+| `Super + 1..5` | Прямой переход на рабочий стол 1..5 |
+| `Super + Shift + 1..5` | Перенести колонку на рабочий стол 1..5 |
 
 ### 📸 Скриншоты и Мультимедиа
 | Комбинация | Действие |
 | :--- | :--- |
-| `Ctrl + Shift + S` | Интерактивный скриншот (Niri GUI) |
-| `Print` | Скриншот выделенной области |
+| `Ctrl + Shift + S` | Интерактивный скриншот области (Niri GUI) |
 | `Ctrl + Print` | Скриншот всего экрана |
 | `Alt + Print` | Скриншот активного окна |
-| `Media Keys` | Регулировка громкости (`wpctl`) и яркости |
+| `Media Keys` | Регулировка громкости (`wpctl`) и яркости (`brightnessctl`) |
 
 ---
 
 ## 🛠 1. Быстрая установка (Восстановление на чистой ОС)
 
-Этот метод позволяет развернуть всю рабочую станцию со всеми программами, шрифтами и темами на новом компьютере за пару минут.
+Этот метод позволяет развернуть всю рабочую станцию со всеми программами, шрифтами, анимациями и темами на новом компьютере за пару минут.
 
 ### Шаг 1. Установка базовых зависимостей и Oh My Zsh
-
-Устанавливаем систему контроля версий, командную оболочку, базовые утилиты сборки и Oh My Zsh:
 
 ```bash
 sudo pacman -S --needed base-devel git zsh curl
@@ -112,7 +126,7 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 
 ### Шаг 3. Загрузка базы данных Dotfiles (Git Bare)
 
-Клонируем репозиторий в скрытую папку `.cfg` и создаем временный алиас:
+Клонируем репозиторий в скрытую папку `.cfg` и создаем рабочий алиас:
 
 ```bash
 git clone --bare https://github.com/kudryashalex367-create/dotfiles.git $HOME/.cfg
@@ -121,7 +135,7 @@ alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
 ### Шаг 4. Распаковка конфигураций на диск
 
-Удаляем дефолтные файлы инициализации и принудительно извлекаем наши конфиги:
+Удаляем дефолтные файлы инициализации и извлекаем наши конфиги:
 
 ```bash
 rm -f ~/.zshrc ~/.bashrc ~/.p10k.zsh ~/README.md
@@ -131,11 +145,11 @@ config config --local status.showUntrackedFiles no
 
 ---
 
-## 📦 2. Восстановление всех пакетов и программ
+## 📦 2. Восстановление пакетов и ядра
 
 ### Шаг 1. Установка официальных пакетов Arch Linux (pacman)
 
-Восстанавливаем ядро, Niri, GNOME, драйверы, шрифты и утилиты одной командой:
+Восстанавливаем ядро CachyOS, Niri, GNOME, драйверы, шрифты и системные утилиты:
 
 ```bash
 sudo pacman -S --needed - < ~/.config/pkglist_repo.txt
@@ -149,7 +163,7 @@ sudo pacman -S --needed - < ~/.config/pkglist_repo.txt
 git clone https://aur.archlinux.org/yay.git /tmp/yay && cd /tmp/yay && makepkg -si --noconfirm && cd ~
 ```
 
-Теперь восстанавливаем все пакеты из AUR (курсоры Bibata, расширения и утилиты):
+Восстанавливаем AUR-пакеты (курсоры Bibata, расширения и терминальные утилиты):
 
 ```bash
 yay -S --needed - < ~/.config/pkglist_aur.txt
@@ -159,9 +173,11 @@ yay -S --needed - < ~/.config/pkglist_aur.txt
 
 ## 🚀 3. Финальный запуск
 
-Обновляем кэш шрифтов, включаем Zsh по умолчанию и перезапускаем оболочку:
+Создаем папку для обоев, настраиваем права на скрипты, обновляем кэш шрифтов и переключаем шелл:
 
 ```bash
+mkdir -p ~/wallpapers
+chmod +x ~/.local/bin/* 2>/dev/null || true
 fc-cache -fv
 chsh -s /usr/bin/zsh
 exec zsh
@@ -171,20 +187,18 @@ exec zsh
 
 ## 🔄 4. Управление конфигурациями
 
-Управление репозиторием осуществляется через алиас `config` (он уже прописан в восстановленном `.zshrc`). Работа с ним полностью аналогична работе с обычным `git`.
+Управление репозиторием осуществляется через алиас `config` (он прописан в `.zshrc`). Работа с ним полностью аналогична стандартному `git`.
 
-Проверить статус измененных файлов:
-```bash
-config status
-```
-
-Добавить измененный или новый файл в индекс:
-```bash
-config add ~/.config/путь_к_файлу
-```
-
-Создать коммит и отправить изменения на GitHub:
-```bash
-config commit -m "Update configs"
-config push
-```
+* Проверить статус измененных файлов:
+  ```bash
+  config status
+  ```
+* Добавить измененный файл в индекс:
+  ```bash
+  config add ~/.config/путь_к_файлу
+  ```
+* Зафиксировать коммит и отправить на GitHub:
+  ```bash
+  config commit -m "Update configs"
+  config push
+  ```
