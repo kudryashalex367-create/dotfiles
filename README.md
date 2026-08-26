@@ -9,7 +9,7 @@
 ## 💻 Характеристики системы
 
 * 🐧 **OS:** Arch Linux (x86_64)
-* ⚙️ **Kernel:** `linux-cachyos` (7.1.8-1-cachyos с планировщиком BORE и набором инструкций `x86-64-v3`)
+* ⚙️ **Kernel:** `linux-zen`
 * 🧠 **CPU:** AMD Ryzen 5 5600H (6C/12T, Zen 3, up to 4.28 GHz)
 * 🎮 **GPU:** AMD Radeon Vega 7 / Cezanne (Открытый драйвер `amdgpu` + Vulkan RADV)
 * 🖥️ **Display:** 1920x1080 @ 144 Hz (Аппаратная V-Blank синхронизация)
