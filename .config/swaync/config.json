@@ -24,12 +24,12 @@
 
   "widget-config": {
     "title": {
-      "text": "Control Center",
+      "text": "06:49  ·  Четверг, 27 авг",
       "clear-all-button": true,
       "button-text": "Clear All"
     },
     "dnd": {
-      "text": "Do Not Disturb"
+      "text": "06:49  ·  Четверг, 27 авг"
     },
     "mpris": {
       "image-size": 68,
