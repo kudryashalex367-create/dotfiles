@@ -24,12 +24,12 @@
 
   "widget-config": {
     "title": {
-      "text": "06:49  ·  Четверг, 27 авг",
+      "text": "00:36  ·  Суббота, 29 авг",
       "clear-all-button": true,
       "button-text": "Clear All"
     },
     "dnd": {
-      "text": "06:49  ·  Четверг, 27 авг"
+      "text": "00:36  ·  Суббота, 29 авг"
     },
     "mpris": {
       "image-size": 68,

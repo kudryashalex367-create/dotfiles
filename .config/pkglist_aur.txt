@@ -3,7 +3,11 @@ cbonsai
 gnome-rounded-blur
 gnome-shell-extension-blur-my-shell
 gnome-shell-extension-compiz-windows-effect-git
+gnome-shell-extension-dash-to-dock
 google-chrome
 lavat-git
+tty-clock
+vesktop-bin
 wallust-git
+yay
 yay-debug
