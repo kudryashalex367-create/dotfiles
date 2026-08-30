@@ -199,7 +199,7 @@ window-rule {
 }
 
 layer-rule {
-    match namespace="^(launcher|fuzzel|swaync-control-center|swaync-notification-window)$"
+    match namespace="^(launcher|fuzzel)$"
     background-effect {
         blur true 
         xray false
