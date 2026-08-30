@@ -248,12 +248,21 @@ hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),   { locked = true })
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),  { locked = true })
 
--- Скриншоты (grim + slurp с сохранением в папку скриншотов)
-local ss_dir = "~/Pictures/Screenshots"
-hl.bind("CTRL + SHIFT + S", hl.dsp.exec_cmd("bash -c 'mkdir -p " .. ss_dir .. " && grim -g \"$(slurp)\" " .. ss_dir .. "/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png'"))
-hl.bind("CTRL + Print",     hl.dsp.exec_cmd("bash -c 'mkdir -p " .. ss_dir .. " && grim " .. ss_dir .. "/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png'"))
-hl.bind("ALT + Print",      hl.dsp.exec_cmd("bash -c 'mkdir -p " .. ss_dir .. " && hyprctl -j activewindow | jq -r \'\"\\(.at[0]),\\(.at[1]) \\(.size[0])x\\(.size[1])\"\' | grim -g - " .. ss_dir .. "/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png'"))
+---------------------
+---- SCREENSHOTS ----
+---------------------
+local home = os.getenv("HOME")
+local ss_cmd = home .. "/.local/bin/screenshot"
 
+-- Область (Ctrl + Shift + S, работает при любой раскладке US/RU)
+hl.bind("CTRL + SHIFT + S", hl.dsp.exec_cmd(ss_cmd .. " area"))
+hl.bind("CTRL + SHIFT + code:39", hl.dsp.exec_cmd(ss_cmd .. " area"))
+
+-- Полный экран (Ctrl + Print)
+hl.bind("CTRL + Print", hl.dsp.exec_cmd(ss_cmd .. " full"))
+
+-- Активное окно (Alt + Print)
+hl.bind("ALT + Print",  hl.dsp.exec_cmd(ss_cmd .. " window"))
 
 --------------------------------
 ---- WINDOWS AND LAYER RULES ---

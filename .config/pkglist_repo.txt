@@ -19,6 +19,7 @@ efibootmgr
 extension-manager
 eza
 fastfetch
+fd
 fuzzel
 gamemode
 gdm
@@ -27,12 +28,14 @@ gnome-control-center
 gnome-shell
 gnome-shell-extension-appindicator
 gnome-tweaks
+grim
 gvfs-gphoto2
 gvfs-mtp
 hyprland
 hyprlock
 inxi
 iwd
+jq
 kitty
 lib32-gamemode
 lib32-vulkan-radeon
@@ -52,6 +55,7 @@ pipewire-pulse
 polkit-gnome
 python-pipx
 ripgrep
+slurp
 steam
 sudo
 swaybg
