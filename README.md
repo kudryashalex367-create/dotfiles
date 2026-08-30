@@ -13,7 +13,7 @@
 * 🧠 **CPU:** AMD Ryzen 5 5600H (6C/12T, Zen 3, up to 4.28 GHz)
 * 🎮 **GPU:** AMD Radeon Vega 7 / Cezanne (Открытый драйвер `amdgpu` + Vulkan RADV)
 * 🖥️ **Display:** 1920x1080 @ 144 Hz (Аппаратная V-Blank синхронизация)
-* 🪟 **WM/DE:** Niri 26.04 (Rust Scrollable Tiling) / GNOME (Pure Core)
+* 🪟 **WM/DE:** Niri 26.04 / GNOME / Hyprland
 * ⌨️ **Terminal:** Kitty (GPU-ускорение, JetBrains Mono Nerd Font, WGPU-блюр)
 * 🐚 **Shell:** Zsh 5.9.2 + Oh My Zsh + Powerlevel10k (Lean 8-colors)
 * 🎨 **UI Suite:** Fuzzel, SwayNC (Matte Control Center), Hyprlock, awww (144Hz Wallpaper Engine)
