@@ -130,10 +130,17 @@ hl.config({
         inactive_opacity = 1.0,
 
         blur = {
-            enabled = true,
-            size    = 4,
-            passes  = 3,
-            noise   = 0.02,
+            enabled           = true,
+            size              = 6,
+            passes            = 3,
+            noise             = 0.015,
+            contrast          = 1.05,
+            brightness        = 0.95,
+            vibrancy          = 0.25,
+            vibrancy_darkness = 0.15,
+            popups            = true,
+            ignore_opacity    = true,
+            new_optimizations = true,
         },
     },
 
