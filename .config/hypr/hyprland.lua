@@ -229,8 +229,8 @@ hl.bind(mainMod .. " + SHIFT + Right", hl.dsp.window.move({ direction = "right" 
 hl.bind(mainMod .. " + SHIFT + Up",    hl.dsp.window.move({ direction = "up" }))
 hl.bind(mainMod .. " + SHIFT + Down",  hl.dsp.window.move({ direction = "down" }))
 
--- Рабочие столы 1-5
-for i = 1, 5 do
+-- Рабочие столы 1-9
+for i = 1, 9 do
     hl.bind(mainMod .. " + " .. i,             hl.dsp.focus({ workspace = i }))
     hl.bind(mainMod .. " + SHIFT + " .. i,     hl.dsp.window.move({ workspace = i }))
 end
