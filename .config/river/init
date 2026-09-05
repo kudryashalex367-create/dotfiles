@@ -1,0 +1,102 @@
+#!/usr/bin/env bash
+
+# ── 1. ВНЕШНИЙ ВИД И ПАРАМЕТРЫ ОКРУЖЕНИЯ ────────────────────────
+export XCURSOR_THEME="Bibata-Modern-Ice"
+export XCURSOR_SIZE=24
+riverctl set-cursor-theme "Bibata-Modern-Ice" 24
+
+# Цвета рамок (Твой монохром: активный #ffffff, неактивный #27272a)
+riverctl border-width 2
+riverctl border-color-focused "0xffffff"
+riverctl border-color-unfocused "0x27272a"
+riverctl background-color "0x09090b"
+
+# Фокус следует за курсором
+riverctl focus-follows-cursor normal
+
+# ── 2. ГЕНЕРАТОР РАСКЛАДКИ (RIVERTILE: MASTER + STACK) ─────────
+# Внутренние отступы 5px, внешние 10px (как в твоём Hyprland/Niri)
+riverctl default-layout rivertile
+rivertile -view-padding 5 -outer-padding 10 &
+
+# ── 3. КЛАВИАТУРА И РАСКЛАДКА ───────────────────────────────────
+# Переключение языка по Win + Space
+riverctl keyboard-layout -options "grp:win_space_toggle" "us,ru"
+
+# ── 4. БИНДЫ ПРОГРАММ (MOD = SUPER) ─────────────────────────────
+# Основные утилиты
+riverctl map normal Super Return spawn "kitty"
+riverctl map normal Super D      spawn "fuzzel"
+riverctl map normal Super Q      close
+riverctl map normal Super+Shift E exit
+
+# Блокировка и буфер обмена
+riverctl map normal Super L spawn "hyprlock"
+riverctl map normal Super V spawn "bash -c 'cliphist list | fuzzel -d | cliphist decode | wl-copy'"
+
+# Уведомления Mako
+riverctl map normal Super N       spawn "makoctl restore"
+riverctl map normal Super+Shift N spawn "makoctl dismiss -a"
+
+# Обои (Случайные на Mod+A, интерактивные на Mod+W)
+riverctl map normal Super A spawn "bash -c $HOME/.local/bin/wall-random"
+riverctl map normal Super W spawn "bash -c $HOME/.local/bin/wall-picker"
+
+# ── 5. УПРАВЛЕНИЕ ОКНАМИ И РАСКЛАДКОЙ ───────────────────────────
+# Навигация фокуса (J - вниз/следующее, K - вверх/предыдущее)
+riverctl map normal Super J focus-view next
+riverctl map normal Super K focus-view previous
+riverctl map normal Super Down focus-view next
+riverctl map normal Super Up   focus-view previous
+
+# Перемещение окон в стопке
+riverctl map normal Super+Shift J swap next
+riverctl map normal Super+Shift K swap previous
+riverctl map normal Super+Shift Down swap next
+riverctl map normal Super+Shift Up   swap previous
+
+# Сделать окно главным (Master / Zoom) по Super + Space
+riverctl map normal Super Space zoom
+
+# Полноэкранный режим
+riverctl map normal Super F toggle-fullscreen
+riverctl map normal Super+Shift Space toggle-float
+
+# Изменение пропорций Master-колонки (H - сузить, L - расширить)
+riverctl map normal Super H send-layout-cmd rivertile "main-ratio -0.05"
+riverctl map normal Super L send-layout-cmd rivertile "main-ratio +0.05"
+
+# ── 6. ТЕГИ 1-9 (КАК ВОРКС Vulcan/DWM) ──────────────────────────
+for i in $(seq 1 9); do
+    tags=$((1 << ($i - 1)))
+    # Super + [1-9] -> Перейти на тег
+    riverctl map normal Super "$i" set-focused-tags "$tags"
+    # Super + Shift + [1-9] -> Переместить окно на тег
+    riverctl map normal Super+Shift "$i" set-view-tags "$tags"
+    # Super + Ctrl + [1-9] -> Показать тег одновременно с текущим
+    riverctl map normal Super+Control "$i" toggle-focused-tags "$tags"
+done
+
+# ── 7. МЫШЬ (ПЕРЕМЕЩЕНИЕ И РЕСАЙЗ) ──────────────────────────────
+riverctl map-pointer normal Super BTN_LEFT move-view
+riverctl map-pointer normal Super BTN_RIGHT resize-view
+
+# ── 8. МУЛЬТИМЕДИА И ЗВУК (PIPEWIRE) ────────────────────────────
+riverctl map -locked normal None XF86AudioRaiseVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+riverctl map -locked normal None XF86AudioLowerVolume spawn "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+riverctl map -locked normal None XF86AudioMute        spawn "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+
+# ── 9. СКРИНШОТЫ ────────────────────────────────────────────────
+riverctl map normal Control+Shift S spawn "bash -c 'mkdir -p ~/Pictures/Screenshots && grim -g \"\$(slurp)\" ~/Pictures/Screenshots/Screenshot_\$(date +%Y-%m-%d_%H-%M-%S).png'"
+
+# ── 10. АВТОСТАРТ СЕРВИСОВ ──────────────────────────────────────
+# Диспетчер мониторов на 144Hz (если вывод DP-2 или HDMI-A-1)
+wlr-randr --output DP-2 --mode 1920x1080@144.000000 2>/dev/null || true
+wlr-randr --output HDMI-A-1 --mode 1920x1080@144.000000 2>/dev/null || true
+
+# Демоны
+mako &
+awww-daemon &
+/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
+wl-paste --watch cliphist store &
+gnome-keyring-daemon --start --components=secrets &
