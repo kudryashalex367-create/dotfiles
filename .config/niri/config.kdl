@@ -46,6 +46,8 @@ input {
     mouse {
         accel-speed -0.4
     }
+
+    focus-follows-mouse max-scroll-amount="0%"
 }
 
 layout {
