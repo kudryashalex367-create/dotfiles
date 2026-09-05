@@ -100,3 +100,15 @@ awww-daemon &
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 wl-paste --watch cliphist store &
 gnome-keyring-daemon --start --components=secrets &
+
+# Настройка прокси для текущей сессии River
+export http_proxy="http://127.0.0.1:12334"
+export https_proxy="http://127.0.0.1:12334"
+export ftp_proxy="http://127.0.0.1:12334"
+export rsync_proxy="http://127.0.0.1:12334"
+export http_proxy="socks5://127.0.0.1:12334"
+export https_proxy="socks5://127.0.0.1:12334"
+
+# Исключения для локальной сети
+export no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com"
+
