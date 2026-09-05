@@ -1,5 +1,6 @@
 bibata-cursor-theme
 cbonsai
+driftwm
 gnome-rounded-blur
 gnome-shell-extension-blur-my-shell
 gnome-shell-extension-compiz-windows-effect-git

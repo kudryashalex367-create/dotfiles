@@ -56,7 +56,6 @@ pipewire-pulse
 polkit-gnome
 python-pipx
 ripgrep
-river-classic
 slurp
 steam
 sudo
@@ -72,7 +71,6 @@ vulkan-radeon
 wget
 wireplumber
 wl-clipboard
-wlr-randr
 woff2-font-awesome
 xdg-desktop-portal-hyprland
 xwayland-satellite

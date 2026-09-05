@@ -1,0 +1,95 @@
+# ══════════════════════════════════════════════════════════════════════════
+#  DRIFTWM CONFIG (Top-Level Order Fixed)
+# ══════════════════════════════════════════════════════════════════════════
+
+# ── 1. ТОП-УРОВЕНЬ (ДО ЛЮБЫХ КВАДРАТНЫХ СКОБОК []) ───────────────────────
+mod_key = "super"
+focus_follows_mouse = true
+
+# Автостарт ОБЯЗАН быть здесь (на верхнем уровне):
+autostart = [
+    "mako",
+    "awww-daemon",
+    "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1",
+    "wl-paste --watch cliphist store",
+
+    # Прокси для софта (GTK / Chromium / GNOME)
+    "gsettings set org.gnome.system.proxy mode 'manual'",
+    "gsettings set org.gnome.system.proxy.http host '127.0.0.1'",
+    "gsettings set org.gnome.system.proxy.http port 12334",
+    "gsettings set org.gnome.system.proxy.https host '127.0.0.1'",
+    "gsettings set org.gnome.system.proxy.https port 12334",
+    "gsettings set org.gnome.system.proxy.socks host '127.0.0.1'",
+    "gsettings set org.gnome.system.proxy.socks port 12334",
+
+    # Курсор
+    "gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice'",
+    "gsettings set org.gnome.desktop.interface cursor-size 24"
+]
+
+# ── 2. ТЕПЕРЬ СЕКЦИИ: ПЕРЕМЕННЫЕ ОКРУЖЕНИЯ (ТОЛЬКО СТРОКИ!) ─────────────
+[env]
+http_proxy  = "http://127.0.0.1:12334"
+https_proxy = "http://127.0.0.1:12334"
+all_proxy   = "socks5://127.0.0.1:12334"
+HTTP_PROXY  = "http://127.0.0.1:12334"
+HTTPS_PROXY = "http://127.0.0.1:12334"
+ALL_PROXY   = "socks5://127.0.0.1:12334"
+no_proxy    = "localhost,127.0.0.1,::1"
+
+# ── 3. МОНИТОРЫ И ГЕРЦОВКА 144Hz ─────────────────────────────────────────
+[[outputs]]
+name = "*"
+mode = "max"
+
+# ── 4. ВВОД: КЛАВИАТУРА ─────────────────────────────────────────────────
+[input.keyboard]
+layout = "us,ru"
+options = "grp:win_space_toggle"
+
+# ── 5. КУРСОР ───────────────────────────────────────────────────────────
+[cursor]
+theme = "Bibata-Modern-Ice"
+size = 24
+
+# ── 6. ДЕКОРАЦИИ (Твой монохром) ────────────────────────────────────────
+[decorations]
+corner_radius = 16
+border_width = 2
+border_color = "#27272a"
+border_color_focused = "#ffffff"
+
+# ── 7. ФОН (ОТДАЕМ УПРАВЛЕНИЕ AWWW-DAEMON) ──────────────────────────────
+[background]
+type = "none"
+
+# ── 8. БИНДЫ ────────────────────────────────────────────────────────────
+[keybindings]
+"mod+return" = "exec kitty"
+"mod+d"      = "exec fuzzel"
+"mod+q"      = "close-window"
+"mod+l"      = "spawn hyprlock"
+"mod+ctrl+shift+q" = "quit"
+# ── СКРИНШОТЫ (СВЯЗКА КАК В NIRI И HYPRLAND) ───────────────────────────
+# Ctrl+Shift+S — Выделение области (в файл + в буфер обмена)
+"ctrl+shift+s" = "spawn bash -c 'mkdir -p ~/Pictures/Screenshots && FILE=~/Pictures/Screenshots/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png && grim -g \"$(slurp)\" \"$FILE\" && wl-copy < \"$FILE\" && notify-send -t 2000 -a \"Screenshot\" \"Область сохранена\" \"$FILE\"'"
+
+# Ctrl+Print — Снимок всего экрана (в файл + в буфер)
+"ctrl+Print" = "spawn bash -c 'mkdir -p ~/Pictures/Screenshots && FILE=~/Pictures/Screenshots/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png && grim \"$FILE\" && wl-copy < \"$FILE\" && notify-send -t 2000 -a \"Screenshot\" \"Экран сохранён\" \"$FILE\"'"
+
+# Alt+Print — Нативный снимок активного окна через движок DriftWM с тенью!
+"alt+Print" = "spawn bash -c 'mkdir -p ~/Pictures/Screenshots && FILE=~/Pictures/Screenshots/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png && driftwm msg screenshot window -o \"$FILE\" && wl-copy < \"$FILE\" && notify-send -t 2000 -a \"Screenshot\" \"Окно сохранено\" \"$FILE\"'"
+
+# Print — Мгновенный снимок экрана только в буфер обмена
+"Print" = "spawn bash -c 'grim - | wl-copy && notify-send -t 1500 -a \"Screenshot\" \"Экран скопирован в буфер\"'"
+
+# Буфер обмена
+"mod+v" = "spawn bash -c 'cliphist list | fuzzel -d | cliphist decode | wl-copy'"
+
+# Уведомления Mako
+"mod+n"       = "spawn makoctl restore"
+"mod+shift+n" = "spawn makoctl dismiss -a"
+
+# Обои (Случайные на Mod+A, меню выбора на Mod+W)
+"mod+a" = "spawn bash -c $HOME/.local/bin/wall-random"
+"mod+w" = "spawn bash -c $HOME/.local/bin/wall-picker"
