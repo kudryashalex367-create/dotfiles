@@ -208,6 +208,8 @@ hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout curre
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("bash -c 'cliphist list | fuzzel -d | cliphist decode | wl-copy'"))
 
 -- Обои
+-- Случайные обои на Mod+A
+hl.bind(mainMod .. " + A", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/wall-random'"))
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/wall-picker'"))
 
 -- Управление окнами

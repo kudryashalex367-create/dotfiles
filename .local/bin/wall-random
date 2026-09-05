@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+# Директория с обоями
+WALL_DIR="$HOME/wallpapers"
+
+# Проверяем, существует ли папка
+if [ ! -d "$WALL_DIR" ]; then
+    notify-send -u low "Wallpaper" "Папка $WALL_DIR не найдена!"
+    exit 1
+fi
+
+# Находим все картинки (jpg, png, webp) и выбираем одну случайную через shuf
+RANDOM_WALL=$(find "$WALL_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) | shuf -n 1)
+
+# Если ничего не нашли — выходим
+if [ -z "$RANDOM_WALL" ]; then
+    notify-send -u low "Wallpaper" "В папке $WALL_DIR нет изображений!"
+    exit 1
+fi
+
+# 1. Загружаем обои через awww с кинематографичной wipe-шторкой
+awww img "$RANDOM_WALL" --transition-type wipe --transition-fps 144 --transition-duration 1.2
+
+# 2. Синхронизируем с GNOME (на случай переключения в сессию №3)
+gsettings set org.gnome.desktop.background picture-uri "file://$RANDOM_WALL"
+gsettings set org.gnome.desktop.background picture-uri-dark "file://$RANDOM_WALL"
+
+# 3. Аккуратное стеклянное уведомление через Mako с именем обоев (исчезнет через 2.5 сек)
+WALL_NAME=$(basename "$RANDOM_WALL")
+notify-send -t 2500 -a "Wall-Random" "Обои обновлены ✨" "$WALL_NAME"

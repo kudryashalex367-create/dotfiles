@@ -146,6 +146,8 @@ binds {
     Mod+Shift+E { quit; }
     Mod+L { spawn "sh" "-c" "niri msg action switch-layout 0 && hyprlock"; }
     Mod+V { spawn "bash" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
+    // Случайные обои на Mod+A
+    Mod+A { spawn "bash" "-c" "$HOME/.local/bin/wall-random"; }
     Mod+W { spawn "bash" "-c" "$HOME/.local/bin/wall-picker"; }
 
     Mod+O { toggle-overview; }
