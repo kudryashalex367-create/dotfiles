@@ -53,7 +53,7 @@ hl.env("ALL_PROXY", "socks5://127.0.0.1:12334")
 -------------------
 hl.on("hyprland.start", function ()
     -- Утилиты и демоны
-    hl.exec_cmd("swaync")
+    hl.exec_cmd("mako")
     hl.exec_cmd("awww-daemon")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     hl.exec_cmd("wl-paste --watch cliphist store")
@@ -181,7 +181,7 @@ hl.animation({ leaf = "workspaces",   enabled = true, speed = 4.8, spring = "smo
 hl.animation({ leaf = "workspacesIn",  enabled = true, speed = 4.8, spring = "smoothSpring", style = "slide" })
 hl.animation({ leaf = "workspacesOut", enabled = true, speed = 4.8, spring = "smoothSpring", style = "slide" })
 
--- Слои (меню Fuzzel, SwayNC) и затухания
+-- Слои (меню Fuzzel) и затухания
 hl.animation({ leaf = "fade",       enabled = true, speed = 3.0, bezier = "smoothFade" })
 hl.animation({ leaf = "layers",     enabled = true, speed = 3.5, bezier = "niriEaseOut" })
 hl.animation({ leaf = "layersIn",   enabled = true, speed = 3.0, bezier = "niriEaseOut", style = "fade" })
@@ -194,6 +194,8 @@ hl.animation({ leaf = "border",     enabled = true, speed = 4.0, bezier = "smoot
 local mainMod = "SUPER"
 
 -- Основные программы и утилиты
+hl.bind(mainMod .. " + N",         hl.dsp.exec_cmd("makoctl restore"))
+hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("makoctl dismiss -a"))
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + D",      hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + Q",      hl.dsp.window.close())
@@ -204,9 +206,6 @@ hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout curre
 
 -- Буфер обмена (fuzzel + cliphist)
 hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("bash -c 'cliphist list | fuzzel -d | cliphist decode | wl-copy'"))
-
--- SwayNC панель с обновлением даты
-hl.bind(mainMod .. " + N", hl.dsp.exec_cmd("sh -c 'CUR_TIME=$(date +\"%H:%M  ·  %A, %d %b\") && sed -i \"s/\\\"text\\\": \\\".*\\\"/\\\"text\\\": \\\"$CUR_TIME\\\"/\" ~/.config/swaync/config.json && swaync-client -R && swaync-client -t -sw'"))
 
 -- Обои
 hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/wall-picker'"))
@@ -281,7 +280,7 @@ hl.window_rule({
 hl.layer_rule({
     name  = "blur-launcher",
     match = {
-        namespace = "^(launcher|fuzzel)$",
+        namespace = "^(launcher|fuzzel|mako)$",
     },
     blur = true,
 })

@@ -115,7 +115,7 @@ window-rule {
 
 prefer-no-csd
 
-spawn-at-startup "swaync"
+spawn-at-startup "mako"
 spawn-at-startup "awww-daemon"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
@@ -136,14 +136,16 @@ spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-size" "
 screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
 
 binds {
+    // Mod+N — восстановить последнее закрытое уведомление
+    Mod+N { spawn "makoctl" "restore"; }
+    // Mod+Shift+N — закрыть все уведомления на экране
+    Mod+Shift+N { spawn "makoctl" "dismiss" "-a"; }
     Mod+Return { spawn "kitty"; }
     Mod+D { spawn "fuzzel"; }
     Mod+Q { close-window; }
     Mod+Shift+E { quit; }
     Mod+L { spawn "sh" "-c" "niri msg action switch-layout 0 && hyprlock"; }
     Mod+V { spawn "bash" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
-    Mod+N { spawn "sh" "-c" "CUR_TIME=$(date +'%H:%M  ·  %A, %d %b') && sed -i \"s/\\\"text\\\": \\\".*\\\"/\\\"text\\\": \\\"$CUR_TIME\\\"/\" ~/.config/swaync/config.json && swaync-client -R && swaync-client -t -sw"; }
-    // Замени строку Mod+W на эту:
     Mod+W { spawn "bash" "-c" "$HOME/.local/bin/wall-picker"; }
 
     Mod+O { toggle-overview; }
@@ -209,7 +211,7 @@ window-rule {
 }
 
 layer-rule {
-    match namespace="^(launcher|fuzzel)$"
+    match namespace="^(launcher|fuzzel|mako)$"
     background-effect {
         blur true 
         xray false

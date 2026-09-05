@@ -1,0 +1,18 @@
+# --- Mako Obsidian Matte Config ---
+font=JetBrainsMono Nerd Font Bold 11
+background-color=#09090bcc
+text-color=#ffffff
+border-color=#ffffff
+border-size=2
+border-radius=16
+padding=14,18
+margin=16
+default-timeout=5000
+layer=overlay
+anchor=top-right
+
+# Стили для срочных уведомлений (Urgent)
+[urgency=high]
+border-color=#f38ba8
+text-color=#f38ba8
+default-timeout=0
