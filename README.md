@@ -136,6 +136,7 @@ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:
 
 ```bash
 git clone --bare https://github.com/kudryashalex367-create/dotfiles.git $HOME/.cfg
+git clone https://github.com/kudryashalex367-create/wallpapers.git ~/wallpapers
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 ```
 
