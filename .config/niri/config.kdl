@@ -213,7 +213,7 @@ window-rule {
 }
 
 layer-rule {
-    match namespace="^(launcher|fuzzel|mako)$"
+    match namespace="^(launcher|fuzzel|notifications)$"
     // Говорим Niri обрезать шейдер блюра строго по форме 16px скругления:
     geometry-corner-radius 16
     background-effect {

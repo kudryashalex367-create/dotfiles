@@ -287,3 +287,13 @@ hl.layer_rule({
     blur         = true,
     ignore_alpha = 0.5,
 })
+
+-- Эффект размытия для уведомлений Mako (настоящий неймспейс: notifications)
+hl.layer_rule({
+    name         = "blur-notifications",
+    match        = {
+        namespace = "^(notifications)$",
+    },
+    blur         = true,
+    ignore_alpha = 0.5,
+})
