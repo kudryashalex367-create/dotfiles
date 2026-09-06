@@ -282,7 +282,8 @@ hl.window_rule({
 hl.layer_rule({
     name  = "blur-launcher",
     match = {
-        namespace = "^(launcher|fuzzel|mako)$",
+        namespace = "^(launcher|fuzzel)$",
     },
-    blur = true,
+    blur         = true,
+    ignore_alpha = 0.5,
 })

@@ -214,6 +214,8 @@ window-rule {
 
 layer-rule {
     match namespace="^(launcher|fuzzel|mako)$"
+    // Говорим Niri обрезать шейдер блюра строго по форме 16px скругления:
+    geometry-corner-radius 16
     background-effect {
         blur true 
         xray false
