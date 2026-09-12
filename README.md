@@ -50,7 +50,7 @@
 ### 🚀 Меню приложений Fuzzel
 
 
-<img width="1322" height="759" alt="image" src="https://github.com/user-attachments/assets/68476370-ff93-418a-9c68-d41634494f43" />
+<img width="1235" height="740" alt="image" src="https://github.com/user-attachments/assets/e8c4c79a-82ea-4990-9180-997cfcc3780b" />
 
 ---
 
