@@ -1,12 +1,12 @@
 environment {
     XCURSOR_THEME "Bibata-Modern-Ice"
     XCURSOR_SIZE "24"
-    http_proxy "http://127.0.0.1:12334"
-    https_proxy "http://127.0.0.1:12334"
-    all_proxy "socks5://127.0.0.1:12334"
-    HTTP_PROXY "http://127.0.0.1:12334"
-    HTTPS_PROXY "http://127.0.0.1:12334"
-    ALL_PROXY "socks5://127.0.0.1:12334"
+    http_proxy "http://127.0.0.1:7890"
+    https_proxy "http://127.0.0.1:7890"
+    all_proxy "socks5://127.0.0.1:7890"
+    HTTP_PROXY "http://127.0.0.1:7890"
+    HTTPS_PROXY "http://127.0.0.1:7890"
+    ALL_PROXY "socks5://127.0.0.1:7890"
 }
 
 cursor {
@@ -123,11 +123,11 @@ spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets"
 
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy" "mode" "manual"
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.http" "host" "127.0.0.1"
-spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.http" "port" "12334"
+spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.http" "port"  "7890"
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.https" "host" "127.0.0.1"
-spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.https" "port" "12334"
+spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.https" "port" "7890"
 spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.socks" "host" "127.0.0.1"
-spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.socks" "port" "12334"
+spawn-at-startup "gsettings" "set" "org.gnome.system.proxy.socks" "port" "7890"
 spawn-at-startup "xwayland-satellite"
 
 spawn-at-startup "gsettings" "set" "org.gnome.desktop.interface" "cursor-theme" "Bibata-Modern-Ice"
