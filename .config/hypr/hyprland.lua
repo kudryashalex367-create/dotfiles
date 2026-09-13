@@ -60,7 +60,7 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
 
     -- Настройки прокси через GSettings
-    hl.exec_cmd("gsettings set org.gnome.sysstem.proxy mode 'manual'")
+    hl.exec_cmd("gsettings set org.gnome.system.proxy mode 'manual'")
     hl.exec_cmd("gsettings set org.gnome.system.proxy.http host '127.0.0.1'")
     hl.exec_cmd("gsettings set org.gnome.system.proxy.http port 7890")
     hl.exec_cmd("gsettings set org.gnome.system.proxy.https host '127.0.0.1'")
