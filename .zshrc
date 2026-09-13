@@ -19,7 +19,17 @@ source $ZSH/oh-my-zsh.sh
 # ── Useful Aliases ───────────────────────────────────────────────
 # Скачивание видео/аудио через yt-dlp
 alias y='yt-dlp -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/best" --merge-output-format mp4'
-alias ya='yt-dlp -x --audio-format mp3 --audio-quality 0'
+
+ya() {
+    yt-dlp \
+        -f 'ba[ext=opus]/ba[ext=m4a]/ba' \
+        --embed-thumbnail \
+        --add-metadata \
+        --continue \
+        --no-overwrites \
+        --ignore-errors \
+        "$@"
+}
 
 # Установка черно-белых обоев одной командой (через awww)
 alias set-wall='awww img'
