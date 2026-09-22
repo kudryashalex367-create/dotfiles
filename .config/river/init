@@ -106,9 +106,7 @@ export http_proxy="http://127.0.0.1:7890"
 export https_proxy="http://127.0.0.1:7890"
 export ftp_proxy="http://127.0.0.1:7890"
 export rsync_proxy="http://127.0.0.1:7890"
-export http_proxy="socks5://127.0.0.1:7890"
-export https_proxy="socks5://127.0.0.1:7890"
-
+export all_proxy="socks5://127.0.0.1:7890"
 # Исключения для локальной сети
 export no_proxy="localhost,127.0.0.1,localaddress,.localdomain.com"
 
