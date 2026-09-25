@@ -1,10 +1,10 @@
 bibata-cursor-theme
 cbonsai
-flclash-bin
 gnome-rounded-blur
 gnome-shell-extension-blur-my-shell
 gnome-shell-extension-compiz-windows-effect-git
 gnome-shell-extension-dash-to-dock
+happ-desktop-bin
 lavat-git
 tty-clock
 vesktop-bin

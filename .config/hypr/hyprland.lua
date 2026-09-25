@@ -40,12 +40,12 @@ hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Ice")
 hl.env("HYPRCURSOR_SIZE", "24")
 
 -- Прокси
-hl.env("http_proxy", "http://127.0.0.1:7890")
-hl.env("https_proxy", "http://127.0.0.1:7890")
-hl.env("all_proxy", "socks5://127.0.0.1:7890")
-hl.env("HTTP_PROXY", "http://127.0.0.1:7890")
-hl.env("HTTPS_PROXY", "http://127.0.0.1:7890")
-hl.env("ALL_PROXY", "socks5://127.0.0.1:7890")
+hl.env("http_proxy", "http://127.0.0.1:10809")
+hl.env("https_proxy", "http://127.0.0.1:10809")
+hl.env("all_proxy", "socks5://127.0.0.1:10808")
+hl.env("HTTP_PROXY", "http://127.0.0.1:10809")
+hl.env("HTTPS_PROXY", "http://127.0.0.1:10809")
+hl.env("ALL_PROXY", "socks5://127.0.0.1:10808")
 
 
 -------------------
@@ -62,11 +62,11 @@ hl.on("hyprland.start", function ()
     -- Настройки прокси через GSettings
     hl.exec_cmd("gsettings set org.gnome.system.proxy mode 'manual'")
     hl.exec_cmd("gsettings set org.gnome.system.proxy.http host '127.0.0.1'")
-    hl.exec_cmd("gsettings set org.gnome.system.proxy.http port 7890")
+    hl.exec_cmd("gsettings set org.gnome.system.proxy.http port 10809")
     hl.exec_cmd("gsettings set org.gnome.system.proxy.https host '127.0.0.1'")
-    hl.exec_cmd("gsettings set org.gnome.system.proxy.https port 7890")
+    hl.exec_cmd("gsettings set org.gnome.system.proxy.https port 10809")
     hl.exec_cmd("gsettings set org.gnome.system.proxy.socks host '127.0.0.1'")
-    hl.exec_cmd("gsettings set org.gnome.system.proxy.socks port 7890")
+    hl.exec_cmd("gsettings set org.gnome.system.proxy.socks port 10808")
 
     -- Настройки курсора
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice'")
