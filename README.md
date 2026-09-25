@@ -156,11 +156,7 @@ config config --local status.showUntrackedFiles no
 
 ### Шаг 1. Установка официальных пакетов Arch Linux (pacman)
 
-<<<<<<< HEAD
 Восстанавливаем ядро linux-zen, Niri, GNOME, драйверы, шрифты и системные утилиты:
-=======
-Восстанавливаем ядро Linux-zen, Niri, GNOME, драйверы, шрифты и системные утилиты:
->>>>>>> 03005bcce1df984983fc93da2d93aa5ba5592040
 
 ```bash
 sudo pacman -S --needed - < ~/.config/pkglist_repo.txt
