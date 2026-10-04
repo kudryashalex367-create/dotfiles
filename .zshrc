@@ -16,31 +16,80 @@ source $ZSH/oh-my-zsh.sh
 
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# ── Useful Aliases ───────────────────────────────────────────────
-# Скачивание видео/аудио через yt-dlp
-alias y='yt-dlp -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/best" --merge-output-format mp4'
+# Path
+export PATH="$PATH:$HOME/.local/bin"
 
+# ── Useful Aliases ───────────────────────────────────────────────
+# Скачивание видео через yt-dlp
+alias y='yt-dlp -f "bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]/best" --merge-output-format mp4 -o "%(title)s.%(ext)s"'
+
+# Скачивание аудио (SponsorBlock вырезает рекламу/интро/аутро)
 ya() {
     yt-dlp \
         -f 'ba[ext=opus]/ba[ext=m4a]/ba' \
+        --sponsorblock-remove sponsor,selfpromo,interaction,intro,outro,music_offtopic \
         --embed-thumbnail \
         --add-metadata \
         --continue \
         --no-overwrites \
         --ignore-errors \
+        -P "$HOME/Music" \
+        -o "%(title)s.%(ext)s" \
         "$@"
 }
 
+# Аниме по сериям: nya [номер_первой_серии] url1 url2 ...
+nya() {
+    local current_ep=1
+    if [[ "$1" =~ ^[0-9]+$ ]]; then
+        current_ep="$1"
+        shift
+    fi
+
+    for url in "$@"; do
+        echo -e "\n==> Скачивание серии $current_ep..."
+
+        yt-dlp -f "bv*+ba/best" \
+          --merge-output-format mkv \
+          --embed-subs --embed-thumbnail --embed-chapters --add-metadata \
+          --sub-langs "ru.*,en.*,all" \
+          --fragment-retries infinite --concurrent-fragments 5 --legacy-server-connect \
+          --downloader aria2c \
+          --downloader-args "aria2c:--console-log-level=warn --summary-interval=0" \
+          -P "$HOME/Videos/Anime" \
+          -o "Серия_${current_ep}.%(ext)s" \
+          "$url"
+
+        ((current_ep++))
+    done
+
+    echo -e "\n==> Готово."
+}
+
+# Обновление системы (аналог update с телефона)
+alias update='sudo pacman -Syu'
+
 # Установка черно-белых обоев одной командой (через awww)
 alias set-wall='awww img'
+
 # ── Aesthetic Desk Launchers ─────────────────────────────────────
 alias matrix='cmatrix -b -C white -u 3'
 alias lava='lavat -c white -s 2 -R 1'
 alias zen='cbonsai -l -i -w 3 -m "zev1ce"'
 alias clock='tty-clock -s -c -b -C 7'
 
-# Git Bare Dotfiles Manager
+# ── Git Bare Dotfiles Manager ────────────────────────────────────
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+# Аналоги tpush/tpull с телефона. add -u подхватывает только уже отслеживаемые файлы
+cpush() {
+  config add -u
+  local msg="${1:-Update dotfiles $(date +'%Y-%m-%d %H:%M')}"
+  config commit -m "$msg" && config push -u origin main
+}
+
+cpull() {
+  config pull origin main --no-rebase && exec zsh
+}
+
 alias phone='adb forward tcp:8022 tcp:8022 && ssh -p 8022 localhost'
-# Local Bin & Pipx
-export PATH="$PATH:$HOME/.local/bin"
