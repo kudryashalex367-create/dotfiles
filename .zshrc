@@ -66,8 +66,7 @@ nya() {
     echo -e "\n==> Готово."
 }
 
-# Обновление системы (аналог update с телефона)
-alias update='sudo pacman -Syu'
+alias update='yay -Syu'
 
 # Установка черно-белых обоев одной командой (через awww)
 alias set-wall='awww img'
@@ -81,7 +80,6 @@ alias clock='tty-clock -s -c -b -C 7'
 # ── Git Bare Dotfiles Manager ────────────────────────────────────
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 
-# Аналоги tpush/tpull с телефона. add -u подхватывает только уже отслеживаемые файлы
 cpush() {
   config add -u
   local msg="${1:-Update dotfiles $(date +'%Y-%m-%d %H:%M')}"
