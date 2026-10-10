@@ -63,6 +63,7 @@ steam
 sudo
 swaybg
 tealdeer
+teamspeak3
 telegram-desktop
 ttf-jetbrains-mono-nerd
 ttf-nerd-fonts-symbols
