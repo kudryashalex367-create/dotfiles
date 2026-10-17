@@ -112,6 +112,7 @@ hl.config({
 
         border_size = 2,
 
+        -- Однотонная белая рамка активного окна
         col = {
             active_border   = "rgba(ffffffff)",
             inactive_border = "rgba(27272aff)",
@@ -127,17 +128,33 @@ hl.config({
         rounding_power = 2,
 
         active_opacity   = 1.0,
-        inactive_opacity = 1.0,
+        inactive_opacity = 0.95,
 
+        -- Затемнение неактивных окон (фокус на активном)
+        dim_inactive = true,
+        dim_strength = 0.08,
+        dim_special  = 0.3,
+
+        -- Мягкая тень под окнами для объёма
+        shadow = {
+            enabled      = true,
+            range        = 20,
+            render_power = 3,
+            color        = "rgba(1a1a1eaa)",
+        },
+
+        -- Blur включён глобально. Hyprland сам НЕ размывает фон под
+        -- непрозрачными окнами, поэтому блюр реально виден только у
+        -- слоёв (fuzzel/mako). Отдельные правила для окон не нужны.
         blur = {
             enabled           = true,
-            size              = 6,
+            size              = 8,
             passes            = 3,
-            noise             = 0.015,
-            contrast          = 1.05,
-            brightness        = 0.95,
-            vibrancy          = 0.25,
-            vibrancy_darkness = 0.15,
+            noise             = 0.02,
+            contrast          = 1.1,
+            brightness        = 0.9,
+            vibrancy          = 0.3,
+            vibrancy_darkness = 0.2,
             popups            = true,
             ignore_opacity    = true,
             new_optimizations = true,
@@ -165,6 +182,9 @@ hl.curve("smoothSpring", {
 hl.curve("niriEaseOut", { type = "bezier", points = { {0.16, 1},   {0.3, 1} } })
 hl.curve("smoothFade",  { type = "bezier", points = { {0.25, 0.1}, {0.25, 1} } })
 
+-- 3. Лёгкий overshoot для «живого» открытия окон
+hl.curve("popIn", { type = "bezier", points = { {0.05, 0.9}, {0.1, 1.05} } })
+
 -- Глобальная кривая
 hl.animation({ leaf = "global", enabled = true, speed = 4.0, bezier = "niriEaseOut" })
 
@@ -173,7 +193,7 @@ hl.animation({ leaf = "windows",     enabled = true, speed = 5.0, spring = "smoo
 hl.animation({ leaf = "windowsMove", enabled = true, speed = 5.0, spring = "smoothSpring" })
 
 -- Открытие и закрытие окон (аккуратный быстрый fade + мягкий зум, без резкого вылета)
-hl.animation({ leaf = "windowsIn",  enabled = true, speed = 3.2, bezier = "niriEaseOut", style = "popin 92%" })
+hl.animation({ leaf = "windowsIn",  enabled = true, speed = 3.2, bezier = "popIn",       style = "popin 90%" })
 hl.animation({ leaf = "windowsOut", enabled = true, speed = 2.4, bezier = "niriEaseOut", style = "popin 94%" })
 
 -- Плавное переключение рабочих столов (скольжение без тряски)
@@ -184,7 +204,7 @@ hl.animation({ leaf = "workspacesOut", enabled = true, speed = 4.8, spring = "sm
 -- Слои (меню Fuzzel) и затухания
 hl.animation({ leaf = "fade",       enabled = true, speed = 3.0, bezier = "smoothFade" })
 hl.animation({ leaf = "layers",     enabled = true, speed = 3.5, bezier = "niriEaseOut" })
-hl.animation({ leaf = "layersIn",   enabled = true, speed = 3.0, bezier = "niriEaseOut", style = "fade" })
+hl.animation({ leaf = "layersIn",   enabled = true, speed = 3.0, bezier = "popIn",       style = "popin 95%" })
 hl.animation({ leaf = "layersOut",  enabled = true, speed = 2.0, bezier = "smoothFade",  style = "fade" })
 hl.animation({ leaf = "border",     enabled = true, speed = 4.0, bezier = "smoothFade" })
 
@@ -204,8 +224,12 @@ hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exit())
 -- Блокировка экрана (с переключением на английский)
 hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout current 0 && hyprlock'"))
 
--- Буфер обмена (fuzzel + cliphist)
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("bash -c 'cliphist list | fuzzel -d | cliphist decode | wl-copy'"))
+-- Плавающее / плиточное окно (через нативный диспетчер Hyprland)
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("hyprctl dispatch togglefloating"))
+
+-- Шпаргалка по хоткеям (работает при любой раскладке US/RU)
+hl.bind(mainMod .. " + slash",   hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/keybinds'"))
+hl.bind(mainMod .. " + code:61", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/keybinds'"))
 
 -- Обои
 -- Случайные обои на Mod+A
@@ -239,6 +263,10 @@ end
 -- Перемещение между соседними воркспейсами по вертикали (как в Niri Mod+Up/Down)
 hl.bind(mainMod .. " + Page_Up",   hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mainMod .. " + Page_Down", hl.dsp.focus({ workspace = "e+1" }))
+
+-- Переключение рабочих столов колесом мыши (SUPER + scroll)
+hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 
 -- Мышь: перемещение и изменение размера окон
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
