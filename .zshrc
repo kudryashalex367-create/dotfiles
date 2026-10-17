@@ -91,3 +91,35 @@ cpull() {
 }
 
 alias phone='adb forward tcp:8022 tcp:8022 && ssh -p 8022 localhost'
+
+# --- Aider Configuration ---
+# 1. Безопасная загрузка приватных ключей (если файл существует)
+if [[ -f "$HOME/.zshrc_secrets" ]]; then
+    source "$HOME/.zshrc_secrets"
+fi
+
+# 2. Умная функция для запуска Aider в контексте дотфайлов
+aider-dotfiles() {
+    local worktree_dir="$HOME/dotfiles-worktree"
+
+    # Проверка наличия ключа
+    if [[ -z "$OPENAI_API_KEY" ]]; then
+        echo "Ошибка: OPENAI_API_KEY не найден. Проверь наличие файла ~/.zshrc_secrets"
+        return 1
+    fi
+
+    # Автоматическое создание worktree, если он был удален или отсутствует
+    if [[ ! -d "$worktree_dir" ]]; then
+        echo "Создаю git worktree для дотфайлов..."
+        git --git-dir="$HOME/.cfg/" --work-tree="$HOME" worktree add "$worktree_dir"
+    fi
+
+    # Переход в директорию и запуск Aider
+    # "$@" позволяет передавать дополнительные аргументы (например, конкретные файлы)
+    echo "Запускаю Aider в $worktree_dir..."
+    cd "$worktree_dir" || return 1
+    
+    aider --model openai/deepseek-v4.1-flash \
+          --openai-api-base https://api.aitunnel.ru/v1 \
+          "$@"
+}
