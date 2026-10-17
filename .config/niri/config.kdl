@@ -24,7 +24,9 @@ output "eDP-1" {
     mode "1920x1080@144.000"
 }
 
-// Мягкий блюр с лёгкой вибрацией (аналог hyprland vibrancy)
+// Мягкий блюр с лёгкой вибрацией (аналог hyprland vibrancy).
+// В Niri нет отдельных contrast/brightness/vibrancy — их роль играет
+// saturation (1.25 ≈ vibrancy 0.3 из Hyprland).
 blur {
     passes 3
     offset 4.2
@@ -99,14 +101,17 @@ animations {
         spring damping-ratio=1.0 stiffness=500 epsilon=0.0001
     }
 
-    // Открытие/закрытие окон — быстрый fade + мягкий зум
+    // Открытие/закрытие окон — быстрый fade + мягкий зум.
+    // Кривые перенесены из Hyprland (popIn / niriEaseOut).
+    // popIn: лёгкий overshoot для «живого» открытия
     window-open {
         duration-ms 160
-        curve "ease-out-expo"
+        curve "cubic-bezier" 0.05 0.9 0.1 1.05
     }
+    // niriEaseOut: мягкое кинематографичное закрытие
     window-close {
         duration-ms 130
-        curve "ease-out-quad"
+        curve "cubic-bezier" 0.16 1 0.3 1
     }
     screenshot-ui-open {
         duration-ms 160
@@ -114,7 +119,13 @@ animations {
     }
 }
 
-// Общие правила для всех окон: скругление, тень, обрезка
+// Общие правила для всех окон: скругление, тень, обрезка.
+//
+// ВАЖНО: Niri НЕ поддерживает dim_inactive / inactive_opacity
+// (затемнение и разную прозрачность несфокусированных окон).
+// Это известное ограничение — нативно такой фичи нет.
+// Единственное, что есть — статичный `opacity` в window-rule,
+// но он не зависит от фокуса, поэтому здесь не используется.
 window-rule {
     geometry-corner-radius 16
     clip-to-geometry true
@@ -123,7 +134,8 @@ window-rule {
         softness 30
         spread 5
         offset x=0 y=5
-        color "#000000aa"
+        // Цвет тени приведён к Hyprland: rgba(1a1a1eaa)
+        color "#1a1a1eaa"
     }
     background-effect {
         blur true
