@@ -109,6 +109,7 @@ aider-dotfiles() {
     (
         cd "$HOME" || exit 1
         aider --no-git \
+              --chat-mode ask \
               --model openai/deepseek-v4.1-flash \
               --openai-api-base https://api.aitunnel.ru/v1 \
               --no-show-model-warnings \
