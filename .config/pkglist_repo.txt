@@ -60,7 +60,6 @@ ripgrep
 slurp
 steam
 sudo
-swaybg
 tealdeer
 teamspeak3
 telegram-desktop
