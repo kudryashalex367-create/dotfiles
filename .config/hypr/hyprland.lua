@@ -228,7 +228,6 @@ hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout curre
 hl.bind(mainMod .. " + V", hl.dsp.window.float())
 
 -- Шпаргалка по хоткеям (работает при любой раскладке US/RU)
-hl.bind(mainMod .. " + slash",   hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/keybinds'"))
 hl.bind(mainMod .. " + code:61", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/keybinds'"))
 
 -- Обои
@@ -284,7 +283,6 @@ local home = os.getenv("HOME")
 local ss_cmd = home .. "/.local/bin/screenshot"
 
 -- Область (Ctrl + Shift + S, работает при любой раскладке US/RU)
-hl.bind("CTRL + SHIFT + S", hl.dsp.exec_cmd(ss_cmd .. " area"))
 hl.bind("CTRL + SHIFT + code:39", hl.dsp.exec_cmd(ss_cmd .. " area"))
 
 -- Полный экран (Ctrl + Print)
