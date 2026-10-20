@@ -94,13 +94,6 @@ hl.config({
     },
 })
 
--- Жесты тачпада
-hl.gesture({
-    fingers   = 3,
-    direction = "horizontal",
-    action    = "workspace",
-})
-
 
 -----------------------
 ---- LOOK AND FEEL ----
@@ -118,9 +111,12 @@ hl.config({
             inactive_border = "rgba(27272aff)",
         },
 
-        resize_on_border = false,
-        allow_tearing    = false,
-        layout           = "dwindle",
+        -- Ресайз за границу окна + расширенная зона захвата для удобства мышью
+        resize_on_border        = true,
+        extend_border_grab_area = 15,
+
+        allow_tearing = false, -- Глобально выключено; для игр включается через window_rule
+        layout        = "dwindle",
     },
 
     decoration = {
@@ -145,7 +141,8 @@ hl.config({
 
         -- Blur включён глобально. Hyprland сам НЕ размывает фон под
         -- непрозрачными окнами, поэтому блюр реально виден только у
-        -- слоёв (fuzzel/mako). Отдельные правила для окон не нужны.
+        -- слоёв (fuzzel/mako). ignore_opacity = false — не тратим GPU
+        -- на размытие под полностью непрозрачными окнами.
         blur = {
             enabled           = true,
             size              = 8,
@@ -156,7 +153,7 @@ hl.config({
             vibrancy          = 0.3,
             vibrancy_darkness = 0.2,
             popups            = true,
-            ignore_opacity    = true,
+            ignore_opacity    = false,
             new_optimizations = true,
         },
     },
@@ -200,6 +197,9 @@ hl.animation({ leaf = "windowsOut", enabled = true, speed = 2.4, bezier = "niriE
 hl.animation({ leaf = "workspaces",   enabled = true, speed = 4.8, spring = "smoothSpring", style = "slide" })
 hl.animation({ leaf = "workspacesIn",  enabled = true, speed = 4.8, spring = "smoothSpring", style = "slide" })
 hl.animation({ leaf = "workspacesOut", enabled = true, speed = 4.8, spring = "smoothSpring", style = "slide" })
+
+-- Special workspace (scratchpad) — плавное появление/скрытие
+hl.animation({ leaf = "specialWorkspace", enabled = true, speed = 4.0, spring = "smoothSpring", style = "slidefade" })
 
 -- Слои (меню Fuzzel) и затухания
 hl.animation({ leaf = "fade",       enabled = true, speed = 3.0, bezier = "smoothFade" })
@@ -302,6 +302,24 @@ hl.window_rule({
         title = "^(Friends List.*)$",
     },
     float = true,
+})
+
+-- Игры: включаем tearing только для игровых окон (глобально allow_tearing = false)
+hl.window_rule({
+    name  = "games-tearing",
+    match = {
+        class = "^(steam_app_.*|.*[Gg]ame.*)$",
+    },
+    immediate = true,
+})
+
+-- Страховка: kitty всегда открывается в обычном режиме, не fullscreen
+hl.window_rule({
+    name  = "kitty-no-fullscreen",
+    match = {
+        class = "^(kitty)$",
+    },
+    fullscreen = false,
 })
 
 -- Эффект размытия для лончера Fuzzel / Launcher

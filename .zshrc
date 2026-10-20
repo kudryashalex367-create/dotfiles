@@ -111,7 +111,6 @@ aider-dotfiles() {
         aider --no-git \
               --chat-mode ask \
               --model openai/deepseek-v4.1-flash \
-              --edit-format diff \
               --openai-api-base https://api.aitunnel.ru/v1 \
               --no-show-model-warnings \
               --chat-history-file "$HOME/.cache/aider/chat.md" \
