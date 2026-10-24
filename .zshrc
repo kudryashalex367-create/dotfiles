@@ -75,7 +75,7 @@ alias set-wall='awww img'
 alias matrix='cmatrix -b -C magenta -u 3'
 alias lava='lavat -c magenta -s 2 -R 1'
 alias zen='cbonsai -l -i -w 3 -m "zev1ce"'
-alias clock='tty-clock -s -c -b -C 5'
+alias clock='tty-clock -s -c -b -C 2'
 
 # ── Git Bare Dotfiles Manager ────────────────────────────────────
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
