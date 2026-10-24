@@ -72,10 +72,10 @@ alias update='yay -Syu'
 alias set-wall='awww img'
 
 # ── Aesthetic Desk Launchers ─────────────────────────────────────
-alias matrix='cmatrix -b -C white -u 3'
-alias lava='lavat -c white -s 2 -R 1'
+alias matrix='cmatrix -b -C magenta -u 3'
+alias lava='lavat -c magenta -s 2 -R 1'
 alias zen='cbonsai -l -i -w 3 -m "zev1ce"'
-alias clock='tty-clock -s -c -b -C 7'
+alias clock='tty-clock -s -c -b -C 5'
 
 # ── Git Bare Dotfiles Manager ────────────────────────────────────
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
@@ -109,7 +109,7 @@ aider-dotfiles() {
     (
         cd "$HOME" || exit 1
         aider --no-git \
-              --chat-mode ask \
+              --edit-format diff \
               --model openai/deepseek-v4.1-flash-1017 \
               --openai-api-base https://api.aitunnel.ru/v1 \
               --no-show-model-warnings \

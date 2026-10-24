@@ -12,8 +12,8 @@
     "display": {
         "separator": "  ❯ ",
         "color": {
-            "keys": "#71717a",
-            "title": "#ffffff"
+            "keys": "#a78bfa",
+            "title": "#c4b5fd"
         }
     },
     "modules": [

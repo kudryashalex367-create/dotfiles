@@ -46,6 +46,8 @@ hl.env("all_proxy", "socks5://127.0.0.1:10808")
 hl.env("HTTP_PROXY", "http://127.0.0.1:10809")
 hl.env("HTTPS_PROXY", "http://127.0.0.1:10809")
 hl.env("ALL_PROXY", "socks5://127.0.0.1:10808")
+hl.env("no_proxy", "localhost,127.0.0.1,::1,192.168.0.0/16")
+hl.env("NO_PROXY", "localhost,127.0.0.1,::1,192.168.0.0/16")
 
 
 -------------------
@@ -105,10 +107,10 @@ hl.config({
 
         border_size = 2,
 
-        -- Однотонная белая рамка активного окна
+        -- Однотонная фиолетовая рамка активного окна
         col = {
-            active_border   = "rgba(ffffffff)",
-            inactive_border = "rgba(27272aff)",
+            active_border   = "rgba(a78bfaff)",
+            inactive_border = "rgba(2a2140ff)",
         },
 
         -- Ресайз за границу окна + расширенная зона захвата для удобства мышью
@@ -136,7 +138,7 @@ hl.config({
             enabled      = true,
             range        = 20,
             render_power = 3,
-            color        = "rgba(1a1a1eaa)",
+            color        = "rgba(15111fcc)",
         },
 
         -- Blur включён глобально. Hyprland сам НЕ размывает фон под

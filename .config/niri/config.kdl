@@ -7,6 +7,8 @@ environment {
     HTTP_PROXY "http://127.0.0.1:10809"
     HTTPS_PROXY "http://127.0.0.1:10809"
     ALL_PROXY "socks5://127.0.0.1:10808"
+    no_proxy "localhost,127.0.0.1,::1,192.168.0.0/16"
+    NO_PROXY "localhost,127.0.0.1,::1,192.168.0.0/16"
 }
 
 cursor {
@@ -32,6 +34,10 @@ blur {
     offset 4.2
     noise 0.02
     saturation 1.25
+}
+
+overview {
+    backdrop-color "#0b0912"
 }
 
 input {
@@ -64,9 +70,10 @@ layout {
     focus-ring { off; }
     border {
         width 2
-        active-color "#ffffff"
-        inactive-color "#27272a"
+        active-gradient from="#a78bfa" to="#e879f9" angle=45
+        inactive-color "#2a2140"
     }
+    insert-hint { color "#a78bfa80"; }
     struts {
         top 0
         bottom 0
@@ -121,11 +128,10 @@ animations {
 
 // Общие правила для всех окон: скругление, тень, обрезка.
 //
-// ВАЖНО: Niri НЕ поддерживает dim_inactive / inactive_opacity
-// (затемнение и разную прозрачность несфокусированных окон).
-// Это известное ограничение — нативно такой фичи нет.
-// Единственное, что есть — статичный `opacity` в window-rule,
-// но он не зависит от фокуса, поэтому здесь не используется.
+// Dim (затемнения) у niri нет, но прозрачность по `is-active=false`
+// есть — используем её. Матчим именно `is-active`, а не `is-focused`:
+// при открытом лончере (layer-shell) окна перестают матчиться
+// по `is-focused`, и всё бы просело.
 window-rule {
     geometry-corner-radius 16
     clip-to-geometry true
@@ -134,13 +140,20 @@ window-rule {
         softness 30
         spread 5
         offset x=0 y=5
-        // Цвет тени приведён к Hyprland: rgba(1a1a1eaa)
-        color "#1a1a1eaa"
+        // Мягкая тёмная тень без акцентного свечения
+        color "#15111fcc"
+        inactive-color "#00000060"
     }
     background-effect {
         blur true
         xray true
     }
+}
+
+// Неактивные окна чуть приглушены
+window-rule {
+    match is-active=false
+    opacity 0.95
 }
 
 // Окно списка друзей Steam — плавающее

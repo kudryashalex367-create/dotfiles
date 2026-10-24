@@ -1,8 +1,8 @@
-# --- Mako Obsidian Matte Config ---
+# --- Mako Obsidian Violet Config ---
 font=JetBrainsMono Nerd Font Bold 11
-background-color=#09090bcc
+background-color=#0b0912cc
 text-color=#ffffff
-border-color=#ffffff
+border-color=#a78bfa
 border-size=2
 border-radius=16
 padding=14,18
