@@ -44,12 +44,12 @@
 ### 💻 Kitty
 
 
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/39362c46-1053-49dc-9835-1cf21e67c367" />
+<img width="1920" height="1080" alt="изображение" src="https://github.com/user-attachments/assets/79303cfd-0ec7-40ee-83a3-549e05d39df0" />
 
 ### 🚀 Меню приложений Fuzzel
 
 
-<img width="1235" height="740" alt="image" src="https://github.com/user-attachments/assets/e8c4c79a-82ea-4990-9180-997cfcc3780b" />
+<img width="1920" height="1080" alt="изображение" src="https://github.com/user-attachments/assets/cbec7f61-b193-4d15-be34-c2ce5627a464" />
 
 ---
 
