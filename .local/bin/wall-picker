@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+
+WALL_DIR="$HOME/wallpapers"
+
+# Проверяем наличие картинок
+IMAGES=$(find "$WALL_DIR" -maxdepth 1 -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.webp" \) -exec basename {} \; | sort)
+
+if [ -z "$IMAGES" ]; then
+    notify-send "Обои" "Папка ~/wallpapers пуста. Закиньте туда картинки!"
+    exit 0
+fi
+
+# Вызываем Fuzzel в режиме dmenu
+SELECTED=$(echo "$IMAGES" | fuzzel -d -p "󰸉 Обои ❯ " -w 35 -l 10)
+
+# Если нажали Escape — выходим
+[ -z "$SELECTED" ] && exit 0
+
+FULL_PATH="$WALL_DIR/$SELECTED"
+
+# Запуск демона awww, если не запущен
+if ! pgrep -x "awww-daemon" > /dev/null; then
+    awww-daemon &
+    sleep 0.15
+fi
+
+# Плавная смена обоев шторкой на 144 Гц
+awww img "$FULL_PATH" --transition-type wipe --transition-step 90 --transition-fps 144
+
+# Синхронизация с GNOME
+gsettings set org.gnome.desktop.background picture-uri "file://$FULL_PATH" 2>/dev/null
+gsettings set org.gnome.desktop.background picture-uri-dark "file://$FULL_PATH" 2>/dev/null
+
+notify-send -a "Обои" "Установлены новые обои" "$SELECTED"

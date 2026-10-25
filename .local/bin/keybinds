@@ -1,0 +1,68 @@
+#!/usr/bin/env bash
+# Шпаргалка по хоткеям Hyprland (Mod = Super), открывается по Super+/
+# Читает текущий hyprland.lua и выводит полный список биндов в fuzzel -d.
+
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.lua"
+
+# Имя модификатора берём из конфига (local mainMod = "SUPER"), по умолчанию Super
+MOD_DISPLAY="Super"
+if [[ -r "$CONFIG" ]]; then
+    MOD=$(grep -oE 'local mainMod *= *"[^"]+"' "$CONFIG" \
+        | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
+    if [[ -n "$MOD" ]]; then
+        MOD_DISPLAY=$(printf '%s' "$MOD" | tr '[:upper:]' '[:lower:]' | sed -E 's/^./\U&/')
+    fi
+fi
+
+# Достаём первый аргумент hl.bind(...) и нормализуем:
+#   mainMod .. " + N"          -> Super+N
+#   mainMod .. " + " .. i      -> Super+1..9   (цикл for i = 1, 9)
+#   "CTRL + SHIFT + code:39"   -> Ctrl+Shift+code:39
+LIST=$(
+    if [[ -r "$CONFIG" ]]; then
+        sed -nE 's/.*hl\.bind\(([^,]+),.*/\1/p' "$CONFIG" \
+            | sed -E \
+                -e "s/mainMod \.\. /$MOD_DISPLAY/" \
+                -e 's/ \+ /+/g' \
+                -e 's/"//g' \
+                -e 's/\+[[:space:]]*\.\.[[:space:]]*i/1..9/' \
+                -e 's/\bSUPER\b/Super/g' \
+                -e 's/\bSHIFT\b/Shift/g' \
+                -e 's/\bCTRL\b/Ctrl/g' \
+                -e 's/\bALT\b/Alt/g' \
+                -e 's/^[[:space:]]+//' \
+                -e 's/[[:space:]]+$//' \
+            | awk 'NF'
+    fi
+)
+
+# Фолбэк, если конфиг не найден или пуст
+if [[ -z "$LIST" ]]; then
+    LIST=$(
+        cat <<'EOF'
+Super+ENTER     — Kitty
+Super+D         — Fuzzel
+Super+Q         — закрыть окно
+Super+SHIFT+E   — выход из сессии
+Super+L         — hyprlock
+Super+V         — плавающее/плиточное
+Super+A         — случайные обои
+Super+W         — выбор обоев
+Super+F         — maximized
+Super+SHIFT+F   — fullscreen
+Super+C         — центр окна
+Super+R         — togglesplit
+Super+1..9      — воркспейс
+Super+SHIFT+1..9— окно на воркспейс
+Super+PAGE_UP   — соседний воркспейс
+Super+PAGE_DOWN — соседний воркспейс
+Super+mouse_up  — соседний воркспейс
+Super+mouse_down— соседний воркспейс
+CTRL+SHIFT+39   — скриншот области
+CTRL+PRINT      — скриншот экрана
+ALT+PRINT       — скриншот окна
+EOF
+    )
+fi
+
+printf '%s\n' "$LIST" | fuzzel -d -p "⌨ Хоткеи ❯ " -w 55 -l 30

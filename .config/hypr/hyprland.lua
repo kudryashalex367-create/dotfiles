@@ -117,7 +117,7 @@ hl.config({
         resize_on_border        = true,
         extend_border_grab_area = 15,
 
-        allow_tearing = false, -- Глобально выключено; для игр включается через window_rule
+        allow_tearing = true, -- Главный переключатель; рвёт только окна с immediate (см. правило games-tearing)
         layout        = "dwindle",
     },
 
@@ -306,11 +306,11 @@ hl.window_rule({
     float = true,
 })
 
--- Игры: включаем tearing только для игровых окон (глобально allow_tearing = false)
+-- Игры: tearing только для игровых окон (главный переключатель allow_tearing = true, без immediate ничего не рвётся)
 hl.window_rule({
     name  = "games-tearing",
     match = {
-        class = "^(steam_app_.*|.*[Gg]ame.*)$",
+        class = "^(cs2|steam_app_.*)$",
     },
     immediate = true,
 })
