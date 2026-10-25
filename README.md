@@ -1,5 +1,14 @@
-# 💜 Arch Linux Dotfiles by zev1ce — Obsidian Violet
+# 💜 Arch Linux Dotfiles by zev1ce — Obsidian Violet<p align="center">
 
+<p align="center">
+  <img src="https://img.shields.io/badge/OS-Arch_Linux-a78bfa?style=flat-square&logo=archlinux&logoColor=white&labelColor=15111f" alt="Arch Linux">
+  <img src="https://img.shields.io/badge/WM-Niri-c4b5fd?style=flat-square&labelColor=15111f" alt="Niri">
+  <img src="https://img.shields.io/badge/WM-Hyprland-a78bfa?style=flat-square&labelColor=15111f" alt="Hyprland">
+  <a href="./LICENSE">
+    <img src="https://img.shields.io/badge/License-GPL_v3-c4b5fd?style=flat-square&labelColor=15111f" alt="GNU GPL v3">
+  </a>
+
+</p>
 > *"I use Arch, btw." — Minimalist 144Hz Scrollable-Tiling & Hybrid Workstation in Deep Midnight & Cyber-Lavender.*
 
 Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная, вылизанная и сверхпроизводительная сборка рабочей станции на базе скроллингового тайлинга **Niri WM**, динамического **Hyprland** и классического окружения **GNOME 51**, выполненная в неоновом стиле **Obsidian Violet & Soft Lavender**. Управление конфигурациями реализовано через концепцию **Git Bare Repository**.
