@@ -4,6 +4,7 @@
   <img src="https://img.shields.io/badge/OS-Arch_Linux-a78bfa?style=flat-square&logo=archlinux&logoColor=white&labelColor=15111f" alt="Arch Linux">
   <img src="https://img.shields.io/badge/WM-Niri-c4b5fd?style=flat-square&labelColor=15111f" alt="Niri">
   <img src="https://img.shields.io/badge/WM-Hyprland-a78bfa?style=flat-square&labelColor=15111f" alt="Hyprland">
+  <img src="https://img.shields.io/badge/DE-Gnome-a78bfa?style=flat-square&labelColor=15111f" alt="Gnome">
   <a href="./LICENSE">
     <img src="https://img.shields.io/badge/License-GPL_v3-c4b5fd?style=flat-square&labelColor=15111f" alt="GNU GPL v3">
   </a>
