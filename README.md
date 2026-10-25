@@ -171,7 +171,12 @@ alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 ### Шаг 4. Распаковка конфигураций на диск
 
 ```bash
-rm -f ~/.zshrc ~/.bashrc ~/.p10k.zsh ~/README.md
+mkdir -p ~/dotfiles-backup
+
+for f in ~/.zshrc ~/.bashrc ~/.p10k.zsh ~/README.md; do
+  [ -e "$f" ] && mv "$f" ~/dotfiles-backup/
+done
+
 config checkout -f
 config config --local status.showUntrackedFiles no
 ```
