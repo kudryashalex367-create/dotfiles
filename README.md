@@ -147,6 +147,14 @@ git clone https://github.com/kudryashalex367-create/wallpapers.git ~/wallpapers
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 ```
 
+> ⚠️ **Внимание:** установка перезаписывает существующие dotfiles в `$HOME`.
+> Сделай резервную копию важных конфигураций перед продолжением:
+>
+> ```bash
+> mkdir -p ~/dotfiles-backup
+> cp -a ~/.zshrc ~/.p10k.zsh ~/.config ~/dotfiles-backup/ 2>/dev/null
+> ```
+
 ### Шаг 4. Распаковка конфигураций на диск
 
 ```bash
