@@ -8,8 +8,8 @@
   <a href="./LICENSE">
     <img src="https://img.shields.io/badge/License-GPL_v3-c4b5fd?style=flat-square&labelColor=15111f" alt="GNU GPL v3">
   </a>
-
 </p>
+
 > *"I use Arch, btw." — Minimalist 144Hz Scrollable-Tiling & Hybrid Workstation in Deep Midnight & Cyber-Lavender.*
 
 Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная, вылизанная и сверхпроизводительная сборка рабочей станции на базе скроллингового тайлинга **Niri WM**, динамического **Hyprland** и классического окружения **GNOME 51**, выполненная в неоновом стиле **Obsidian Violet & Soft Lavender**. Управление конфигурациями реализовано через концепцию **Git Bare Repository**.
