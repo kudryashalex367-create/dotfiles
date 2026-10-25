@@ -53,6 +53,16 @@
 
 <img width="1920" height="1080" alt="Меню Fuzzel" src="https://github.com/user-attachments/assets/b00d2c73-017c-4ed6-aa48-d468aa745c5d" />
 
+### 🔒 Двухэтажный экран блокировки (Hyprlock)
+
+<img width="1920" height="1080" alt="Экран блокировки Hyprlock" src="<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/1dad1e30-ead3-4f90-bdd4-4360ec18c7cd" />
+" />
+
+### ⌨️ Всплывающая шпаргалка по хоткеям (Fuzzel + keybinds)
+
+<img width="1920" height="1080" alt="Шпаргалка хоткеев" src="<img width="1920" height="1080" alt="keybinds_fuzzel" src="https://github.com/user-attachments/assets/c80aa6b7-36cf-4a23-863a-323b7c1215b3" />
+" />
+
 ---
 
 ## ⌨️ Горячие клавиши (Hotkeys)
