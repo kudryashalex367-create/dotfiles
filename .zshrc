@@ -1,4 +1,5 @@
-if [[ $- == *i* ]]; then
+# Показываем fastfetch ТОЛЬКО в интерактивном терминале и ТОЛЬКО если нас не вызвал Aider
+if [[ $- == *i* ]] && [[ -z "$AIDER_RUNNING" ]] && [[ ! "$(< /proc/$PPID/cmdline 2>/dev/null)" =~ aider ]]; then
     fastfetch -l arch_small
 fi
 
@@ -108,6 +109,7 @@ aider-dotfiles() {
 
     (
         cd "$HOME" || exit 1
+        export AIDER_RUNNING=1
         aider --no-git \
               --edit-format diff \
               --model openai/deepseek-v4.1-flash-1017 \
