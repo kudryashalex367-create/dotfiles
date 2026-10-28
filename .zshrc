@@ -122,8 +122,7 @@ aider-dotfiles() {
     )
 }
 
-# В ~/.zshrc, рядом с aider-dotfiles
-aider-yolo() {
+aider-agent() {
     if [[ -z "$OPENAI_API_KEY" ]]; then
         echo "Ошибка: OPENAI_API_KEY не найден."
         return 1
@@ -140,8 +139,8 @@ aider-yolo() {
               --openai-api-base https://api.aitunnel.ru/v1 \
               --no-show-model-warnings \
               --read "$HOME/.aiderCode.md" \
-              --chat-history-file "$HOME/.cache/aider/chat.md" \
-              --input-history-file "$HOME/.cache/aider/input" \
+              --chat-history-file "$HOME/.cache/aider/agent-chat.md" \
+              --input-history-file "$HOME/.cache/aider/agent-input" \
               "$@"
     )
 }

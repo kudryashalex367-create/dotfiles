@@ -310,7 +310,7 @@ hl.window_rule({
 hl.window_rule({
     name  = "games-tearing",
     match = {
-        class = "^(cs2|steam_app_.*)$",
+        class = "^(cs2|steam_app_.*|horizon)$",
     },
     immediate = true,
 })
