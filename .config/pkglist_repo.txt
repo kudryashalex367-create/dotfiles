@@ -54,6 +54,7 @@ noto-fonts-emoji
 nvtop
 pipewire
 pipewire-pulse
+playerctl
 polkit-gnome
 python-pipx
 ripgrep
