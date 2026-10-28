@@ -1,0 +1,17 @@
+#!/bin/sh
+# Текущий трек для hyprlock.
+# Молчит, если playerctl не установлен или нет активного плеера.
+command -v playerctl >/dev/null 2>&1 || exit 0
+
+track=$(playerctl metadata --format '{{artist}} — {{title}}' 2>/dev/null) || exit 0
+
+# Убираем висящие разделители, если нет исполнителя или названия
+track=$(printf '%s' "$track" \
+    | sed -e 's/^[[:space:]]*—[[:space:]]*//' \
+          -e 's/[[:space:]]*—[[:space:]]*$//' \
+          -e 's/[[:space:]]*-[[:space:]]*YouTube$//')
+
+# Пустой результат (нет метаданных) — ничего не выводим
+[ -n "$track" ] || exit 0
+
+printf '♪ %s\n' "$track"
