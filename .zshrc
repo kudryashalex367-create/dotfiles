@@ -111,10 +111,35 @@ aider-dotfiles() {
         cd "$HOME" || exit 1
         export AIDER_RUNNING=1
         aider --no-git \
+              --cache-prompts \
               --edit-format diff \
               --model openai/deepseek-v4.1-flash-1017 \
               --openai-api-base https://api.aitunnel.ru/v1 \
               --no-show-model-warnings \
+              --chat-history-file "$HOME/.cache/aider/chat.md" \
+              --input-history-file "$HOME/.cache/aider/input" \
+              "$@"
+    )
+}
+
+# В ~/.zshrc, рядом с aider-dotfiles
+aider-yolo() {
+    if [[ -z "$OPENAI_API_KEY" ]]; then
+        echo "Ошибка: OPENAI_API_KEY не найден."
+        return 1
+    fi
+    mkdir -p "$HOME/.cache/aider"
+    (
+        cd "$HOME" || exit 1
+        export AIDER_RUNNING=1
+        agentaider --yes \
+              --no-git \
+              --cache-prompts \
+              --edit-format diff \
+              --model openai/deepseek-v4.1-flash-1017 \
+              --openai-api-base https://api.aitunnel.ru/v1 \
+              --no-show-model-warnings \
+              --read "$HOME/.aiderCode.md" \
               --chat-history-file "$HOME/.cache/aider/chat.md" \
               --input-history-file "$HOME/.cache/aider/input" \
               "$@"
