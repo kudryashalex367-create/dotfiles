@@ -14,4 +14,7 @@ track=$(printf '%s' "$track" \
 # Пустой результат (нет метаданных) — ничего не выводим
 [ -n "$track" ] || exit 0
 
+# Обрезка длинных названий по символам (не байтам), чтобы влезало в hyprlock
+track=$(printf '%s' "$track" | awk '{ if (length($0) > 50) print substr($0, 1, 49) "…"; else print }')
+
 printf '♪ %s\n' "$track"
