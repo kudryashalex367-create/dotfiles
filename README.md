@@ -75,7 +75,7 @@
 
 ### 🔒 Двухэтажный экран блокировки (Hyprlock)
 
-<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/85306fb1-9842-45c3-8b25-03149411cd79" />
+<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/d2343fb1-603c-4172-a3eb-650917234ac9" />
 
 ### ⌨️ Всплывающая шпаргалка по хоткеям (Fuzzel + keybinds)
 
