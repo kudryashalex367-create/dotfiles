@@ -106,6 +106,7 @@ aider-dotfiles() {
     fi
 
     mkdir -p "$HOME/.cache/aider"
+    [[ -e "$HOME/.aider-root" ]] || touch "$HOME/.aider-root"
 
     (
         cd "$HOME" || exit 1
@@ -116,6 +117,7 @@ aider-dotfiles() {
               --model openai/deepseek-v4.1-flash-1017 \
               --openai-api-base https://api.aitunnel.ru/v1 \
               --no-show-model-warnings \
+              --read "$HOME/.aider-root" \
               --chat-history-file "$HOME/.cache/aider/chat.md" \
               --input-history-file "$HOME/.cache/aider/input" \
               "$@"
@@ -128,16 +130,19 @@ aider-agent() {
         return 1
     fi
     mkdir -p "$HOME/.cache/aider"
+    [[ -e "$HOME/.aider-root" ]] || touch "$HOME/.aider-root"
+
     (
         cd "$HOME" || exit 1
         export AIDER_RUNNING=1
-        agentaider --yes \
+              agentaider --yes-always \
               --no-git \
               --cache-prompts \
               --edit-format diff \
               --model openai/deepseek-v4.1-flash-1017 \
               --openai-api-base https://api.aitunnel.ru/v1 \
               --no-show-model-warnings \
+              --read "$HOME/.aider-root" \
               --read "$HOME/.aiderCode.md" \
               --chat-history-file "$HOME/.cache/aider/agent-chat.md" \
               --input-history-file "$HOME/.cache/aider/agent-input" \
