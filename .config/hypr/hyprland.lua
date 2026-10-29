@@ -74,6 +74,10 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice'")
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-size 24")
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Ice 24")
+
+    -- Гарантим поглощение SUPER + scroll на случай, если hl.config({binds=...})
+    -- не применился: колесо меняет воркспейс и не уходит в приложение.
+    hl.exec_cmd("hyprctl keyword binds:pass_mouse_when_bound false")
 end)
 
 
@@ -210,6 +214,21 @@ hl.animation({ leaf = "layersIn",   enabled = true, speed = 3.0, bezier = "popIn
 hl.animation({ leaf = "layersOut",  enabled = true, speed = 2.0, bezier = "smoothFade",  style = "fade" })
 hl.animation({ leaf = "border",     enabled = true, speed = 4.0, bezier = "smoothFade" })
 
+--------------------------------
+---- MOUSE EVENT CONSUMPTION ----
+--------------------------------
+-- Бинды на колесо (SUPER + scroll) не должны доходить до приложения:
+-- без этого терминал одновременно листает историю при смене воркспейса.
+-- pass_mouse_when_bound гасит только кнопки мыши; для колеса (axis events)
+-- отдельный ключ scroll_event_delay — без него событие успевает утечь
+-- в окно до того, как сработает бинд.
+hl.config({
+    binds = {
+        pass_mouse_when_bound = false,
+        scroll_event_delay    = 0,
+    },
+})
+
 ---------------------
 ---- KEYBINDINGS ----
 ---------------------
@@ -224,7 +243,7 @@ hl.bind(mainMod .. " + Q",      hl.dsp.window.close())
 hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exit())
 
 -- Блокировка экрана (с переключением на английский)
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout current 0 && hyprlock'"))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/lock'"))
 
 -- Плавающее / плиточное окно (нативный диспетчер Hyprland)
 hl.bind(mainMod .. " + V", hl.dsp.window.float())
@@ -265,9 +284,11 @@ end
 hl.bind(mainMod .. " + Page_Up",   hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mainMod .. " + Page_Down", hl.dsp.focus({ workspace = "e+1" }))
 
--- Переключение рабочих столов колесом мыши (SUPER + scroll)
-hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
-hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
+-- Переключение рабочих столов колесом мыши (SUPER + scroll).
+-- Само событие поглощается благодаря binds:pass_mouse_when_bound = false
+-- (см. блок MOUSE EVENT CONSUMPTION выше).
+hl.bind(mainMod .. " + mouse_up",   hl.dsp.focus({ workspace = "e-1" }), { mouse = true })
+hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }), { mouse = true })
 
 -- Мышь: перемещение и изменение размера окон
 hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(),   { mouse = true })
