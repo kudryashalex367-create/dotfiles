@@ -243,7 +243,7 @@ hl.bind(mainMod .. " + Q",      hl.dsp.window.close())
 hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exit())
 
 -- Блокировка экрана (с переключением на английский)
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/lock'"))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout current 0 && hyprlock'"))
 
 -- Плавающее / плиточное окно (нативный диспетчер Hyprland)
 hl.bind(mainMod .. " + V", hl.dsp.window.float())
