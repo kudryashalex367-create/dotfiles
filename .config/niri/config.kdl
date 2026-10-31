@@ -14,6 +14,8 @@ environment {
 cursor {
     xcursor-theme "Bibata-Modern-Ice"
     xcursor-size 24
+    // Курсор не мешает при наборе текста
+    hide-when-typing
 }
 
 output "DP-2" {
@@ -27,13 +29,11 @@ output "eDP-1" {
 }
 
 // Мягкий блюр с лёгкой вибрацией (аналог hyprland vibrancy).
-// В Niri нет отдельных contrast/brightness/vibrancy — их роль играет
-// saturation (1.25 ≈ vibrancy 0.3 из Hyprland).
 blur {
     passes 3
     offset 4.2
     noise 0.02
-    saturation 1.25
+    saturation 2
 }
 
 overview {

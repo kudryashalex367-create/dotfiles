@@ -98,6 +98,11 @@ hl.config({
             natural_scroll = true,
         },
     },
+
+    -- Курсор не мешает при наборе текста (аналог hide-when-typing в niri)
+    cursor = {
+        hide_on_key_press = true,
+    },
 })
 
 
@@ -155,7 +160,7 @@ hl.config({
             passes            = 3,
             noise             = 0.02,
             contrast          = 1.1,
-            brightness        = 0.9,
+            brightness        = 1.0,
             vibrancy          = 0.3,
             vibrancy_darkness = 0.2,
             popups            = true,
