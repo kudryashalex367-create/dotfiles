@@ -38,20 +38,123 @@ fi
 # падает с "not a terminal", если stdout/stderr перенаправлены.
 # --prefer darkness: при нескольких доминирующих цветах детерминированно
 # выбираем самый тёмный — под наш тёмный режим. Без TTY выбор не интерактивен.
-if ! matugen_out=$(matugen image "$img" --mode dark --type scheme-fidelity --prefer darkness </dev/null 2>&1); then
-    echo "$matugen_out" >&2
-    echo "matugen упал — см. ошибку выше" >&2
-    exit 1
+# --json: машинный дамп палитры (из него берём hex для niri/config.kdl).
+json="$state_dir/matugen.json"
+rm -f -- "$json"
+if ! matugen_out=$(matugen image "$img" --mode dark --type scheme-fidelity --prefer darkness --json "$json" </dev/null 2>&1); then
+    # Старый matugen без --json: палитру применяем как раньше, niri-цвета
+    # при этом не обновятся (дампа нет).
+    if ! matugen_out=$(matugen image "$img" --mode dark --type scheme-fidelity --prefer darkness </dev/null 2>&1); then
+        echo "$matugen_out" >&2
+        echo "matugen упал — см. ошибку выше" >&2
+        exit 1
+    fi
+    # Причину падения --json пишем в лог: флага может не быть в сборке,
+    # может ругаться путь или сам флаг стоит не в том месте.
+    printf 'matugen --json: %s\n' "$(printf '%s\n' "$matugen_out" | head -n1)" >>"$state_dir/errors.log"
+    printf 'matugen: --json недоступен, палитра niri не обновлена\n' >>"$state_dir/errors.log"
 fi
 
 # 3. Reload целей, которые умеют перечитывать конфиг на лету
 makoctl reload 2>/dev/null || true
 pkill -SIGUSR1 -x kitty 2>/dev/null || true
 
-# 4. Hyprland: цвета живут в ~/.config/hypr/colors.lua, его читает hyprland.lua
+# 4. Niri: отдельного colors-файла нет, цвета зашиты прямо в
+#    ~/.config/niri/config.kdl. Берём hex из --json-дампа matugen, правим
+#    только строки цветов во временной копии и, если `niri validate` прошёл,
+#    переносим содержимое в config.kdl (inode тот же — niri перечитает сам).
+niri_cfg="$HOME/.config/niri/config.kdl"
+if [[ -w "$niri_cfg" ]] && [[ -s "$json" ]] && command -v jq >/dev/null 2>&1 && command -v niri >/dev/null 2>&1; then
+    mcol() {
+        # Структура --json у разных версий matugen разная: плоская ({primary:"#.."}),
+        # с обёрткой modes ({dark:{primary:...}}) или с вложенным объектом
+        # ({dark:{primary:{color:"#.."}}}). Перебираем варианты по очереди.
+        jq -r --arg k "$1" '
+            def tohex: if type == "object" then (.color // .hex // empty) else . end;
+            [ (.colors.dark?[$k]?), (.dark?[$k]?), (.colors?[$k]?), (.[$k]?) ]
+            | map(select(. != null) | tohex)
+            | map(select(. != null and . != ""))
+            | .[0] // empty
+        ' "$json" 2>/dev/null | head -n1 || true
+    }
+    hex() {
+        local v="${1#\#}"
+        [[ -n "$v" ]] && printf '#%s' "${v:0:6}"
+        return 0
+    }
+
+    primary=$(hex "$(mcol primary)")
+    tertiary=$(hex "$(mcol tertiary)")
+    surface=$(hex "$(mcol surface_container_low)")
+    [[ -n "$surface" ]] || surface=$(hex "$(mcol surface_variant)")
+    backdrop=$(hex "$(mcol surface_container_lowest)")
+    [[ -n "$backdrop" ]] || backdrop=$(hex "$(mcol background)")
+
+    # Если ни один вариант структуры не подошёл — не молчим, пишем ключи
+    # из дампа, чтобы можно было дописать путь в mcol().
+    if [[ -z "$primary" || -z "$tertiary" ]]; then
+        keys=$(jq -r 'paths(scalars) | map(tostring) | join(".")' "$json" 2>/dev/null | head -n6 | paste -sd ' ' - || true)
+        printf 'niri: в %s нет primary/tertiary — ключи: %s\n' "$json" "$keys" >&2
+        printf 'niri: цветов нет в matugen.json (ключи: %s)\n' "$keys" >>"$state_dir/errors.log"
+    fi
+
+    tmp=$(mktemp)
+    cp -- "$niri_cfg" "$tmp"
+
+    if [[ -n "$primary" && -n "$tertiary" ]]; then
+        # Активная рамка: градиент primary -> tertiary
+        sed -i -E "s/^([[:space:]]*active-gradient from=)\"#[0-9A-Fa-f]{6,8}\"( to=)\"#[0-9A-Fa-f]{6,8}\"/\1\"${primary}\"\2\"${tertiary}\"/" "$tmp"
+        # Неактивная рамка
+        if [[ -n "$surface" ]]; then
+            sed -i -E "s/^([[:space:]]*inactive-color )\"#[0-9A-Fa-f]{6,8}\"/\1\"${surface}\"/" "$tmp"
+        fi
+        # Подсказка вставки: акцент с альфой 0x80
+        sed -i -E "/^[[:space:]]*insert-hint \{/,/^[[:space:]]*\}/ s/^([[:space:]]*color )\"#[0-9A-Fa-f]{6,8}\"/\1\"${primary}80\"/" "$tmp"
+    fi
+    # Фон обзора (overview backdrop-color)
+    if [[ -n "$backdrop" ]]; then
+        sed -i -E "s/^([[:space:]]*backdrop-color )\"#[0-9A-Fa-f]{6,8}\"/\1\"${backdrop}\"/" "$tmp"
+    fi
+
+    if cmp -s -- "$niri_cfg" "$tmp"; then
+        printf 'niri: цвета не изменились (совпали или строки не найдены)\n' >>"$state_dir/errors.log"
+        rm -f -- "$tmp"
+    elif niri validate -c "$tmp" >/dev/null 2>&1; then
+        # Штатный путь: живой конфиг не трогаем, пишем только валидный.
+        cat -- "$tmp" >"$niri_cfg"
+        printf 'niri: палитра применена %s -> %s\n' "$primary" "$tertiary" >>"$state_dir/errors.log"
+        rm -f -- "$tmp"
+    else
+        err=$(niri validate -c "$tmp" 2>&1 | head -n1 || true)
+        if [[ "$err" == *"unexpected argument"* ]]; then
+            # Версия niri без `validate -c`: проверяем на живом файле.
+            # Невалидный конфиг niri не применит, а мы сразу откатываем.
+            bak="$state_dir/niri.kdl.bak"
+            cp -- "$niri_cfg" "$bak"
+            cat -- "$tmp" >"$niri_cfg"
+            if niri validate >/dev/null 2>&1; then
+                printf 'niri: палитра применена %s -> %s\n' "$primary" "$tertiary" >>"$state_dir/errors.log"
+            else
+                err=$(niri validate 2>&1 | head -n1 || true)
+                cat -- "$bak" >"$niri_cfg"
+                printf 'niri validate: %s\n' "$err" >&2
+                printf 'niri: палитра не применена (%s)\n' "$err" >>"$state_dir/errors.log"
+            fi
+            rm -f -- "$bak"
+        else
+            printf 'niri validate: %s\n' "$err" >&2
+            printf 'niri: палитра не применена (%s)\n' "$err" >>"$state_dir/errors.log"
+        fi
+        rm -f -- "$tmp"
+    fi
+fi
+
+# 5. Hyprland: цвета живут в ~/.config/hypr/colors.lua, его читает hyprland.lua
 #    при загрузке. hyprctl keyword для gradient-ключей col.*_border отказывает
 #    (unknown request), поэтому просто перечитываем конфиг целиком.
-if [[ -r "$HOME/.config/hypr/colors.lua" ]] && command -v hyprctl >/dev/null 2>&1; then
+#    Только если Hyprland действительно запущен: под niri hyprctl ругается
+#    на отсутствующий сокет.
+if [[ -r "$HOME/.config/hypr/colors.lua" ]] && [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]] && command -v hyprctl >/dev/null 2>&1; then
     if ! out=$(hyprctl reload 2>&1) || [[ "$out" != "ok" ]]; then
         printf 'hyprctl reload: %s\n' "$out" >&2
         printf 'reload: %s\n' "$out" >>"$state_dir/errors.log"

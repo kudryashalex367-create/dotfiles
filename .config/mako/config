@@ -4,9 +4,9 @@
 # поэтому генерируем весь конфиг целиком, без include.
 
 font=JetBrainsMono Nerd Font Bold 11
-background-color=#1f2021cc
-text-color=#e3e2e4
-border-color=#b1c9e4
+background-color=#1d2026cc
+text-color=#e1e2eb
+border-color=#adc6ff
 border-size=2
 border-radius=16
 padding=14,18
