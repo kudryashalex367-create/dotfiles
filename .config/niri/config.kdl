@@ -37,6 +37,7 @@ blur {
 }
 
 overview {
+    // Многострочно намеренно: wall-colors подменяет только строку backdrop-color.
     backdrop-color "#0b0912"
 }
 
@@ -70,10 +71,15 @@ layout {
     focus-ring { off; }
     border {
         width 2
+        // Цвета ниже управляются ~/.local/bin/wall-colors (matugen + sed).
+        // Меняешь вручную — до следующей смены обоев.
         active-gradient from="#a78bfa" to="#e879f9" angle=45
         inactive-color "#2a2140"
     }
-    insert-hint { color "#a78bfa80"; }
+    // Многострочно намеренно: wall-colors подменяет только строку color.
+    insert-hint {
+        color "#a78bfa80"
+    }
     struts {
         top 0
         bottom 0
@@ -183,6 +189,10 @@ prefer-no-csd
 
 spawn-at-startup "mako"
 spawn-at-startup "awww-daemon"
+// Палитра последних обоев: reload-config не переживает рестарт niri, а цвета
+// в config.kdl на диске остаются от предыдущей смены. wall-restore их
+// перезапишет по кэшу последних обоев.
+spawn-at-startup "bash" "-c" "$HOME/.local/bin/wall-restore"
 spawn-at-startup "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
 spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
 spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets"
