@@ -1,0 +1,29 @@
+# matugen 2.x. Для 1.x замени .hex_stripped на .hex в шаблонах.
+[config]
+
+[templates.kitty]
+input_path  = '~/.config/matugen/templates/kitty-colors.conf'
+output_path = '~/.config/kitty/colors.conf'
+
+# mako генерируется целиком: у него нет секции [default], а include внутри
+# [urgency=high] кладёт базовые цвета не в глобальную секцию.
+[templates.mako]
+input_path  = '~/.config/matugen/templates/mako-colors.conf'
+output_path = '~/.config/mako/config'
+
+# hyprctl keyword для gradient-опций col.*_border отказывает (unknown request),
+# а reload работает. Поэтому генерируем lua-таблицу и подключаем её в
+# hyprland.lua; wall-colors после matugen делает hyprctl reload.
+[templates.hypr]
+input_path  = '~/.config/matugen/templates/hypr-colors.lua'
+output_path = '~/.config/hypr/colors.lua'
+
+# fuzzel не умеет include-файлы: генерируем целиком. Ручные правки — в шаблоне.
+[templates.fuzzel]
+input_path  = '~/.config/matugen/templates/fuzzel.ini'
+output_path = '~/.config/fuzzel/fuzzel.ini'
+
+# hyprlock тоже не умеет подмешивать цвета: генерируем целиком из шаблона.
+[templates.hyprlock]
+input_path  = '~/.config/matugen/templates/hyprlock.conf'
+output_path = '~/.config/hypr/hyprlock.conf'

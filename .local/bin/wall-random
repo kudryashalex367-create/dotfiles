@@ -25,6 +25,10 @@ awww img "$RANDOM_WALL" --transition-type wipe --transition-fps 144 --transition
 gsettings set org.gnome.desktop.background picture-uri "file://$RANDOM_WALL"
 gsettings set org.gnome.desktop.background picture-uri-dark "file://$RANDOM_WALL"
 
-# 3. Аккуратное стеклянное уведомление через Mako с именем обоев (исчезнет через 2.5 сек)
+# 3. Перегенерируем палитру из нового цвета обоев (обои уже поставлены выше)
+"$HOME/.local/bin/wall-colors" --colors-only "$RANDOM_WALL" >/dev/null 2>&1 || \
+    notify-send -u low "Wallpaper" "matugen не смог перекрасить (проверь ~/.config/matugen)"
+
+# 4. Аккуратное стеклянное уведомление через Mako с именем обоев (исчезнет через 2.5 сек)
 WALL_NAME=$(basename "$RANDOM_WALL")
 notify-send -t 2500 -a "Wall-Random" "Обои обновлены ✨" "$WALL_NAME"

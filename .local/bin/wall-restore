@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Восстанавливает палитру от последних обоев без переустановки обоев.
+# Нужен в автозапуске Hyprland: hyprctl keyword не сохраняется между сессиями.
+set -euo pipefail
+
+state_file="${XDG_CACHE_HOME:-$HOME/.cache}/wall-colors/last"
+[[ -r "$state_file" ]] || exit 0
+img="$(<"$state_file")"
+[[ -f "$img" ]] || exit 0
+
+command -v matugen >/dev/null 2>&1 || exit 0
+
+matugen image "$img" --mode dark --type scheme-fidelity --prefer darkness </dev/null >/dev/null 2>&1 || exit 0
+
+makoctl reload 2>/dev/null || true
+pkill -SIGUSR1 -x kitty 2>/dev/null || true
+
+# Hyprland: цвета читает hyprland.lua из colors.lua. Перечитываем конфиг,
+# чтобы подхватить только что перезаписанные matugen цвета.
+if [[ -r "$HOME/.config/hypr/colors.lua" ]] && command -v hyprctl >/dev/null 2>&1; then
+    hyprctl reload >/dev/null 2>&1 || true
+fi

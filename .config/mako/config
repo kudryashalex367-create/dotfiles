@@ -1,8 +1,12 @@
-# --- Mako Obsidian Violet Config ---
+# Генерируется matugen из обоев (~/.local/bin/wall-colors).
+# Ручные правки перезапишутся — правь этот шаблон.
+# У mako НЕТ секции [default]: глобальные опции идут до первого [criteria],
+# поэтому генерируем весь конфиг целиком, без include.
+
 font=JetBrainsMono Nerd Font Bold 11
-background-color=#0b0912cc
-text-color=#ffffff
-border-color=#a78bfa
+background-color=#221f1ecc
+text-color=#e9e1df
+border-color=#e9bcb6
 border-size=2
 border-radius=16
 padding=14,18
@@ -12,8 +16,8 @@ default-timeout=5000
 layer=overlay
 anchor=top-right
 
-# Стили для срочных уведомлений (Urgent)
 [urgency=high]
-border-color=#f38ba8
-text-color=#f38ba8
+background-color=#93000aee
+text-color=#ffdad6
+border-color=#ffb4ab
 default-timeout=0

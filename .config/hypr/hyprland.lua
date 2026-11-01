@@ -1,3 +1,17 @@
+-------------------
+---- WALL COLORS ---
+-------------------
+-- Палитра из обоев: генерируется matugen в ~/.config/hypr/colors.lua.
+-- Fallback — фиолетовая схема, если файла нет или он битый.
+local _colors_ok, colors = pcall(dofile, (os.getenv("HOME") or "") .. "/.config/hypr/colors.lua")
+if not _colors_ok or type(colors) ~= "table" then
+    colors = {
+        active_border   = "rgba(a78bfaff)",
+        inactive_border = "rgba(2a2140ff)",
+        shadow_color    = "rgba(15111fcc)",
+    }
+end
+
 ------------------
 ---- MONITORS ----
 ------------------
@@ -57,6 +71,8 @@ hl.on("hyprland.start", function ()
     -- Утилиты и демоны
     hl.exec_cmd("mako")
     hl.exec_cmd("awww-daemon")
+    -- Восстанавливаем палитру от последних обоев: hyprctl keyword не переживает перезапуск.
+    hl.exec_cmd("bash -c '$HOME/.local/bin/wall-restore'")
     hl.exec_cmd("/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1")
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
@@ -116,10 +132,10 @@ hl.config({
 
         border_size = 2,
 
-        -- Однотонная фиолетовая рамка активного окна
+        -- Рамка активного окна: цвет берётся из палитры обоев (colors.lua)
         col = {
-            active_border   = "rgba(a78bfaff)",
-            inactive_border = "rgba(2a2140ff)",
+            active_border   = colors.active_border,
+            inactive_border = colors.inactive_border,
         },
 
         -- Ресайз за границу окна + расширенная зона захвата для удобства мышью
@@ -147,7 +163,7 @@ hl.config({
             enabled      = true,
             range        = 20,
             render_power = 3,
-            color        = "rgba(15111fcc)",
+            color        = colors.shadow_color,
         },
 
         -- Blur включён глобально. Hyprland сам НЕ размывает фон под

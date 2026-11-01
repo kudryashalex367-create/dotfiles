@@ -31,4 +31,8 @@ awww img "$FULL_PATH" --transition-type wipe --transition-step 90 --transition-f
 gsettings set org.gnome.desktop.background picture-uri "file://$FULL_PATH" 2>/dev/null
 gsettings set org.gnome.desktop.background picture-uri-dark "file://$FULL_PATH" 2>/dev/null
 
+# Перегенерация палитры под новые обои (обои уже поставлены)
+"$HOME/.local/bin/wall-colors" --colors-only "$FULL_PATH" >/dev/null 2>&1 || \
+    notify-send -u low "Обои" "matugen не смог перекрасить"
+
 notify-send -a "Обои" "Установлены новые обои" "$SELECTED"

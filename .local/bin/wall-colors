@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Пайплайн палитры из обоев.
+# Использование:
+#   wall-colors <image>              — поставить обои + перегенерировать палитру
+#   wall-colors --colors-only <img>  — только палитра (обои уже ставит вызывающий)
+set -euo pipefail
+
+colors_only=0
+if [[ "${1:-}" == "--colors-only" ]]; then
+    colors_only=1
+    shift
+fi
+
+if [[ $# -lt 1 ]]; then
+    echo "usage: wall-colors [--colors-only] <image>" >&2
+    exit 1
+fi
+
+img="$1"
+[[ -f "$img" ]] || { echo "нет файла: $img" >&2; exit 1; }
+
+if ! command -v matugen >/dev/null 2>&1; then
+    echo "matugen не установлен — yay -S matugen-bin" >&2
+    exit 1
+fi
+
+state_dir="${XDG_CACHE_HOME:-$HOME/.cache}/wall-colors"
+mkdir -p "$state_dir"
+printf '%s\n' "$img" > "$state_dir/last"
+
+# 1. Обои (пропускаем, если вызвано с --colors-only)
+if (( colors_only == 0 )); then
+    awww img "$img" 2>/dev/null || true
+fi
+
+# 2. Палитра (M3 fidelity: тон ведёт от цвета обоев)
+# </dev/null: matugen 4.x со stdin-TTY уходит в интерактивный выбор цвета и
+# падает с "not a terminal", если stdout/stderr перенаправлены.
+# --prefer darkness: при нескольких доминирующих цветах детерминированно
+# выбираем самый тёмный — под наш тёмный режим. Без TTY выбор не интерактивен.
+if ! matugen_out=$(matugen image "$img" --mode dark --type scheme-fidelity --prefer darkness </dev/null 2>&1); then
+    echo "$matugen_out" >&2
+    echo "matugen упал — см. ошибку выше" >&2
+    exit 1
+fi
+
+# 3. Reload целей, которые умеют перечитывать конфиг на лету
+makoctl reload 2>/dev/null || true
+pkill -SIGUSR1 -x kitty 2>/dev/null || true
+
+# 4. Hyprland: цвета живут в ~/.config/hypr/colors.lua, его читает hyprland.lua
+#    при загрузке. hyprctl keyword для gradient-ключей col.*_border отказывает
+#    (unknown request), поэтому просто перечитываем конфиг целиком.
+if [[ -r "$HOME/.config/hypr/colors.lua" ]] && command -v hyprctl >/dev/null 2>&1; then
+    if ! out=$(hyprctl reload 2>&1) || [[ "$out" != "ok" ]]; then
+        printf 'hyprctl reload: %s\n' "$out" >&2
+        printf 'reload: %s\n' "$out" >>"$state_dir/errors.log"
+    fi
+fi
