@@ -10,9 +10,9 @@
   </a>
 </p>
 
-> *"I use Arch, btw." — Minimalist 144Hz Scrollable-Tiling & Hybrid Workstation. Obsidian Violet по умолчанию, палитра подстраивается под обои.*
+> *"I use Arch, btw." — Minimalist 144Hz Scrollable-Tiling & Hybrid Workstation in Deep Midnight & Cyber-Lavender.*
 
-Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная, вылизанная и сверхпроизводительная сборка рабочей станции на базе скроллингового тайлинга **Niri WM**, динамического **Hyprland** и классического окружения **GNOME 51**, выполненная в неоновом стиле **Obsidian Violet & Soft Lavender**. Управление конфигурациями реализовано через концепцию **Git Bare Repository**.
+Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная, вылизанная и сверхпроизводительная сборка рабочей станции на базе скроллингового тайлинга **Niri WM**, динамического **Hyprland** и классического окружения **GNOME 51**. Цветовая схема генерируется из текущих обоев через **matugen** (Material You), а **Obsidian Violet & Soft Lavender** остаётся базовой темой по умолчанию. Управление конфигурациями реализовано через концепцию **Git Bare Repository**.
 
 ---
 
@@ -20,7 +20,6 @@
 
 - [Характеристики системы](#specs)
 - [Ключевые особенности](#features)
-- [Динамическая палитра](#theming)
 - [Скриншоты](#screenshots)
 - [Горячие клавиши](#hotkeys)
 - [Быстрая установка](#install)
@@ -39,7 +38,8 @@
 * (✿◠‿◠) **Browser:** Firefox (uBlock Origin, Zero-Bloat)
 * ( ͡° ͜ʖ ͡°) **Terminal:** Kitty 0.49+ (OpenType глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
 * (づ｡◕‿‿◕｡)づ **Shell:** Zsh 5.9.2 + Oh My Zsh + Powerlevel10k (Lean 8-colors)
-* ヽ(´▽`)/ **UI Suite:** Fuzzel (Overlay скругление 16px), Mako (Glass, 23MB RAM), Hyprlock, awww (144Hz Wipe Engine), matugen (Material You из обоев)
+* ヽ(´▽`)/ **UI Suite:** Fuzzel (Overlay скругление 16px), Mako (Obsidian Violet Glass, 23MB RAM), Hyprlock, awww (144Hz Wipe Engine)
+* (⌐■_■) **Theming:** matugen: палитра Material You из обоев, шаблоны для Niri, Kitty, Fuzzel, Mako и Hyprlock
 * (｀・ω・´) **Cursor:** Bibata-Modern-Ice (24px сквозная синхронизация во всех слоях)
 * (ง •̀_•́)ง **Bootloader:** systemd-boot
 
@@ -48,7 +48,8 @@
 <a id="features"></a>
 ## ٩(◕‿◕)۶ Ключевые особенности сборки
 
-* (ᵔᴥᵔ) **Эстетика Obsidian Violet:** Глубочайший космический фон `#0b0912`, лавандовые акценты `#a78bfa`, пастельный ирис `#c4b5fd` и неоновый 45° градиент активного окна в Niri (`#a78bfa` ➔ `#e879f9`).
+* (ᵔᴥᵔ) **Эстетика Obsidian Violet:** Глубокий космический фон `#0b0912`, лавандовые акценты `#a78bfa`, пастельный ирис `#c4b5fd` и неоновый 45° градиент активного окна в Niri (`#a78bfa` ➔ `#e879f9`). Это базовая палитра: при смене обоев акценты подстраиваются под них.
+* (づ｡◕‿‿◕｡)づ **Динамические цвета (matugen):** Смена обоев автоматически перегенерирует палитру и применяет её к окружению, так что весь рабочий стол всегда в тон картинке.
 * (︶︹︶) **Безбаровый Дзен (Barless Setup):** 100% площади экрана отдано коду и контенту — никаких лишних панелей задач и системного мусора.
 * (o゜▽゜)o☆ **Трёхмерный объём и тени:** Окна парят над экраном благодаря мягким рассеянным теням (`#15111fcc`) с радиусом 20–30px.
 * ಠ_ಠ **Приглушение неактивных окон:** Тонкое затемнение неактивных окон на 5–8% (`dim_inactive` в Hyprland и селектор `is-active=false` в Niri, не ломающий прозрачность при вызове лаунчера).
@@ -58,24 +59,7 @@
 * (ノ°益°)ノ **Киберспортивный Tearing для игр:** В Hyprland включён моментальный скан-аут (`immediate = true`) строго для игр (CS2), при этом рабочий стол остаётся на 100% плавным без разрывов кадров.
 * (•̀ᴗ•́)و **Ультра-легкий Mako (23 MB RAM):** Моментальные уведомления с отступами `outer-margin=16`, сидящими точно по контуру карточки.
 * (つ◉益◉)つ **Рандомайзер обоев (`Win + A`):** Мгновенная плавная смена артов через `awww` на 144 Гц без открытия лишних меню.
-* (๑•̀ㅂ•́)و **Динамическая палитра из обоев:** `matugen` извлекает Material You-цвета и перекрашивает Hyprland, Niri, Kitty (ANSI 16), Mako, Fuzzel и Hyprlock в один клик. Обновление — часть `wall-random` / `wall-picker`, ручной запуск — `wall-colors <image>`.
 * ┐(´д`)┌ **Мобильный мост Termux:** Прямая связь со смартфоном по ADB/SSH с поддержкой SponsorBlock и 8-поточного скачивания через `aria2c`.
-
----
-
-<a id="theming"></a>
-## (๑•̀ㅂ•́)و Динамическая палитра из обоев
-
-Пайплайн: обои → `matugen` (Material You, HCT) → шаблоны → reload целей. Смена обоев = смена палитры всего интерфейса.
-
-- **Шаблоны:** всё в `~/.config/matugen/templates/`. Ручные правки — только здесь, сгенерированные файлы перезаписываются.
-- **Сгенерированные файлы:** `~/.config/hypr/colors.lua`, `~/.config/niri/niri-colors.sh`, `~/.config/kitty/colors.conf`, `~/.config/mako/config`, `~/.config/fuzzel/fuzzel.ini`, `~/.config/hypr/hyprlock.conf`.
-- **`wall-colors <image>`** — поставить обои и перегенерировать палитру. Флаг `--colors-only` — только палитра (обои уже установлены вызывающей стороной).
-- **Триггеры:** `wall-random` (`Super+A`) и `wall-picker` (`Super+W`) вызывают `wall-colors --colors-only` после `awww img`.
-- **Reload:** `makoctl reload`, `SIGUSR1` в kitty, `hyprctl reload` в Hyprland, `niri msg action reload-config` в Niri. Hyprlock и Fuzzel подхватывают цвета при следующем запуске/блокировке.
-- **Восстановление после рестарта сессии:** `wall-restore` в autostart (Hyprland — `hl.on("hyprland.start")`, Niri — `spawn-at-startup`) перечитывает кэш последних обоев (`~/.cache/wall-colors/last`) и заново прогоняет пайплайн.
-- **Fallback:** если `matugen` не установлен или упал — интерфейс остаётся на дефолтной Obsidian Violet (статичные цвета в шаблонах `hyprland.lua` и `niri/config.kdl`).
-- **Niri-специфика:** `config.kdl` не поддерживает `include`, поэтому `wall-colors` подставляет цвета в конкретные ключи (`active-gradient`, `inactive-color`, `insert-hint color`, `backdrop-color`) через `sed`. Остальные настройки `config.kdl` не трогаются.
 
 ---
 
@@ -114,8 +98,8 @@
 | :--- | :--- |
 | `Super + Enter` | Открыть эмулятор терминала (Kitty) |
 | `Super + D` | Меню запуска приложений (Fuzzel) |
-| `Super + A` | **Случайные обои + палитра из них (`wall-random` → `wall-colors --colors-only`) с 144Hz wipe-шторкой** |
-| `Super + W` | Интерактивное меню выбора обоев из `~/wallpapers` (Fuzzel + `awww`) + перегенерация палитры |
+| `Super + A` | **Случайные обои в 1 клик с 144Hz wipe-шторкой (`wall-random`) + перегенерация палитры matugen** |
+| `Super + W` | Интерактивное меню выбора обоев из `~/wallpapers` (Fuzzel + `awww`) + перегенерация палитры matugen |
 | `Super + V` | **Переключить окно в плавающий / тайловый режим (Floating Toggle)** |
 | `Super + Shift + V` | **История буфера обмена (Cliphist + Fuzzel)** |
 | `Super + N` | Восстановить последнее скрытое уведомление (`makoctl restore`) |
@@ -255,6 +239,7 @@ exec zsh
 * `cpush "сообщение"` — автоматически добавить отслеживаемые файлы, закоммитить и запушить в `main`.
 * `cpull` — подтянуть свежие изменения с GitHub без лишнего ребейза.
 * `aider-dotfiles <файлы>` — запустить терминального AI-ассистента для точечной правки конфигов.
+* `matugen image <путь к обоям>` — вручную пересобрать цветовую схему из любой картинки.
 
   ## (︶︹︶) Лицензия
 
