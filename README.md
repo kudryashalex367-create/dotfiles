@@ -66,21 +66,21 @@
 <a id="screenshots"></a>
 ## (☞ﾟヮﾟ)☞ Скриншоты
 
-### (ง •̀_•́)ง Kitty (Obsidian Violet + Альтернативные глифы)
+### (ง •̀_•́)ง Kitty (Динамическая тема)
 
-<img width="1920" height="1080" alt="Терминал Kitty" src="https://github.com/user-attachments/assets/d9374899-04b3-4da5-84fb-7541dc64075d" />
+<img width="1920" height="1080" alt="изображение" src="https://github.com/user-attachments/assets/3e5fdd3c-cf52-422c-809b-63b5e370efde" />
 
 ### ヽ(´▽\`)/ Меню приложений Fuzzel (Скруглённый выбор)
 
-<img width="1920" height="1080" alt="Меню Fuzzel" src="https://github.com/user-attachments/assets/b00d2c73-017c-4ed6-aa48-d468aa745c5d" />
+<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/4631dbc7-7d97-4210-92fb-0f50617a6963" />
 
 ### ಠ_ಠ Двухэтажный экран блокировки (Hyprlock)
 
-<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/d2343fb1-603c-4172-a3eb-650917234ac9" />
+<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/f714f841-f3cf-4ed2-be20-b22fff5afb06" />
 
 ### (๑•̀ㅂ•́)و Всплывающая шпаргалка по хоткеям (Fuzzel + keybinds)
 
-<img width="1920" height="1080" alt="keybinds_fuzzel" src="https://github.com/user-attachments/assets/4584abe4-04e6-4941-8c3f-42c923e04b09" />
+<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/aac3ccf6-1437-42ee-9e94-db56de700452" />
 
 ---
 
