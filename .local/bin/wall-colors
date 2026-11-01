@@ -33,14 +33,22 @@ if (( colors_only == 0 )); then
     awww img "$img" 2>/dev/null || true
 fi
 
-# 2. Палитра (M3 fidelity: тон ведёт от цвета обоев)
+# 2. Палитра (M3). Тип и приоритет цвета можно переопределить из окружения,
+#    не редактируя файл:
+#      PALETTE_TYPE=scheme-vibrant PALETTE_PREFER=saturation wall-random
+#    Дефолты — связка, проверенная на текущей сборке matugen
+#    (scheme-fidelity + saturation): акцент максимально насыщенный.
+#    Набор допустимых --type/--prefer зависит от версии: смотри
+#    `matugen --help`. Неподдерживаемое значение валит matugen — тогда
+#    переменную просто не задавай.
 # </dev/null: matugen 4.x со stdin-TTY уходит в интерактивный выбор цвета и
 # падает с "not a terminal", если stdout/stderr перенаправлены.
-# --prefer darkness: при нескольких доминирующих цветах детерминированно
-# выбираем самый тёмный — под наш тёмный режим. Без TTY выбор не интерактивен.
-if ! matugen_out=$(matugen image "$img" --mode dark --type scheme-fidelity --prefer darkness </dev/null 2>&1); then
+palette_type="${PALETTE_TYPE:-scheme-fidelity}"
+palette_prefer="${PALETTE_PREFER:-saturation}"
+if ! matugen_out=$(matugen image "$img" --mode dark --type "$palette_type" --prefer "$palette_prefer" </dev/null 2>&1); then
     echo "$matugen_out" >&2
     echo "matugen упал — см. ошибку выше" >&2
+    echo "если ругается на --type/--prefer: сбрось PALETTE_TYPE/PALETTE_PREFER и сверься с matugen --help" >&2
     exit 1
 fi
 

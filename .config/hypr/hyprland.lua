@@ -150,13 +150,15 @@ hl.config({
         rounding       = 16,
         rounding_power = 2,
 
-        active_opacity   = 1.0,
-        inactive_opacity = 0.95,
+        active_opacity = 1.0,
+        -- Середина между чистой альфой и сильным затемнением: чуть
+        -- прозрачности + чуть dim, чтобы фокус читался без «вуали».
+        inactive_opacity = 0.975,
 
-        -- Затемнение неактивных окон (фокус на активном)
+        -- Умеренное затемнение неактивных окон — заметно, но не грязно
         dim_inactive = true,
-        dim_strength = 0.08,
-        dim_special  = 0.3,
+        dim_strength = 0.055,
+        dim_special  = 0.2,
 
         -- Мягкая тень под окнами для объёма
         shadow = {
