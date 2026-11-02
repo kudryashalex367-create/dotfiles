@@ -13,7 +13,7 @@
 
 Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная, вылизанная и сверхпроизводительная сборка рабочей станции на базе динамического **Hyprland** и классического окружения **GNOME 51**. Цветовая схема генерируется из текущих обоев через **matugen** (Material You), а **Obsidian Violet & Soft Lavender** остаётся базовой темой по умолчанию. Управление конфигурациями реализовано через концепцию **Git Bare Repository**.
 
-> (´・ω・`) Конфиги **Niri** переехали в отдельную ветку [`niri`](../../tree/niri) — там сохранена прежняя сборка со скроллинговым тайлингом.
+> (´・ω・\`) Конфиги **Niri** переехали в отдельную ветку [`niri`](../../tree/niri) — там сохранена прежняя сборка со скроллинговым тайлингом.
 
 ---
 
@@ -25,6 +25,7 @@
 - [Горячие клавиши](#hotkeys)
 - [Быстрая установка](#install)
 - [Восстановление пакетов](#packages)
+- [Как это сделано](#how)
 - [Управление конфигурациями](#manage)
 
 <a id="specs"></a>
@@ -39,7 +40,7 @@
 * (✿◠‿◠) **Browser:** Firefox (uBlock Origin, Zero-Bloat)
 * ( ͡° ͜ʖ ͡°) **Terminal:** Kitty 0.49+ (OpenType глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
 * (づ｡◕‿‿◕｡)づ **Shell:** Zsh 5.9.2 + Oh My Zsh + Powerlevel10k (Lean 8-colors)
-* ヽ(´▽`)/ **UI Suite:** Fuzzel (Overlay скругление 16px), Mako (Obsidian Violet Glass, 23MB RAM), Hyprlock, awww (144Hz Wipe Engine)
+* ヽ(´▽\`)/ **UI Suite:** Fuzzel (Overlay скругление 16px), Mako (Obsidian Violet Glass, 23MB RAM), Hyprlock, awww (144Hz Wipe Engine)
 * (⌐■_■) **Theming:** matugen: палитра Material You из обоев, шаблоны для Kitty, Fuzzel, Mako и Hyprlock
 * (｀・ω・´) **Cursor:** Bibata-Modern-Ice (24px сквозная синхронизация во всех слоях)
 * (ง •̀_•́)ง **Bootloader:** systemd-boot
@@ -54,33 +55,33 @@
 * (︶︹︶) **Безбаровый Дзен (Barless Setup):** 100% площади экрана отдано коду и контенту — никаких лишних панелей задач и системного мусора.
 * (o゜▽゜)o☆ **Трёхмерный объём и тени:** Окна парят над экраном благодаря мягким рассеянным теням (`#15111fcc`) с радиусом 20–30px.
 * ಠ_ಠ **Приглушение неактивных окон:** Тонкое затемнение неактивных окон на 5–8% (`dim_inactive` в Hyprland).
-* ヽ(´▽`)/ **Живая кинематика и Overshoot:** Кривая `popIn` (`0.05 0.9 0.1 1.05`) с лёгким пятипроцентным микро-отскоком при открытии окон.
+* ヽ(´▽\`)/ **Живая кинематика и Overshoot:** Кривая `popIn` (`0.05 0.9 0.1 1.05`) с лёгким пятипроцентным микро-отскоком при открытии окон.
 * (⌐■_■) **Аппаратный Dual-Kawase Блюр:** Чистое матовое стекло без артефактов на скруглениях Fuzzel и Mako (`ignore_alpha`).
 * (ノ°益°)ノ **Киберспортивный Tearing для игр:** В Hyprland включён моментальный скан-аут (`immediate = true`) строго для игр (CS2), при этом рабочий стол остаётся на 100% плавным без разрывов кадров.
 * (•̀ᴗ•́)و **Ультра-легкий Mako (23 MB RAM):** Моментальные уведомления с отступами `outer-margin=16`, сидящими точно по контуру карточки.
 * (つ◉益◉)つ **Рандомайзер обоев (`Win + A`):** Мгновенная плавная смена артов через `awww` на 144 Гц без открытия лишних меню.
-* ┐(´д`)┌ **Мобильный мост Termux:** Прямая связь со смартфоном по ADB/SSH с поддержкой SponsorBlock и 8-поточного скачивания через `aria2c`.
+* ┐(´д\`)┌ **Мобильный мост Termux:** Прямая связь со смартфоном по ADB/SSH с поддержкой SponsorBlock и 8-поточного скачивания через `aria2c`.
 
 ---
 
 <a id="screenshots"></a>
 ## (☞ﾟヮﾟ)☞ Скриншоты
 
-### (ง •̀_•́)ง Kitty (Obsidian Violet + Альтернативные глифы)
+### (ง •̀_•́)ง Kitty (Динамическая тема)
 
-<img width="1920" height="1080" alt="Терминал Kitty" src="https://github.com/user-attachments/assets/d9374899-04b3-4da5-84fb-7541dc64075d" />
+<img width="1920" height="1080" alt="изображение" src="https://github.com/user-attachments/assets/3e5fdd3c-cf52-422c-809b-63b5e370efde" />
 
-### ヽ(´▽`)/ Меню приложений Fuzzel (Скруглённый выбор)
+### ヽ(´▽\`)/ Меню приложений Fuzzel (Скруглённый выбор)
 
-<img width="1920" height="1080" alt="Меню Fuzzel" src="https://github.com/user-attachments/assets/b00d2c73-017c-4ed6-aa48-d468aa745c5d" />
+<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/4631dbc7-7d97-4210-92fb-0f50617a6963" />
 
 ### ಠ_ಠ Двухэтажный экран блокировки (Hyprlock)
 
-<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/d2343fb1-603c-4172-a3eb-650917234ac9" />
+<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/f714f841-f3cf-4ed2-be20-b22fff5afb06" />
 
 ### (๑•̀ㅂ•́)و Всплывающая шпаргалка по хоткеям (Fuzzel + keybinds)
 
-<img width="1920" height="1080" alt="keybinds_fuzzel" src="https://github.com/user-attachments/assets/4584abe4-04e6-4941-8c3f-42c923e04b09" />
+<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/aac3ccf6-1437-42ee-9e94-db56de700452" />
 
 ---
 
@@ -187,7 +188,7 @@ config checkout -f
 config config --local status.showUntrackedFiles no
 ```
 
-> (´・ω・`) Нужен Niri? Вместо `config checkout -f` используй `config checkout -f niri`.
+> (´・ω・\`) Нужен Niri? Вместо `config checkout -f` используй `config checkout -f niri`.
 
 ---
 
@@ -221,6 +222,14 @@ exec zsh
 ---
 
 <a id="manage"></a>
+<a id="how"></a>
+
+## (¬‿¬) Как это сделано
+
+Честно: основную часть конфигов и скриптов пишет ИИ. С тех пор как я начал работать через [aider](https://aider.chat) (модель DeepSeek V4.1 Flash), на него приходится примерно 4/5 добавленных строк в этом репозитории, а README пишет Claude. Моя часть: ставлю задачи, читаю диффы, проверяю ошибки конфигав, проверяю на своей системе и решаю, что оставить, а что откатить.
+
+Если интересно, как это видно в истории: коммиты без галочки Verified сделаны через aider, а с галочкой это правки через веб-интерфейс GitHub (в основном README).
+
 ## (≧▽≦) 4. Управление конфигурациями
 
 Управление репозиторием осуществляется через встроенные алиасы и функции в `.zshrc`:
