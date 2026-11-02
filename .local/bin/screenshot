@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+DIR="$HOME/Pictures/Screenshots"
+mkdir -p "$DIR"
+FILE="$DIR/Screenshot_$(date +%Y-%m-%d_%H-%M-%S).png"
+
+case "$1" in
+    area)
+        GEOM=$(slurp) || exit 0
+        grim -g "$GEOM" "$FILE" && wl-copy < "$FILE" && notify-send -i "$FILE" "Скриншот сделан" "Сохранено в буфер и $DIR"
+        ;;
+    window)
+        BOX=$(hyprctl -j activewindow | jq -r '"\(.at[0]),\(.at[1]) \(.size[0])x\(.size[1])"')
+        grim -g "$BOX" "$FILE" && wl-copy < "$FILE" && notify-send -i "$FILE" "Скриншот окна" "Сохранено в буфер и $DIR"
+        ;;
+    full|*)
+        grim "$FILE" && wl-copy < "$FILE" && notify-send -i "$FILE" "Скриншот экрана" "Сохранено в буфер и $DIR"
+        ;;
+esac
