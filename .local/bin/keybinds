@@ -25,14 +25,22 @@ LIST=$(
                 -e "s/mainMod \.\. /$MOD_DISPLAY/" \
                 -e 's/ \+ /+/g' \
                 -e 's/"//g' \
-                -e 's/\+[[:space:]]*\.\.[[:space:]]*i/1..9/' \
+                -e 's/\+[[:space:]]*\.\.[[:space:]]*i/+1..9/' \
                 -e 's/\bSUPER\b/Super/g' \
                 -e 's/\bSHIFT\b/Shift/g' \
                 -e 's/\bCTRL\b/Ctrl/g' \
                 -e 's/\bALT\b/Alt/g' \
+                -e 's/code:61/\//g' \
+                -e 's/code:39/S/g' \
+                -e 's/Page_Up/PageUp/g' \
+                -e 's/Page_Down/PageDown/g' \
+                -e 's/mouse_up/WheelUp/g' \
+                -e 's/mouse_down/WheelDown/g' \
+                -e 's/mouse:272/LMB/g' \
+                -e 's/mouse:273/RMB/g' \
                 -e 's/^[[:space:]]+//' \
                 -e 's/[[:space:]]+$//' \
-            | awk 'NF'
+            | awk 'NF && !seen[$0]++'
     fi
 )
 
@@ -40,27 +48,44 @@ LIST=$(
 if [[ -z "$LIST" ]]; then
     LIST=$(
         cat <<'EOF'
-Super+ENTER     — Kitty
-Super+D         — Fuzzel
-Super+Q         — закрыть окно
-Super+SHIFT+E   — выход из сессии
-Super+L         — hyprlock
-Super+V         — плавающее/плиточное
-Super+A         — случайные обои
-Super+W         — выбор обоев
-Super+F         — maximized
-Super+SHIFT+F   — fullscreen
-Super+C         — центр окна
-Super+R         — togglesplit
-Super+1..9      — воркспейс
-Super+SHIFT+1..9— окно на воркспейс
-Super+PAGE_UP   — соседний воркспейс
-Super+PAGE_DOWN — соседний воркспейс
-Super+mouse_up  — соседний воркспейс
-Super+mouse_down— соседний воркспейс
-CTRL+SHIFT+39   — скриншот области
-CTRL+PRINT      — скриншот экрана
-ALT+PRINT       — скриншот окна
+Super+ENTER        — Kitty
+Super+D            — Fuzzel
+Super+E            — Nautilus
+Super+Q            — закрыть окно
+Super+V            — плавающее/плиточное
+Super+P            — pseudo-tile
+Super+N            — вернуть уведомления
+Super+SHIFT+N      — закрыть все уведомления
+Super+SHIFT+V      — история буфера (cliphist)
+Super+L            — hyprlock
+Super+SHIFT+Q      — выход из сессии
+Super+A            — случайные обои
+Super+W            — выбор обоев
+Super+F            — maximized
+Super+SHIFT+F      — fullscreen
+Super+C            — центр окна
+Super+R            — togglesplit
+Super+G            — группа окон (табы)
+Super+ALT+Left     — предыдущее окно в группе
+Super+ALT+Right    — следующее окно в группе
+Super+ALT+SHIFT+*  — окно в группу
+Super+ALT+L        — заморозить группу
+Super+CTRL+*       — ресайз окна
+Super+ALT+CTRL+*   — пиксельный ресайз floating
+Super+CTRL+SHIFT+* — swap окон
+Super+S            — scratchpad
+Super+SHIFT+S      — окно в scratchpad
+Super+SHIFT+R      — reload конфига
+Super+SHIFT+P      — прокси вкл/выкл
+Super+1..9         — воркспейс
+Super+SHIFT+1..9   — окно на воркспейс
+Super+PageUp       — соседний воркспейс
+Super+PageDown     — соседний воркспейс
+Super+WheelUp      — соседний воркспейс
+Super+WheelDown    — соседний воркспейс
+Ctrl+Shift+S       — скриншот области
+Ctrl+Print         — скриншот экрана
+Alt+Print          — скриншот окна
 EOF
     )
 fi

@@ -1,0 +1,146 @@
+#!/usr/bin/env bash
+# ~/.local/bin/proxy — единое управление прокси.
+#
+#   proxy on       включить
+#   proxy off      выключить
+#   proxy toggle   переключить
+#   proxy status   показать состояние
+#   proxy restore  применить сохранённое (вызывается из AUTOSTART)
+#
+# Прокси применяется в трёх местах, чтобы не дублировать его в конфигах:
+#   1. env Hyprland (hyprctl keyword env) — для новых процессов композитора;
+#   2. GSettings — для GTK/GNOME-приложений (WebKitGTK и пр.);
+#   3. ~/.config/environment.d/proxy.conf — для systemd --user (сервисы,
+#      которые Hyprland не порождает).
+#
+# Оговорка: Hyprland умеет только выставлять переменную, но не удалять её.
+# «Выключение» пишет пустую строку — curl/wget и большинство библиотек
+# считают это отсутствием прокси.
+
+set -euo pipefail
+
+PROXY_HOST="127.0.0.1"
+HTTP_PORT="10809"
+SOCKS_PORT="10808"
+HTTP_URL="http://${PROXY_HOST}:${HTTP_PORT}"
+SOCKS_URL="socks5://${PROXY_HOST}:${SOCKS_PORT}"
+# Локальные сети, docker-подсети и mDNS — мимо прокси
+NO_PROXY_LIST="localhost,127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,*.local"
+
+STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/proxy"
+ENV_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/environment.d/proxy.conf"
+
+mkdir -p "$(dirname "$STATE_FILE")" "$(dirname "$ENV_FILE")"
+
+hypr_env() {
+    command -v hyprctl >/dev/null 2>&1 || return 0
+    hyprctl keyword env "$1" "$2" >/dev/null
+}
+
+apply_hypr() {
+    local http="$1" socks="$2" no="$3"
+
+    hypr_env http_proxy  "$http"
+    hypr_env https_proxy "$http"
+    hypr_env all_proxy   "$socks"
+    hypr_env HTTP_PROXY  "$http"
+    hypr_env HTTPS_PROXY "$http"
+    hypr_env ALL_PROXY   "$socks"
+    hypr_env no_proxy    "$no"
+    hypr_env NO_PROXY    "$no"
+}
+
+apply_gsettings() {
+    command -v gsettings >/dev/null 2>&1 || return 0
+
+    if [[ "$1" == "on" ]]; then
+        gsettings set org.gnome.system.proxy mode 'manual'
+        gsettings set org.gnome.system.proxy.http host "$PROXY_HOST"
+        gsettings set org.gnome.system.proxy.http port "$HTTP_PORT"
+        gsettings set org.gnome.system.proxy.https host "$PROXY_HOST"
+        gsettings set org.gnome.system.proxy.https port "$HTTP_PORT"
+        gsettings set org.gnome.system.proxy.socks host "$PROXY_HOST"
+        gsettings set org.gnome.system.proxy.socks port "$SOCKS_PORT"
+    else
+        gsettings set org.gnome.system.proxy mode 'none'
+    fi
+}
+
+apply_environment_d() {
+    if [[ "$1" == "on" ]]; then
+        cat > "$ENV_FILE" <<EOF
+# Сгенерировано ~/.local/bin/proxy — правьте скрипт, не этот файл.
+http_proxy=${HTTP_URL}
+https_proxy=${HTTP_URL}
+all_proxy=${SOCKS_URL}
+HTTP_PROXY=${HTTP_URL}
+HTTPS_PROXY=${HTTP_URL}
+ALL_PROXY=${SOCKS_URL}
+no_proxy=${NO_PROXY_LIST}
+NO_PROXY=${NO_PROXY_LIST}
+EOF
+    else
+        cat > "$ENV_FILE" <<EOF
+# Прокси отключён (~/.local/bin/proxy off).
+# Переменные не заданы намеренно: пустые значения перекрыли бы настройки
+# отдельных сервисов сильнее, чем полное отсутствие переменных.
+EOF
+    fi
+}
+
+notify() {
+    command -v notify-send >/dev/null 2>&1 || return 0
+    notify-send -a proxy -t 2000 "$1" "$2"
+}
+
+set_state() {
+    local state="$1"
+    echo "$state" > "$STATE_FILE"
+
+    if [[ "$state" == "on" ]]; then
+        apply_hypr "$HTTP_URL" "$SOCKS_URL" "$NO_PROXY_LIST"
+        apply_gsettings on
+        apply_environment_d on
+        notify "Прокси включён" "${HTTP_URL} / ${SOCKS_URL}"
+    else
+        # Hyprland не умеет unset — выставляем пустые значения.
+        apply_hypr "" "" "$NO_PROXY_LIST"
+        apply_gsettings off
+        apply_environment_d off
+        notify "Прокси выключен" "прямое подключение"
+    fi
+}
+
+current_state() {
+    if [[ -r "$STATE_FILE" ]]; then
+        cat "$STATE_FILE"
+    else
+        echo "on" # исторический дефолт: при входе прокси был включён
+    fi
+}
+
+case "${1:-status}" in
+    on)
+        set_state on
+        ;;
+    off)
+        set_state off
+        ;;
+    toggle)
+        if [[ "$(current_state)" == "on" ]]; then
+            set_state off
+        else
+            set_state on
+        fi
+        ;;
+    restore)
+        set_state "$(current_state)"
+        ;;
+    status)
+        echo "proxy: $(current_state)"
+        ;;
+    *)
+        echo "usage: proxy {on|off|toggle|status|restore}" >&2
+        exit 2
+        ;;
+esac

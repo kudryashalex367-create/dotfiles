@@ -56,15 +56,9 @@ hl.env("_JAVA_AWT_WM_NONREPARENTING", "1")     -- JetBrains и прочая Java
 -- AMD (Mesa): VA-API аппаратное декодирование через radeonsi
 hl.env("LIBVA_DRIVER_NAME", "radeonsi")
 
--- Прокси
-hl.env("http_proxy", "http://127.0.0.1:10809")
-hl.env("https_proxy", "http://127.0.0.1:10809")
-hl.env("all_proxy", "socks5://127.0.0.1:10808")
-hl.env("HTTP_PROXY", "http://127.0.0.1:10809")
-hl.env("HTTPS_PROXY", "http://127.0.0.1:10809")
-hl.env("ALL_PROXY", "socks5://127.0.0.1:10808")
-hl.env("no_proxy", "localhost,127.0.0.1,::1,192.168.0.0/16")
-hl.env("NO_PROXY", "localhost,127.0.0.1,::1,192.168.0.0/16")
+-- Прокси здесь не задаём: единственный источник правды —
+-- ~/.local/bin/proxy {on|off|toggle} (бинd SUPER+SHIFT+P).
+-- AUTOSTART вызывает `proxy restore`, чтобы состояние пережило ребут.
 
 
 -------------------
@@ -83,14 +77,9 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("wl-paste --watch cliphist store")
     hl.exec_cmd("gnome-keyring-daemon --start --components=secrets")
 
-    -- Настройки прокси через GSettings
-    hl.exec_cmd("gsettings set org.gnome.system.proxy mode 'manual'")
-    hl.exec_cmd("gsettings set org.gnome.system.proxy.http host '127.0.0.1'")
-    hl.exec_cmd("gsettings set org.gnome.system.proxy.http port 10809")
-    hl.exec_cmd("gsettings set org.gnome.system.proxy.https host '127.0.0.1'")
-    hl.exec_cmd("gsettings set org.gnome.system.proxy.https port 10809")
-    hl.exec_cmd("gsettings set org.gnome.system.proxy.socks host '127.0.0.1'")
-    hl.exec_cmd("gsettings set org.gnome.system.proxy.socks port 10808")
+    -- Прокси: применяем сохранённое состояние (env + GSettings + environment.d).
+    -- Всё внутри скрипта, в конфиге прокси больше нигде не дублируется.
+    hl.exec_cmd("bash -c '$HOME/.local/bin/proxy restore'")
 
     -- Настройки курсора
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-theme 'Bibata-Modern-Ice'")
@@ -201,21 +190,18 @@ hl.config({
         -- слоёв (fuzzel/mako). ignore_opacity = false — не тратим GPU
         -- на размытие под полностью непрозрачными окнами.
         --
-        -- Настройка «богатого» размытия:
-        --   size   — радиус блюра (главный фактор глубины);
-        --   passes — число проходов (сглаживает, убирает «квадраты»).
-        -- Стоимость ≈ size * passes, но new_optimizations снижает её
-        -- в разы. 10/3 — мягкое, но недорогое размытие; для «стекла»
-        -- можно пробовать 12-14 с passes = 3-4 на мощной GPU.
+        -- «Комки» и блочность — это большой size при малом passes:
+        -- Hyprland даунскейлит фон сильнее, чем успевает сгладить.
+        -- Рабочее соотношение — size 6-8 при passes 4.
+        -- noise убран: зерно на слоях читается как грязь, а не стекло.
         blur = {
             enabled           = true,
-            size              = 10,
-            passes            = 3,
-            noise             = 0.02,
-            contrast          = 1.1,
+            size              = 7,
+            passes            = 4,
+            contrast          = 1.0,
             brightness        = 1.0,
-            vibrancy          = 0.3,
-            vibrancy_darkness = 0.2,
+            vibrancy          = 0.15,
+            vibrancy_darkness = 0.1,
             popups            = true,
             ignore_opacity    = false,
             new_optimizations = true,
@@ -436,6 +422,14 @@ hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = tru
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"),       { locked = true })
 hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
+-- Перезагрузка конфига без выхода из сессии. Hyprland обычно сам
+-- подхватывает правки, бинд — на случай, когда не подхватил.
+hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("hyprctl reload"))
+
+-- Прокси: переключение on/off (env Hyprland + GSettings + systemd --user).
+-- Состояние запоминается в ~/.local/state/proxy и восстанавливается при входе.
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/proxy toggle'"))
+
 ---------------------
 ---- SCREENSHOTS ----
 ---------------------
@@ -464,13 +458,15 @@ hl.window_rule({
     float = true,
 })
 
--- Игры: tearing только для игровых окон (главный переключатель allow_tearing = true, без immediate ничего не рвётся)
+-- Игры: tearing только для игровых окон (главный переключатель allow_tearing = true, без immediate ничего не рвётся).
+-- no_blur: блюр под игрой не нужен и зря жжёт GPU в кадре.
 hl.window_rule({
     name  = "games-tearing",
     match = {
         class = "^(cs2|steam_app_.*|horizon)$",
     },
     immediate = true,
+    no_blur   = true,
 })
 
 -- Страховка: kitty всегда открывается в обычном режиме, не fullscreen
@@ -480,6 +476,16 @@ hl.window_rule({
         class = "^(kitty)$",
     },
     fullscreen = false,
+})
+
+-- Лёгкая прозрачность терминала. Значения подобраны так, чтобы текст
+-- оставался контрастным; второй параметр — для неактивного окна.
+hl.window_rule({
+    name    = "kitty-opacity",
+    match   = {
+        class = "^(kitty)$",
+    },
+    opacity = "0.97 0.95",
 })
 
 -- Эффект размытия для лончера Fuzzel / Launcher
@@ -512,11 +518,43 @@ hl.layer_rule({
     blur  = true,
 })
 
+-- Оверлей выделения области скриншота (slurp / grimblast / hyprshot):
+-- под ним полезно видеть размытый фон, чтобы рамка читалась на пёстром.
+hl.layer_rule({
+    name  = "blur-selection",
+    match = {
+        namespace = "^(selection|slurp|grim|hyprshot)$",
+    },
+    blur = true,
+})
+
 -- Системные диалоги — плавающими по центру, а не плиткой
 hl.window_rule({
     name  = "float-dialogs",
     match = {
         class = "^(pavucontrol|blueman-manager|nm-connection-editor|org.gnome.FileRoller|hyprland-share-picker)$",
+    },
+    float  = true,
+    center = true,
+})
+
+-- Файловые диалоги порталов (GTK/KDE/zenity): открываются поверх,
+-- плавающими и по центру, а не делят тайл с основным окном.
+hl.window_rule({
+    name  = "float-file-dialogs",
+    match = {
+        class = "^(xdg-desktop-portal-gtk|xdg-desktop-portal-kde|zenity|yad)$",
+    },
+    float  = true,
+    center = true,
+})
+
+-- PiP (Firefox/Chrome/YouTube): маленькое окно поверх, по центру.
+-- Размер не навязываем — сервис сам выставляет его при первом показе.
+hl.window_rule({
+    name  = "pip-float",
+    match = {
+        title = "^(Picture-in-Picture|Picture in picture)$",
     },
     float  = true,
     center = true,
