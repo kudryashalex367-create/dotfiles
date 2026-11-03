@@ -60,9 +60,11 @@ hl.config({
         pass_mouse_when_bound = false,
         scroll_event_delay    = 0,
 
-        -- Как в Niri: возврат на прошлый воркспейс, скрытие special при
-        -- смене воркспейса и циклы (9 → 1) вместо упора в край.
-        workspace_back_and_forth         = true,
+        -- Скрытие special при смене воркспейса и циклы (9 → 1) вместо
+        -- упора в край. workspace_back_and_forth выключен: повторное
+        -- нажатие Mod+N остаётся на воркспейсе N, а не возвращает
+        -- на недавний.
+        workspace_back_and_forth         = false,
         hide_special_on_workspace_change = true,
         allow_workspace_cycles           = true,
     },
