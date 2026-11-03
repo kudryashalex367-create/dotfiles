@@ -53,6 +53,9 @@ hl.env("QT_QPA_PLATFORM", "wayland;xcb")       -- ";xcb" — fallback, если 
 hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
 hl.env("_JAVA_AWT_WM_NONREPARENTING", "1")     -- JetBrains и прочая Java
 
+-- AMD (Mesa): VA-API аппаратное декодирование через radeonsi
+hl.env("LIBVA_DRIVER_NAME", "radeonsi")
+
 -- Прокси
 hl.env("http_proxy", "http://127.0.0.1:10809")
 hl.env("https_proxy", "http://127.0.0.1:10809")
@@ -70,7 +73,9 @@ hl.env("NO_PROXY", "localhost,127.0.0.1,::1,192.168.0.0/16")
 hl.on("hyprland.start", function ()
     -- Утилиты и демоны
     hl.exec_cmd("mako")
-    hl.exec_cmd("hypridle") -- автоблокировка: DPMS + hyprlock (см. hypridle.conf)
+    -- Автоблокировка: DPMS + hyprlock (см. hypridle.conf).
+    -- pidof-страховка: при повторном hyprland.start второй демон не нужен.
+    hl.exec_cmd("bash -c 'pidof hypridle >/dev/null || hypridle'")
     hl.exec_cmd("awww-daemon")
     -- Восстанавливаем палитру от последних обоев: hyprctl keyword не переживает перезапуск.
     hl.exec_cmd("bash -c '$HOME/.local/bin/wall-restore'")
@@ -132,6 +137,15 @@ hl.config({
         -- и монитор включается с задержкой.
         mouse_move_enables_dpms      = true,
         key_press_enables_dpms       = true,
+    },
+})
+
+-- AMD + Wayland: прямой скан-аут для fullscreen-игр снижает задержку
+-- (композитор отдаёт кадр в plane напрямую). Если в твоей версии
+-- Hyprland ключа ещё нет — configerrors покажет, тогда блок убрать.
+hl.config({
+    render = {
+        direct_scanout = true,
     },
 })
 
@@ -228,6 +242,12 @@ hl.config({
     },
 })
 
+-- Постоянные воркспейсы 1-5: не «схлопываются» при пустоте (как в Niri).
+-- Диапазон "1-5" в workspace_rule не поддерживается — задаём циклом.
+for i = 1, 5 do
+    hl.workspace_rule({ workspace = tostring(i), persistent = true })
+end
+
 --------------------
 ---- ANIMATIONS ----
 --------------------
@@ -285,6 +305,12 @@ hl.config({
     binds = {
         pass_mouse_when_bound = false,
         scroll_event_delay    = 0,
+
+        -- Как в Niri: возврат на прошлый воркспейс, скрытие special при
+        -- смене воркспейса и циклы (9 → 1) вместо упора в край.
+        workspace_back_and_forth         = true,
+        hide_special_on_workspace_change = true,
+        allow_workspace_cycles           = true,
     },
 })
 
@@ -304,12 +330,15 @@ hl.bind(mainMod .. " + Q",      hl.dsp.window.close())
 -- История буфера обмена (cliphist наполняется в AUTOSTART)
 hl.bind(mainMod .. " + SHIFT + V",
     hl.dsp.exec_cmd("bash -c 'cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'"))
-hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exit())
+-- Выход из сессии: подальше от SUPER+E (nautilus), чтобы не промахнуться
+hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exit())
 
--- Блокировка экрана (с переключением на английский).
--- Через loginctl, а не напрямую hyprlock: единый путь с hypridle
--- (general.lock_cmd) и без риска второго экземпляра.
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout current 0 && loginctl lock-session'"))
+-- Блокировка экрана (с переключением раскладки на US).
+-- Раньше шло через loginctl lock-session → hypridle.lock_cmd: если
+-- hypridle не поднят, loginctl молчит и экран не блокируется.
+-- Теперь зовём hyprlock напрямую с pidof-страховкой: работает всегда,
+-- второй экземпляр не запускается.
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout current 0 && (pidof hyprlock >/dev/null || hyprlock)'"))
 
 -- Плавающее / плиточное окно (нативный диспетчер Hyprland)
 hl.bind(mainMod .. " + V", hl.dsp.window.float())
@@ -327,6 +356,8 @@ hl.bind(mainMod .. " + F",         hl.dsp.window.fullscreen({ mode = "maximized"
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen({ mode = "fullscreen", action = "toggle" }))
 hl.bind(mainMod .. " + C",         hl.dsp.window.center())
 hl.bind(mainMod .. " + R",         hl.dsp.layout("togglesplit"))
+-- Pseudo-tile: окно занимает половину тайла (удобно для терминала/браузера)
+hl.bind(mainMod .. " + P",         hl.dsp.window.pseudo())
 
 -- Фокус окон (стрелки)
 hl.bind(mainMod .. " + Left",  hl.dsp.focus({ direction = "left" }))
@@ -339,6 +370,36 @@ hl.bind(mainMod .. " + SHIFT + Left",  hl.dsp.window.move({ direction = "left" }
 hl.bind(mainMod .. " + SHIFT + Right", hl.dsp.window.move({ direction = "right" }))
 hl.bind(mainMod .. " + SHIFT + Up",    hl.dsp.window.move({ direction = "up" }))
 hl.bind(mainMod .. " + SHIFT + Down",  hl.dsp.window.move({ direction = "down" }))
+
+-- Группы окон (как в Niri): объединяем окна в табы.
+-- Через hyprctl dispatch: имена group-функций в Lua-API не гарантированы.
+hl.bind(mainMod .. " + G", hl.dsp.exec_cmd("hyprctl dispatch togglegroup"))
+hl.bind(mainMod .. " + ALT + Left",  hl.dsp.exec_cmd("hyprctl dispatch changegroupactive b"))
+hl.bind(mainMod .. " + ALT + Right", hl.dsp.exec_cmd("hyprctl dispatch changegroupactive f"))
+hl.bind(mainMod .. " + ALT + SHIFT + Left",  hl.dsp.exec_cmd("hyprctl dispatch moveintogroup l"))
+hl.bind(mainMod .. " + ALT + SHIFT + Right", hl.dsp.exec_cmd("hyprctl dispatch moveintogroup r"))
+hl.bind(mainMod .. " + ALT + SHIFT + Up",    hl.dsp.exec_cmd("hyprctl dispatch moveintogroup u"))
+hl.bind(mainMod .. " + ALT + SHIFT + Down",  hl.dsp.exec_cmd("hyprctl dispatch moveintogroup d"))
+hl.bind(mainMod .. " + ALT + L",         hl.dsp.exec_cmd("hyprctl dispatch lockgroups lock"))
+hl.bind(mainMod .. " + ALT + SHIFT + L", hl.dsp.exec_cmd("hyprctl dispatch lockgroups unlock"))
+
+-- Ресайз с клавиатуры: resizeactive работает и для тайлов, и для floating
+hl.bind(mainMod .. " + CTRL + Left",  hl.dsp.exec_cmd("hyprctl dispatch resizeactive -40 0"))
+hl.bind(mainMod .. " + CTRL + Right", hl.dsp.exec_cmd("hyprctl dispatch resizeactive 40 0"))
+hl.bind(mainMod .. " + CTRL + Up",    hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 -40"))
+hl.bind(mainMod .. " + CTRL + Down",  hl.dsp.exec_cmd("hyprctl dispatch resizeactive 0 40"))
+
+-- Точный пиксельный ресайз для floating-окон (resizewindowpixel)
+hl.bind(mainMod .. " + ALT + CTRL + Left",  hl.dsp.exec_cmd("hyprctl dispatch resizewindowpixel -40 0,activewindow"))
+hl.bind(mainMod .. " + ALT + CTRL + Right", hl.dsp.exec_cmd("hyprctl dispatch resizewindowpixel 40 0,activewindow"))
+hl.bind(mainMod .. " + ALT + CTRL + Up",    hl.dsp.exec_cmd("hyprctl dispatch resizewindowpixel 0 -40,activewindow"))
+hl.bind(mainMod .. " + ALT + CTRL + Down",  hl.dsp.exec_cmd("hyprctl dispatch resizewindowpixel 0 40,activewindow"))
+
+-- Перестановка окон (swapwindow) вместо перемещения
+hl.bind(mainMod .. " + CTRL + SHIFT + Left",  hl.dsp.exec_cmd("hyprctl dispatch swapwindow l"))
+hl.bind(mainMod .. " + CTRL + SHIFT + Right", hl.dsp.exec_cmd("hyprctl dispatch swapwindow r"))
+hl.bind(mainMod .. " + CTRL + SHIFT + Up",    hl.dsp.exec_cmd("hyprctl dispatch swapwindow u"))
+hl.bind(mainMod .. " + CTRL + SHIFT + Down",  hl.dsp.exec_cmd("hyprctl dispatch swapwindow d"))
 
 -- Рабочие столы 1-9
 for i = 1, 9 do
