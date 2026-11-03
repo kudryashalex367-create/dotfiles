@@ -91,9 +91,6 @@ hl.on("hyprland.start", function ()
     hl.exec_cmd("gsettings set org.gnome.desktop.interface cursor-size 24")
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Ice 24")
 
-    -- Гарантим поглощение SUPER + scroll на случай, если hl.config({binds=...})
-    -- не применился: колесо меняет воркспейс и не уходит в приложение.
-    hl.exec_cmd("hyprctl keyword binds:pass_mouse_when_bound false")
 end)
 
 
@@ -118,6 +115,17 @@ hl.config({
     -- Курсор не мешает при наборе текста (аналог hide-when-typing в niri)
     cursor = {
         hide_on_key_press = true,
+    },
+})
+
+-- VFR в новых версиях Hyprland управляется автоматически:
+-- опция misc:vfr удалена, задавать её больше не нужно.
+hl.config({
+    misc = {
+        disable_hyprland_logo        = true,
+        disable_splash_rendering     = true,
+        animate_manual_resizes       = false,
+        animate_mouse_windowdragging = false,
     },
 })
 
@@ -160,11 +168,11 @@ hl.config({
         dim_strength = 0.055,
         dim_special  = 0.2,
 
-        -- Мягкая тень под окнами для объёма
+        -- Мягкая тень под окнами (range/power снижены — дешевле для композитора)
         shadow = {
             enabled      = true,
-            range        = 20,
-            render_power = 3,
+            range        = 12,
+            render_power = 2,
             color        = colors.shadow_color,
         },
 
@@ -172,9 +180,16 @@ hl.config({
         -- непрозрачными окнами, поэтому блюр реально виден только у
         -- слоёв (fuzzel/mako). ignore_opacity = false — не тратим GPU
         -- на размытие под полностью непрозрачными окнами.
+        --
+        -- Настройка «богатого» размытия:
+        --   size   — радиус блюра (главный фактор глубины);
+        --   passes — число проходов (сглаживает, убирает «квадраты»).
+        -- Стоимость ≈ size * passes, но new_optimizations снижает её
+        -- в разы. 10/3 — мягкое, но недорогое размытие; для «стекла»
+        -- можно пробовать 12-14 с passes = 3-4 на мощной GPU.
         blur = {
             enabled           = true,
-            size              = 8,
+            size              = 10,
             passes            = 3,
             noise             = 0.02,
             contrast          = 1.1,
@@ -184,6 +199,10 @@ hl.config({
             popups            = true,
             ignore_opacity    = false,
             new_optimizations = true,
+            -- xray = true размывает фон «сквозь» все слои (как матовое
+            -- стекло на обоях), а не только окно под слоем. Дешевле и
+            -- ровнее, но слой перестаёт «учитывать» окна под собой.
+            -- xray = true,
         },
     },
 

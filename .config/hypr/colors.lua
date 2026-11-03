@@ -3,7 +3,7 @@
 -- lua-обёртка Hyprland принимает одиночный цвет и отвергает градиентный
 -- суффикс `0deg` ("invalid color"), поэтому здесь только rgba(...).
 return {
-    active_border   = "rgba(ffe45bff)",
-    inactive_border = "rgba(4c4733ff)",
-    shadow_color    = "rgba(16130acc)",
+    active_border   = "rgba(d4dde9ff)",
+    inactive_border = "rgba(44474bff)",
+    shadow_color    = "rgba(131314cc)",
 }
