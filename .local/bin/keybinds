@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 # Шпаргалка по хоткеям Hyprland (Mod = Super), открывается по Super+/
-# Читает текущий hyprland.lua и выводит полный список биндов в fuzzel -d.
+# Читает бинды из binds.lua (hyprland.lua — только загрузчик модулей)
+# и выводит полный список в fuzzel -d.
 
-CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/hyprland.lua"
+CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/binds.lua"
 
 # Имя модификатора берём из конфига (local mainMod = "SUPER"), по умолчанию Super
 MOD_DISPLAY="Super"
