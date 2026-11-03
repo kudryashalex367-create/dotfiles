@@ -71,15 +71,9 @@ hl.layer_rule({
     blur  = true,
 })
 
--- Оверлей выделения области скриншота (slurp / grimblast / hyprshot):
--- под ним полезно видеть размытый фон, чтобы рамка читалась на пёстром.
-hl.layer_rule({
-    name  = "blur-selection",
-    match = {
-        namespace = "^(selection|slurp|grim|hyprshot)$",
-    },
-    blur = true,
-})
+-- Оверлей выделения области скриншота.
+-- Правило с blur=true убрано: у slurp полностью прозрачный фон,
+-- поэтому Hyprland размывал весь рабочий стол и выделять было нечего.
 
 -- Системные диалоги — плавающими по центру, а не плиткой
 hl.window_rule({

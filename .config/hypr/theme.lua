@@ -97,6 +97,5 @@ hl.config({
         preserve_split       = true,
         smart_split          = true,
         force_split          = 0,
-        special_scale_factor = 0.9, -- окно scratchpad чуть меньше экрана
     },
 })
