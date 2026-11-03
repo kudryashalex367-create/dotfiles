@@ -15,22 +15,14 @@ end
 ------------------
 ---- MONITORS ----
 ------------------
--- Мониторы с герцовкой 144Hz
+-- Единственный монитор (ПК, DP-2, 1920x1080@144).
+-- "preferred" — это режим, который монитор объявил основным в EDID,
+-- и у многих панелей там 60 Гц даже при поддержке 144. Поэтому режим
+-- задан явно, а дальше идут fallback'и через запятую: если 144 Гц
+-- недоступен (кабель/порт/OSD монитора), Hyprland возьмёт следующий.
 hl.monitor({
     output   = "DP-2",
-    mode     = "1920x1080@144.00",
-    position = "auto",
-    scale    = "1",
-})
-hl.monitor({
-    output   = "HDMI-A-1",
-    mode     = "1920x1080@144.00",
-    position = "auto",
-    scale    = "1",
-})
-hl.monitor({
-    output   = "eDP-1",
-    mode     = "1920x1080@144.00",
+    mode     = "1920x1080@144.00,1920x1080@120.00,1920x1080@60.00,preferred",
     position = "auto",
     scale    = "1",
 })
@@ -53,6 +45,14 @@ hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Ice")
 hl.env("HYPRCURSOR_SIZE", "24")
 
+-- Wayland-нативность приложений (XWayland остаётся запасным вариантом)
+hl.env("ELECTRON_OZONE_PLATFORM_HINT", "auto") -- VS Code, Discord, Obsidian
+hl.env("MOZ_ENABLE_WAYLAND", "1")              -- Firefox
+hl.env("GDK_BACKEND", "wayland,x11")
+hl.env("QT_QPA_PLATFORM", "wayland;xcb")       -- ";xcb" — fallback, если нет qt6-wayland
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
+hl.env("_JAVA_AWT_WM_NONREPARENTING", "1")     -- JetBrains и прочая Java
+
 -- Прокси
 hl.env("http_proxy", "http://127.0.0.1:10809")
 hl.env("https_proxy", "http://127.0.0.1:10809")
@@ -70,6 +70,7 @@ hl.env("NO_PROXY", "localhost,127.0.0.1,::1,192.168.0.0/16")
 hl.on("hyprland.start", function ()
     -- Утилиты и демоны
     hl.exec_cmd("mako")
+    hl.exec_cmd("hypridle") -- автоблокировка: DPMS + hyprlock (см. hypridle.conf)
     hl.exec_cmd("awww-daemon")
     -- Восстанавливаем палитру от последних обоев: hyprctl keyword не переживает перезапуск.
     hl.exec_cmd("bash -c '$HOME/.local/bin/wall-restore'")
@@ -103,13 +104,12 @@ hl.config({
         kb_layout  = "us,ru",
         kb_options = "grp:win_space_toggle",
 
+        -- Дефолт 25/600 ощущается вязким при наборе и удержании стрелок
+        repeat_rate  = 40,
+        repeat_delay = 300,
+
         follow_mouse = 1,
         sensitivity  = -0.4, -- Скорость мыши (как mouse: accel-speed -0.4)
-
-        touchpad = {
-            tap_to_click   = true,
-            natural_scroll = true,
-        },
     },
 
     -- Курсор не мешает при наборе текста (аналог hide-when-typing в niri)
@@ -126,6 +126,12 @@ hl.config({
         disable_splash_rendering     = true,
         animate_manual_resizes       = false,
         animate_mouse_windowdragging = false,
+
+        -- Экран, погашенный hypridle (dpms off), просыпается от ввода.
+        -- Без этого on-resume hypridle остаётся единственным триггером
+        -- и монитор включается с задержкой.
+        mouse_move_enables_dpms      = true,
+        key_press_enables_dpms       = true,
     },
 })
 
@@ -211,6 +217,17 @@ hl.config({
     },
 })
 
+hl.config({
+    dwindle = {
+        -- Направление сплита сохраняется, новые окна делят самую большую область,
+        -- а не «приклеиваются» справа-снизу.
+        preserve_split       = true,
+        smart_split          = true,
+        force_split          = 0,
+        special_scale_factor = 0.9, -- окно scratchpad чуть меньше экрана
+    },
+})
+
 --------------------
 ---- ANIMATIONS ----
 --------------------
@@ -281,11 +298,18 @@ hl.bind(mainMod .. " + N",         hl.dsp.exec_cmd("makoctl restore"))
 hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("makoctl dismiss -a"))
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
 hl.bind(mainMod .. " + D",      hl.dsp.exec_cmd(menu))
+hl.bind(mainMod .. " + E",      hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + Q",      hl.dsp.window.close())
+
+-- История буфера обмена (cliphist наполняется в AUTOSTART)
+hl.bind(mainMod .. " + SHIFT + V",
+    hl.dsp.exec_cmd("bash -c 'cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'"))
 hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exit())
 
--- Блокировка экрана (с переключением на английский)
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout current 0 && hyprlock'"))
+-- Блокировка экрана (с переключением на английский).
+-- Через loginctl, а не напрямую hyprlock: единый путь с hypridle
+-- (general.lock_cmd) и без риска второго экземпляра.
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("sh -c 'hyprctl switchxkblayout current 0 && loginctl lock-session'"))
 
 -- Плавающее / плиточное окно (нативный диспетчер Hyprland)
 hl.bind(mainMod .. " + V", hl.dsp.window.float())
@@ -322,6 +346,10 @@ for i = 1, 9 do
     hl.bind(mainMod .. " + SHIFT + " .. i,     hl.dsp.window.move({ workspace = i }))
 end
 
+-- Scratchpad: выпадающий слоем поверх текущего воркспейса
+hl.bind(mainMod .. " + S",         hl.dsp.exec_cmd("hyprctl dispatch togglespecialworkspace scratchpad"))
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("hyprctl dispatch movetoworkspacesilent special:scratchpad"))
+
 -- Перемещение между соседними воркспейсами по вертикали (как в Niri Mod+Up/Down)
 hl.bind(mainMod .. " + Page_Up",   hl.dsp.focus({ workspace = "e-1" }))
 hl.bind(mainMod .. " + Page_Down", hl.dsp.focus({ workspace = "e+1" }))
@@ -340,6 +368,12 @@ hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"),   { locked = true })
 hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"),   { locked = true })
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),  { locked = true })
+hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
+
+-- Мультимедиа (плеер)
+hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"),       { locked = true })
+hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"),   { locked = true })
 
 ---------------------
 ---- SCREENSHOTS ----
@@ -405,4 +439,24 @@ hl.layer_rule({
     },
     blur         = true,
     ignore_alpha = 0.5,
+})
+
+-- hyprlock: помечаем слой как blur-capable, чтобы Hyprland не срезал
+-- размытие при композиции оверлея блокировки
+hl.layer_rule({
+    name  = "blur-hyprlock",
+    match = {
+        namespace = "^(hyprlock)$",
+    },
+    blur  = true,
+})
+
+-- Системные диалоги — плавающими по центру, а не плиткой
+hl.window_rule({
+    name  = "float-dialogs",
+    match = {
+        class = "^(pavucontrol|blueman-manager|nm-connection-editor|org.gnome.FileRoller|hyprland-share-picker)$",
+    },
+    float  = true,
+    center = true,
 })
