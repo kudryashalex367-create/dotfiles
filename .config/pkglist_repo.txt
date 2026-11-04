@@ -31,6 +31,7 @@ gnome-tweaks
 grim
 gvfs-gphoto2
 gvfs-mtp
+hypridle
 hyprland
 hyprlock
 inxi
@@ -56,6 +57,7 @@ pipewire-pulse
 playerctl
 polkit-gnome
 python-pipx
+qt6ct
 ripgrep
 slurp
 steam
