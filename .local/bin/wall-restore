@@ -10,7 +10,7 @@ img="$(<"$state_file")"
 
 command -v matugen >/dev/null 2>&1 || exit 0
 
-matugen image "$img" --mode dark --type scheme-fidelity --prefer darkness </dev/null >/dev/null 2>&1 || exit 0
+matugen image "$img" --mode dark --type scheme-fidelity --prefer saturation </dev/null >/dev/null 2>&1 || exit 0
 
 makoctl reload 2>/dev/null || true
 pkill -SIGUSR1 -x kitty 2>/dev/null || true
