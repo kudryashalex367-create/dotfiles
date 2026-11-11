@@ -117,7 +117,7 @@ aider-dotfiles() {
               --model openai/deepseek-v4.1-flash-1017 \
               --openai-api-base https://api.aitunnel.ru/v1 \
               --no-show-model-warnings \
-              --read "$HOME/.aider-root" \
+              "$HOME/.aider-root" \
               --chat-history-file "$HOME/.cache/aider/chat.md" \
               --input-history-file "$HOME/.cache/aider/input" \
               "$@"
@@ -142,7 +142,7 @@ aider-agent() {
               --model openai/deepseek-v4.1-flash-1017 \
               --openai-api-base https://api.aitunnel.ru/v1 \
               --no-show-model-warnings \
-              --read "$HOME/.aider-root" \
+              "$HOME/.aider-root" \
               --read "$HOME/.aiderCode.md" \
               --chat-history-file "$HOME/.cache/aider/agent-chat.md" \
               --input-history-file "$HOME/.cache/aider/agent-input" \
