@@ -60,7 +60,7 @@ nya() {
     echo -e "\n==> Готово."
 }
 
-alias update='yay -Syu'
+alias update='yay'
 
 # Установка черно-белых обоев одной командой (через awww)
 alias set-wall='awww img'
@@ -97,7 +97,6 @@ cpull() {
 alias phone='adb forward tcp:8022 tcp:8022 && ssh -p 8022 localhost'
 
 # --- AI-агенты ---
-# Ключ AITUNNEL_API_KEY (не OPENAI_API_KEY, чтобы встроенный провайдер не подхватывал)
 [[ -f "$HOME/.zshrc_secrets" ]] && source "$HOME/.zshrc_secrets"
 
 oc-dots()  { (cd "$DOTFILES" && AI_AGENT_RUNNING=1 opencode "$@") }
