@@ -1,7 +1,8 @@
-# Starship — минималистичный промпт в палитре Obsidian Violet.
+# Генерируется matugen из обоев (~/.local/bin/wall-colors).
+# Ручные правки перезапишутся — правь этот шаблон.
 # Документация: https://starship.rs/config/
 
-palette = "obsidian"
+palette = "material"
 add_newline = true
 
 format = """
@@ -9,14 +10,14 @@ $username$hostname$directory$git_branch$git_status$cmd_duration$status$line_brea
 
 right_format = "$time"
 
-[palettes.obsidian]
-lavender = "#a78bfa"
-mauve    = "#c4b5fd"
-text     = "#e6e1ff"
-green    = "#9ccfd8"
-yellow   = "#ffdca7"
+[palettes.material]
+lavender = "#ffb0ca"
+mauve    = "#ffb0ca"
+text     = "#f5dde2"
+green    = "#66df5f"
+yellow   = "#ffb0ca"
 red      = "#ffb4ab"
-dim      = "#6e6585"
+dim      = "#debec7"
 
 [username]
 show_always = false
@@ -50,14 +51,14 @@ style    = "bold yellow"
 format   = "took [$duration]($style) "
 
 [status]
-style   = "bold red"
-format  = "[$status]($style) "
+style    = "bold red"
+format   = "[$status]($style) "
 disabled = false
 
 [time]
-disabled = false
-style    = "bold mauve"
-format   = "[$time]($style)"
+disabled    = false
+style       = "bold mauve"
+format      = "[$time]($style)"
 time_format = "%H:%M"
 
 [character]

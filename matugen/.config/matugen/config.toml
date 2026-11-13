@@ -32,3 +32,8 @@ output_path = '~/.config/hypr/hyprlock.conf'
 [templates.mango]
 input_path  = '~/.config/matugen/templates/mango-colors.conf'
 output_path = '~/.config/mango/colors.conf'
+
+# Starship не умеет include: генерируем starship.toml целиком из шаблона.
+[templates.starship]
+input_path  = '~/.config/matugen/templates/starship.toml'
+output_path = '~/.config/starship.toml'

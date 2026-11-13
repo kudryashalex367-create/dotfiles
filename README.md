@@ -88,12 +88,12 @@
 ├── mango/.config/                 # Mango: config.conf, autostart.sh, порталы
 ├── matugen/.config/matugen/       # config.toml и шаблоны
 ├── pkglists/.config/              # pkglist_repo.txt / pkglist_aur.txt
-├── starship/.config/starship.toml # промпт Starship
+├── starship/.config/starship.toml # промпт Starship (генерируется matugen)
 ├── .config/systemd/user/          # unit для audio-combine
 └── zsh/                           # .zshrc (p10k-файл оставлен как запасной)
 ```
 
-Сгенерированные matugen файлы — `hypr/colors.lua`, `hyprlock.conf`, `fuzzel.ini`, `mako/config`, `mango/colors.conf` — руками не правятся: меняйте шаблоны в `matugen/`.
+Сгенерированные matugen файлы — `hypr/colors.lua`, `hyprlock.conf`, `fuzzel.ini`, `mako/config`, `mango/colors.conf`, `starship.toml` — руками не правятся: меняйте шаблоны в `matugen/`.
 
 ---
 
