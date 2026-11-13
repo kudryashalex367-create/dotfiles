@@ -1,5 +1,5 @@
-# Показываем fastfetch ТОЛЬКО в интерактивном терминале и ТОЛЬКО если нас не вызвал Aider
-if [[ $- == *i* ]] && [[ -z "$AIDER_RUNNING" ]] && [[ ! "$(< /proc/$PPID/cmdline 2>/dev/null)" =~ aider ]]; then
+# Показываем fastfetch ТОЛЬКО в интерактивном терминале и ТОЛЬКО если нас не вызвал AI-агент
+if [[ $- == *i* ]] && [[ -z "$AI_AGENT_RUNNING" ]] && [[ ! "$(< /proc/$PPID/cmdline 2>/dev/null)" =~ (opencode|agy|aider) ]]; then
     fastfetch -l arch_small
 fi
 
@@ -78,74 +78,34 @@ alias lava='lavat -c magenta -s 2 -R 1'
 alias zen='cbonsai -l -i -w 3 -m "zev1ce"'
 alias clock='tty-clock -s -c -b -C 5'
 
-# ── Git Bare Dotfiles Manager ────────────────────────────────────
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+# ── Dotfiles (GNU Stow) ──────────────────────────────────────────
+export DOTFILES="$HOME/dotfiles"
+alias config='git -C "$DOTFILES"'
 
-cpush() {
-  config add -u
-  local msg="${1:-Update dotfiles $(date +'%Y-%m-%d %H:%M')}"
-  config commit -m "$msg" && config push -u origin main
+dpush() {
+  git -C "$DOTFILES" add -u || return
+  local new
+  new=$(git -C "$DOTFILES" ls-files --others --exclude-standard)
+  if [[ -n $new ]]; then
+    echo "⚠ не добавлены новые файлы (config add -- <файл>):"
+    echo "$new"
+  fi
+  git -C "$DOTFILES" commit -m "${1:-Update dotfiles $(date +'%F %H:%M')}" \
+    && git -C "$DOTFILES" push -u origin main
 }
+alias cpush=dpush
 
 cpull() {
-  config pull origin main --no-rebase && exec zsh
+  git -C "$DOTFILES" pull --no-rebase origin main \
+    && "$DOTFILES/install.sh" \
+    && exec zsh
 }
 
 alias phone='adb forward tcp:8022 tcp:8022 && ssh -p 8022 localhost'
 
-# --- Aider Configuration ---
-# 1. Безопасная загрузка приватных ключей (если файл существует)
-if [[ -f "$HOME/.zshrc_secrets" ]]; then
-    source "$HOME/.zshrc_secrets"
-fi
+# --- AI-агенты ---
+# Ключ AITUNNEL_API_KEY (не OPENAI_API_KEY, чтобы встроенный провайдер не подхватывал)
+[[ -f "$HOME/.zshrc_secrets" ]] && source "$HOME/.zshrc_secrets"
 
-aider-dotfiles() {
-    if [[ -z "$OPENAI_API_KEY" ]]; then
-        echo "Ошибка: OPENAI_API_KEY не найден. Проверь ~/.zshrc_secrets"
-        return 1
-    fi
-
-    mkdir -p "$HOME/.cache/aider"
-    [[ -e "$HOME/.aider-root" ]] || touch "$HOME/.aider-root"
-
-    (
-        cd "$HOME" || exit 1
-        export AIDER_RUNNING=1
-        aider --no-git \
-              --cache-prompts \
-              --edit-format diff \
-              --model openai/deepseek-v4.1-flash-1017 \
-              --openai-api-base https://api.aitunnel.ru/v1 \
-              --no-show-model-warnings \
-              "$HOME/.aider-root" \
-              --chat-history-file "$HOME/.cache/aider/chat.md" \
-              --input-history-file "$HOME/.cache/aider/input" \
-              "$@"
-    )
-}
-
-aider-agent() {
-    if [[ -z "$OPENAI_API_KEY" ]]; then
-        echo "Ошибка: OPENAI_API_KEY не найден."
-        return 1
-    fi
-    mkdir -p "$HOME/.cache/aider"
-    [[ -e "$HOME/.aider-root" ]] || touch "$HOME/.aider-root"
-
-    (
-        cd "$HOME" || exit 1
-        export AIDER_RUNNING=1
-              agentaider --yes-always \
-              --no-git \
-              --cache-prompts \
-              --edit-format diff \
-              --model openai/deepseek-v4.1-flash-1017 \
-              --openai-api-base https://api.aitunnel.ru/v1 \
-              --no-show-model-warnings \
-              "$HOME/.aider-root" \
-              --read "$HOME/.aiderCode.md" \
-              --chat-history-file "$HOME/.cache/aider/agent-chat.md" \
-              --input-history-file "$HOME/.cache/aider/agent-input" \
-              "$@"
-    )
-}
+oc-dots()  { (cd "$DOTFILES" && AI_AGENT_RUNNING=1 opencode "$@") }
+agy-dots() { (cd "$DOTFILES" && AI_AGENT_RUNNING=1 agy "$@") }
