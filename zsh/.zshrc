@@ -109,3 +109,7 @@ alias phone='adb forward tcp:8022 tcp:8022 && ssh -p 8022 localhost'
 
 oc-dots()  { (cd "$DOTFILES" && AI_AGENT_RUNNING=1 opencode "$@") }
 agy-dots() { (cd "$DOTFILES" && AI_AGENT_RUNNING=1 agy "$@") }
+
+
+# Added by Antigravity CLI installer
+export PATH="/home/zev1ce/.local/bin:$PATH"

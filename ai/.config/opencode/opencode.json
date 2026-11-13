@@ -10,7 +10,7 @@
       "name": "AITunnel",
       "options": {
         "baseURL": "https://api.aitunnel.ru/v1",
-        "apiKey": "{env:AITUNNEL_API_KEY}"
+        "apiKey": "{env:OPENAI_API_KEY}"
       },
       "models": {
         "deepseek-v4.1-flash-1017": {
