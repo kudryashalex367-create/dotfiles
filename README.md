@@ -110,7 +110,7 @@
 
 ### Hyprlock
 
-<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/f714f841-f3cf-4ed2-be20-b22fff5afb06" />
+<img width="1920" height="1080" alt="изображение" src="https://github.com/user-attachments/assets/9035e268-c086-4862-8dbb-2e5b9dc99303" />
 
 ### Шпаргалка по хоткеям
 
