@@ -3,19 +3,12 @@ if [[ $- == *i* ]] && [[ -z "$AI_AGENT_RUNNING" ]] && [[ ! "$(< /proc/$PPID/cmdl
     fastfetch -l arch_small
 fi
 
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
 export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="powerlevel10k/powerlevel10k"
+ZSH_THEME=""
 
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
-
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Path
 export PATH="$PATH:$HOME/.local/bin"
@@ -113,3 +106,6 @@ agy-dots() { (cd "$DOTFILES" && AI_AGENT_RUNNING=1 agy "$@") }
 
 # Added by Antigravity CLI installer
 export PATH="/home/zev1ce/.local/bin:$PATH"
+
+# Промпт Starship (конфиг — ~/.config/starship.toml)
+eval "$(starship init zsh)"

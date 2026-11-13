@@ -1,359 +1,297 @@
-# ʕ•ᴥ•ʔ Arch Linux Dotfiles by zev1ce — Dynamic Material You & Obsidian Violet
+# ʕ•ᴥ•ʔ Arch Linux Dotfiles by zev1ce — Hyprland, Mango & Material You
 
 <p align="center">
   <img src="https://img.shields.io/badge/OS-Arch_Linux-a78bfa?style=flat-square&logo=archlinux&logoColor=white&labelColor=15111f" alt="Arch Linux">
   <img src="https://img.shields.io/badge/WM-Hyprland-a78bfa?style=flat-square&labelColor=15111f" alt="Hyprland">
-  <img src="https://img.shields.io/badge/Session-GNOME-a78bfa?style=flat-square&labelColor=15111f" alt="GNOME">
+  <img src="https://img.shields.io/badge/WM-Mango-a78bfa?style=flat-square&labelColor=15111f" alt="Mango">
+  <img src="https://img.shields.io/badge/Packages-GNU_Stow-c4b5fd?style=flat-square&labelColor=15111f" alt="GNU Stow">
   <a href="./LICENSE">
     <img src="https://img.shields.io/badge/License-GPL_v3-c4b5fd?style=flat-square&labelColor=15111f" alt="GNU GPL v3">
   </a>
 </p>
 
-> *"I use Arch, btw." — Minimalist 144Hz Hybrid Workstation with Dynamic Material You Theming & Obsidian Violet Fallback.*
+> *"I use Arch, btw." — минималистичная 144Hz рабочая станция с динамической темой Material You.*
 
-Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная, вылизанная и сверхпроизводительная сборка рабочей станции на базе модульного Lua-конфига **Hyprland** и запасной сессии **GNOME 51**. Основная цветовая схема динамически генерируется из текущих обоев через **matugen** (Material You), а фирменная палитра **Obsidian Violet & Soft Lavender** выступает в качестве базового fallback-профиля. Управление конфигурациями реализовано через концепцию **Git Bare Repository** и автоматизировано с помощью ИИ-агента **Aider**.
+Репозиторий конфигов для Arch Linux: основная сессия **Hyprland** с модульным Lua-конфигом, вторая сессия **Mango (mangowm)** с тем же набором биндов и оформления, плюс установленный **GNOME** как запасной вариант. Цвета генерируются из обоев через **matugen** (Material You), fallback — палитра **Obsidian Violet & Soft Lavender**.
 
-> (´・ω・\`) Конфиги **Niri** переехали в отдельную ветку [`niri`](../../tree/niri) — там сохранена прежняя сборка со скроллинговым тайлингом.
+Разворачивание — через **GNU Stow**: каждый каталог верхнего уровня является отдельным пакетом и линкуется в `$HOME`. Агентские правила лежат в [`AGENTS.md`](./AGENTS.md).
 
 ---
 
-## (•̀ᴗ•́)و Содержание
+## Содержание
 
 - [Характеристики системы](#specs)
 - [Ключевые особенности](#features)
-- [Архитектура и структура репозитория](#structure)
+- [Структура репозитория](#structure)
 - [Скриншоты](#screenshots)
 - [Горячие клавиши](#hotkeys)
-- [Скрипты и автоматизация](#scripts)
-- [Шелл, алиасы и медиа-пайплайн](#shell)
-- [Быстрая установка](#install)
-- [Восстановление пакетов](#packages)
-- [Как это сделано (Aider AI-агент)](#how)
-- [Управление конфигурациями](#manage)
+- [Скрипты](#scripts)
+- [Шелл, алиасы и медиа](#shell)
+- [Установка](#install)
+- [Пакеты](#packages)
+- [Темы и сессии](#themes)
+- [AI-агент](#ai)
+- [Управление конфигами](#manage)
 
 ---
 
 <a id="specs"></a>
 ## (⌐■_■) Характеристики системы
 
-* ʕ•ᴥ•ʔ **OS:** Arch Linux (x86_64)
-* (ง'̀-'́)ง **Kernel:** `linux-zen` (с BORE-планировщиком и оптимизацией задержек)
-* (๑•̀ㅂ•́)و **CPU:** AMD Ryzen 5 5600H (6C/12T, Zen 3, до 4.28 GHz, 45W TDP)
-* (☞ﾟヮﾟ)☞ **GPU:** AMD Radeon Vega 7 / Cezanne (Открытый драйвер `amdgpu` + Vulkan RADV + VA-API `radeonsi`)
-* (≧▽≦) **Display:** `DP-2` — 1920x1080 @ 144 Hz (с автоматическим fallback-каскадом `144 → 120 → 60 → preferred`)
-* (｡◕‿◕｡) **WM / Session:** Hyprland 0.56.2 (Модульный Lua-конфиг, основная сессия) / GNOME 51 (GDM + расширения)
-* (✿◠‿◠) **Browser:** Firefox (Wayland-нативный режим, uBlock Origin, Zero-Bloat)
-* ( ͡° ͜ʖ ͡°) **Terminal:** Kitty 0.49+ (OpenType-глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
-* (づ｡◕‿‿◕｡)づ **Shell:** Zsh 5.9.2 + Oh My Zsh + Powerlevel10k (Lean 8-colors, Transient Prompt)
-* ヽ(´▽\`)/ **UI Suite:** Fuzzel (Overlay, скругление 16px), Mako (23MB RAM), Hyprlock + Hypridle, awww (144Hz Wipe Engine)
-* (⌐■_■) **Theming:** `matugen` — генерация палитры Material You из обоев для Hyprland, Kitty, Fuzzel, Mako и Hyprlock (fallback — Obsidian Violet)
-* (｀・ω・´) **Cursor:** Bibata-Modern-Ice (24px, сквозная синхронизация в Hyprcursor, XCursor и GSettings)
-* (ง •̀_•́)ง **Bootloader:** systemd-boot
+* **OS:** Arch Linux (x86_64)
+* **Kernel:** `linux-zen`
+* **CPU:** AMD Ryzen 5 5600H (6C/12T, Zen 3)
+* **GPU:** AMD Radeon Vega 7 / Cezanne (`amdgpu`, Vulkan RADV, VA-API `radeonsi`)
+* **Display:** `DP-2`, 1920x1080 @ 144 Hz
+* **WM / Session:** Hyprland (Lua-конфиг) — основная; Mango — вторая; GNOME (GDM) — запасная
+* **Terminal:** Kitty
+* **Shell:** Zsh + Oh My Zsh + Starship
+* **UI:** Fuzzel, Mako, Hyprlock + Hypridle, awww
+* **Theming:** matugen 2.x (Material You из обоев, fallback — Obsidian Violet)
+* **Cursor:** Bibata-Modern-Ice (24px)
+* **Bootloader:** systemd-boot
 
 ---
 
 <a id="features"></a>
-## ٩(◕‿◕)۶ Ключевые особенности сборки
+## ٩(◕‿◕)۶ Ключевые особенности
 
-* (づ｡◕‿‿◕｡)づ **Динамическая палитра Material You (`matugen`):** Смена обоев автоматически перекрашивает рамки и тени окон Hyprland, терминал Kitty, лаунчер Fuzzel, уведомления Mako и экран блокировки Hyprlock. Если файл палитры отсутствует, система мягко откатывается к тёмно-фиолетовой схеме **Obsidian Violet** (`#0b0912`, `#a78bfa`, `#c4b5fd`), которая также используется в `fastfetch`.
-* (⚙️‿⚙️) **Модульный Lua-конфиг Hyprland:** Вместо монолитного файла точка входа `hyprland.lua` через `dofile` загружает 8 независимых модулей (`theme`, `monitors`, `env`, `input`, `animations`, `autostart`, `binds`, `rules`).
-* (︶︹︶) **Безбаровый Дзен (Barless Setup) и постоянные столы:** 100% площади экрана отдано коду и контенту без панелей задач. Воркспейсы `1–5` закреплены как постоянные (`persistent = true`) и не схлопываются при пустоте, а навигация замкнута в кольцо (`allow_workspace_cycles = true`).
-* (o゜▽゜)o☆ **Выверенный объём и фокус:** Окна обрамлены компактными мягкими тенями (`range = 12`, `render_power = 2`). Неактивные окна плавно приглушаются на **5.5%** (`dim_strength = 0.055`) и получают лёгкую прозрачность `inactive_opacity = 0.975` (а для `kitty` задано отдельное правило `opacity = 0.97 0.95`).
-* ヽ(´▽\`)/ **Физическая пружина и кинематика Niri:** Перемещение окон, смена воркспейсов и выезд scratchpad работают на кастомной пружине `smoothSpring` (`mass = 1, stiffness = 420, dampening = 46`) без единого лишнего колебания, а открытие окон использует кривую `popIn` (`0.05, 0.9, 0.1, 1.05`) с живым 5%-ным микро-отскоком.
-* (⌐■_■) **Чистый аппаратный Блюр:** Размытие (`size = 7, passes = 4`, без зерна) применяется только к прозрачным оверлеям (`fuzzel`, `mako`, `hyprlock`) с отсечением альфа-канала (`ignore_alpha = 0.5`), не нагружая GPU под непрозрачными окнами.
-* (ノ°益°)ノ **Игровой Tearing и Direct Scanout:** Глобальный `allow_tearing = true` в связке с `render:direct_scanout = true` и правилом `games-tearing` активирует мгновенный вывод кадров (`immediate = true`) и отключает блюр (`no_blur = true`) для `cs2`, `horizon` и всех игр Steam (`steam_app_*`), сохраняя идеальную плавность рабочего стола.
-* ಠ_ಠ **Умная блокировка (`hypridle` + `hyprlock`):** Настольный профиль без принудительного сна: через **150 с** бездействия гаснет экран (`dpms off`, мгновенно просыпается от любого движения мыши или клавиши), а через **300 с** запускается `hyprlock` с двухэтажными часами, индикатором раскладки и текущим треком из `playerctl`.
-* (•̀ᴗ•́)و **Единый переключатель прокси (`Super + Shift + P`):** Скрипт `proxy` в один клик включает и выключает HTTP/SOCKS5-прокси синхронно в окружении Hyprland, GSettings (для GTK/WebKit) и `environment.d` (для `systemd --user`), сохраняя состояние между перезагрузками.
+* **Две Wayland-сессии.** Hyprland — рабочая, Mango — альтернатива с той же раскладкой биндов, прозрачностью, тенью и блюром. Обе используют общие скрипты из `~/.local/bin` и общую палитру matugen.
+* **Модульный Lua-конфиг Hyprland.** Точка входа `hyprland.lua` через `dofile` подключает `theme`, `monitors`, `env`, `input`, `animations`, `autostart`, `binds`, `rules`.
+* **Один конфиг Mango.** `~/.config/mango/config.conf` плюс `autostart.sh` и `source_optional` для сгенерированных `colors.conf` и `proxy.conf`.
+* **Динамическая палитра.** `matugen` перекрашивает Hyprland, Mango, Kitty, Fuzzel, Mako и Hyprlock при смене обоев. Шаблоны — в `matugen/.config/matugen/templates/`.
+* **Безбаровый стол.** Панели задач нет; рабочие столы `1–5` постоянные, навигация замкнута в кольцо.
+* **Блюр и прозрачность.** Окна и слои (Fuzzel, Mako) блюрятся, у `slurp` блюр отключён layer-rule. Неактивные окна приглушаются (`dim_strength ≈ 5.5%`), у Kitty отдельная прозрачность.
+* **Tearing для игр.** `allow_tearing` + `direct_scanout` (Hyprland), правило `force_tearing`/`no_blur` для `cs2`, `horizon` и `steam_app_*`.
+* **Прокси в обеих сессиях.** `proxy toggle` (SUPER+SHIFT+P) синхронизирует env композитора, GSettings и `environment.d`, состояние переживает перезагрузку.
+* **Автоблокировка.** `hypridle` гасит экран через 150 с, через 300 с запускает `hyprlock`.
+* **Агентский регламент.** `AGENTS.md` задаёт границы для opencode: stow-правки только внутри `~/dotfiles`, проверки, ритуал коммита, запрет секретов.
 
 ---
 
 <a id="structure"></a>
-## (｀・ω・´) Архитектура и структура репозитория
+## (｀・ω・´) Структура репозитория
+
+Каждый каталог — пакет Stow; путь внутри пакета повторяет путь в `$HOME`.
 
 ```text
-$HOME
-├── .aiderCode.md                  # ТЗ, правила безопасности и ритуал коммитов для AI-агента Aider
-├── .zshrc                         # Конфиг Zsh, алиасы, медиа-функции, bare-git и запуск Aider
-├── .p10k.zsh                      # Настройки промпта Powerlevel10k (Lean 8-colors)
-├── .config/
-│   ├── environment.d/proxy.conf   # Автогенерируемый профиль прокси для systemd --user
-│   ├── fastfetch/config.jsonc     # Конфиг системного инфо-блока (Arch Small, лавандовые ключи)
-│   ├── fuzzel/fuzzel.ini          # Конфиг лаунчера (генерируется matugen)
-│   ├── hypr/
-│   │   ├── hyprland.lua           # Загрузчик модулей Hyprland (dofile)
-│   │   ├── theme.lua              # Палитра, гапсы, тени (range 12), dim (5.5%), blur, dwindle
-│   │   ├── monitors.lua           # Монитор DP-2 (144/120/60 Гц) и persistent workspaces 1–5
-│   │   ├── env.lua                # Курсор Bibata, Wayland-флаги, AMD VA-API (radeonsi)
-│   │   ├── input.lua              # Клавиатура (40/300), мышь, DPMS-пробуждение, direct_scanout
-│   │   ├── animations.lua         # Пружина smoothSpring и кривые Безье (niriEaseOut, popIn)
-│   │   ├── autostart.lua          # Демоны, буфер cliphist, восстановление палитры и прокси
-│   │   ├── binds.lua              # Все хоткеи, таб-группы, ресайз, прокси и скриншоты
-│   │   ├── rules.lua              # Правила окон (игры, диалоги, PiP, kitty) и слоёв (blur)
-│   │   ├── colors.lua             # Динамические цвета рамок и теней (генерируется matugen)
-│   │   ├── hypridle.conf          # Таймауты экрана (150 с DPMS off, 300 с hyprlock)
-│   │   └── hyprlock.conf          # Экран блокировки (генерируется matugen)
-│   ├── kitty/
-│   │   ├── kitty.conf             # Основной конфиг терминала + статическая база Obsidian Violet
-│   │   └── colors.conf            # Динамическая палитра терминала (генерируется matugen)
-│   ├── mako/config                # Уведомления (генерируется matugen)
-│   ├── matugen/
-│   │   ├── config.toml            # Карта шаблонов matugen 2.x
-│   │   └── templates/             # Шаблоны для kitty, mako, hypr-colors, fuzzel и hyprlock
-│   ├── pkglist_repo.txt           # Список пакетов из официальных репозиториев Arch
-│   └── pkglist_aur.txt            # Список пакетов из AUR
-└── .local/bin/                    # Пользовательские скрипты
-    ├── keybinds                   # Живой парсер binds.lua → шпаргалка в Fuzzel
-    ├── nowplaying                 # Текущий трек из playerctl для hyprlock
-    ├── proxy                      # Менеджер прокси (on/off/toggle/status/restore)
-    ├── screenshot                 # Скриншоты (area/window/full) в файл и буфер
-    ├── wall-colors                # Пайплайн: awww + matugen + hot-reload (mako, kitty, hyprland)
-    ├── wall-picker                # Выбор обоев через Fuzzel (144Hz wipe + синхронизация с GNOME)
-    ├── wall-random                # Случайные обои из ~/wallpapers в 1 клик
-    └── wall-restore               # Восстановление палитры последних обоев при старте сессии
+~/dotfiles
+├── install.sh                     # симлинкует все пакеты через stow -R
+├── AGENTS.md                      # правила для AI-агента
+├── ai/.config/opencode/           # конфиг opencode (провайдер AITunnel)
+├── bin/.local/bin/                # пользовательские скрипты
+├── fastfetch/.config/fastfetch/   # инфо-блок
+├── fuzzel/.config/fuzzel/         # лаунчер (генерируется matugen)
+├── hypr/.config/hypr/             # Hyprland: lua-модули, hypridle, hyprlock
+├── kitty/.config/kitty/           # терминал
+├── mako/.config/mako/             # уведомления (генерируется matugen)
+├── mango/.config/                 # Mango: config.conf, autostart.sh, порталы
+├── matugen/.config/matugen/       # config.toml и шаблоны
+├── pkglists/.config/              # pkglist_repo.txt / pkglist_aur.txt
+├── starship/.config/starship.toml # промпт Starship
+├── .config/systemd/user/          # unit для audio-combine
+└── zsh/                           # .zshrc (p10k-файл оставлен как запасной)
 ```
+
+Сгенерированные matugen файлы — `hypr/colors.lua`, `hyprlock.conf`, `fuzzel.ini`, `mako/config`, `mango/colors.conf` — руками не правятся: меняйте шаблоны в `matugen/`.
 
 ---
 
 <a id="screenshots"></a>
 ## (☞ﾟヮﾟ)☞ Скриншоты
 
-### (ง •̀_•́)ง Kitty (Динамическая тема)
+### Kitty
 
 <img width="1920" height="1080" alt="kitty_showcase" src="https://github.com/user-attachments/assets/3e5fdd3c-cf52-422c-809b-63b5e370efde" />
 
-### ヽ(´▽\`)/ Меню приложений Fuzzel (Скруглённый выбор)
+### Fuzzel
 
 <img width="1920" height="1080" alt="fuzzel_showcase" src="https://github.com/user-attachments/assets/4631dbc7-7d97-4210-92fb-0f50617a6963" />
 
-### ಠ_ಠ Двухэтажный экран блокировки (Hyprlock)
+### Hyprlock
 
 <img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/f714f841-f3cf-4ed2-be20-b22fff5afb06" />
 
-### (๑•̀ㅂ•́)و Всплывающая шпаргалка по хоткеям (Fuzzel + keybinds)
+### Шпаргалка по хоткеям
 
 <img width="1920" height="1080" alt="keybinds_showcase" src="https://github.com/user-attachments/assets/aac3ccf6-1437-42ee-9e94-db56de700452" />
 
 ---
 
 <a id="hotkeys"></a>
-## (ง'̀-'́)ง Горячие клавиши (Hotkeys)
+## (ง'̀-'́)ง Горячие клавиши
 
-Клавиша `Super` (`Mod`) — это клавиша `Windows`. Полный актуальный список всегда доступен прямо в системе по нажатию `Super + /`.
+`Super` (`Mod`) — клавиша Windows. Актуальный список на лету собирает `~/.local/bin/keybinds` (парсит `binds.lua`). Бинды Mango повторяют Hyprland, кроме отмеченного ниже.
 
-### (ノ°益°)ノ Программы, утилиты и сессия
+### Программы, утилиты и сессия
 | Комбинация | Действие |
 | :--- | :--- |
-| `Super + Enter` | Открыть терминал (`kitty`) |
-| `Super + D` | Меню запуска приложений (`fuzzel`) |
-| `Super + E` | Файловый менеджер (`nautilus`) |
-| `Super + A` | **Случайные обои с 144Hz wipe-шторкой (`wall-random`) + перегенерация палитры `matugen`** |
-| `Super + W` | Меню выбора обоев из `~/wallpapers` (`wall-picker`) + перегенерация палитры `matugen` |
-| `Super + Shift + V` | История буфера обмена (`cliphist` + `fuzzel --dmenu` + `wl-copy`) |
-| `Super + N` | Вернуть последнее скрытое уведомление (`makoctl restore`) |
-| `Super + Shift + N` | Закрыть все активные уведомления (`makoctl dismiss -a`) |
-| `Super + Shift + P` | **Переключить системный прокси Вкл / Выкл (`~/.local/bin/proxy toggle`)** |
-| `Super + Shift + R` | Перезагрузить конфиг Hyprland (`hyprctl reload`) |
-| `Super + /` *(или `code:61`)* | Всплывающая шпаргалка по хоткеям (`~/.local/bin/keybinds`, работает на US и RU раскладках) |
-| `Super + Space` | Переключение раскладки клавиатуры (US ⇄ RU) |
-| `Super + L` | Заблокировать экран (`hyprlock` с автосбросом раскладки на US и защитой от дублей) |
-| `Super + Shift + Q` | Выйти из сессии Hyprland |
+| `Super + Enter` | Kitty |
+| `Super + D` | Fuzzel |
+| `Super + E` | Nautilus |
+| `Super + A` / `Super + W` | Случайные обои / выбор обоев + matugen |
+| `Super + Shift + V` | История буфера (`cliphist` + Fuzzel) |
+| `Super + N` / `Super + Shift + N` | Вернуть / закрыть уведомления |
+| `Super + Shift + P` | Прокси вкл/выкл (работает в Hyprland и Mango) |
+| `Super + Shift + R` | Перезагрузить конфиг (`hyprctl reload` / `mmsg dispatch reload_config`) |
+| `Super + /` или `Super + code:61` | Шпаргалка по хоткеям |
+| `Super + Space` | Раскладка US ⇄ RU |
+| `Super + L` | Блокировка (`hyprlock`) |
+| `Super + Shift + Q` | Выйти из сессии |
 
-### (つ◉益◉)つ Управление окнами и раскладкой
+### Окна и раскладка
 | Комбинация | Действие |
 | :--- | :--- |
-| `Super + Q` | Закрыть активное окно |
-| `Super + V` | Переключить окно в плавающий / плиточный режим (`float`) |
-| `Super + F` | Развернуть окно с сохранением отступов (`maximized`) |
-| `Super + Shift + F` | Настоящий полноэкранный режим (`fullscreen`) |
-| `Super + C` | Центрировать плавающее окно (`center`) |
-| `Super + R` | Повернуть направление сплита (`togglesplit`) |
-| `Super + P` | Включить режим `pseudo-tile` (окно держит свой размер внутри тайла) |
+| `Super + Q` | Закрыть окно |
+| `Super + V` | Плавающее / плиточное |
+| `Super + F` / `Super + Shift + F` | Maximized / fullscreen |
+| `Super + C` | Центрировать плавающее окно |
+| `Super + R` | Повернуть сплит (`togglesplit` / `dwindle_toggle_current_split`) |
+| `Super + P` | Pseudo-tile (только Hyprland) |
 
-### (｀・ω・´) Фокус, перемещение, обмен и ресайз окон
+### Фокус, перемещение, ресайз
 | Комбинация | Действие |
 | :--- | :--- |
-| `Super + ← / → / ↑ / ↓` | Переместить фокус на соседнее окно по направлению |
-| `Super + Shift + ← / → / ↑ / ↓` | Переместить активное окно в указанном направлении |
-| `Super + Ctrl + Shift + ← / → / ↑ / ↓` | Поменять активное окно местами с соседним (`swapwindow`) |
-| `Super + Ctrl + ← / → / ↑ / ↓` | Изменить размер активного окна с шагом `40px` (`resizeactive`) |
-| `Super + Alt + Ctrl + ← / → / ↑ / ↓` | Точный попиксельный ресайз плавающего окна (`resizewindowpixel`) |
-| `Super + ЛКМ` / `Super + ПКМ` | Перетаскивание (`drag`) и изменение размера (`resize`) окна мышью |
+| `Super + ←/→/↑/↓` | Фокус |
+| `Super + Shift + ←/→/↑/↓` | Переместить окно |
+| `Super + Ctrl + Shift + ←/→/↑/↓` | Поменять окна местами |
+| `Super + Ctrl + ←/→/↑/↓` | Ресайз с шагом 40px |
+| `Super + Alt + Ctrl + ←/→/↑/↓` | Пиксельный ресайз floating |
+| `Super + ЛКМ` / `Super + ПКМ` | Перетаскивание / ресайз мышью |
 
-### (｡◕‿◕｡) Группы окон (Табы)
+### Группы и столы
 | Комбинация | Действие |
 | :--- | :--- |
-| `Super + G` | Объединить окно в таб-группу или разобрать её (`togglegroup`) |
-| `Super + Alt + ← / →` | Переключиться на предыдущую / следующую вкладку в группе |
-| `Super + Alt + Shift + ← / → / ↑ / ↓` | Включить активное окно в соседнюю группу (`moveintogroup`) |
-| `Super + Alt + L` | Заблокировать изменение состава групп (`lockgroups lock`) |
-| `Super + Alt + Shift + L` | Разблокировать группы (`lockgroups unlock`) |
+| `Super + G` | Таб-группа (Hyprland: `togglegroup`, Mango: `groupjoin left`) |
+| `Super + Alt + ←/→` | Соседняя вкладка группы |
+| `Super + Alt + Shift + ←/→/↑/↓` | Добавить окно в группу |
+| `Super + Alt + L` | Hyprland: lockgroups; Mango: показать/скрыть groupbar |
+| `Super + 1..9` / `Super + Shift + 1..9` | Перейти на стол / перенести окно |
+| `Super + PgUp/PgDn`, `Super + колесо` | Соседний стол |
+| `Super + S` / `Super + Shift + S` | Scratchpad показать / отправить окно |
 
-### (✿◠‿◠) Рабочие столы (Workspaces) и Scratchpad
+### Скриншоты и мультимедиа
 | Комбинация | Действие |
 | :--- | :--- |
-| `Super + 1..9` | Перейти на рабочий стол `1..9` (столы `1–5` постоянные) |
-| `Super + Shift + 1..9` | Перенести активное окно на рабочий стол `1..9` |
-| `Super + PgUp / PgDn` | Перейти на предыдущий / следующий рабочий стол (`e-1` / `e+1`) |
-| `Super + Колесо вверх / вниз` | Быстрая прокрутка рабочих столов колесом мыши (событие не утекает в окно) |
-| `Super + S` | Показать / скрыть выпадающий `special:scratchpad` поверх стола |
-| `Super + Shift + S` | Тихо отправить активное окно в `special:scratchpad` |
-
-### ( ͡° ͜ʖ ͡°) Скриншоты и Мультимедиа
-| Комбинация | Действие |
-| :--- | :--- |
-| `Ctrl + Shift + S` *(или `code:39`)* | Скриншот выбранной области в `~/Pictures/Screenshots` и буфер обмена (работает на US/RU) |
-| `Ctrl + Print` | Скриншот всего экрана в файл и буфер обмена |
-| `Alt + Print` | Скриншот активного окна (по геометрии из `hyprctl -j activewindow`) |
-| `XF86AudioRaiseVolume / LowerVolume` | Громкость динамиков `+5%` / `-5%` через `wpctl` (работает и на заблокированном экране) |
-| `XF86AudioMute / MicMute` | Mute звука / микрофона через `wpctl` (работает на заблокированном экране) |
-| `XF86AudioPlay / Next / Prev` | Управление медиаплеером через `playerctl` (работает на заблокированном экране) |
+| `Ctrl + Shift + S` (`code:39`) | Скриншот области |
+| `Ctrl + Print` | Весь экран |
+| `Alt + Print` | Активное окно |
+| `XF86Audio*` | Громкость / mute / плеер через `wpctl` и `playerctl` |
 
 ---
 
 <a id="scripts"></a>
-## (🛠️‿🛠️) Скрипты и автоматизация (`~/.local/bin`)
+## (🛠️‿🛠️) Скрипты (`~/.local/bin`)
 
-* **`wall-colors [--colors-only] <img_path>`** — ядро динамической темы. Сохраняет путь к текущим обоям в `~/.cache/wall-colors/last`, генерирует тёмную палитру Material You через `matugen` (по умолчанию `--type scheme-fidelity --prefer saturation`; можно переопределить через переменные окружения `PALETTE_TYPE` и `PALETTE_PREFER`) и на лету обновляет цвета в `mako`, `kitty` (`SIGUSR1`), `fuzzel`, `hyprlock` и `Hyprland` (`hyprctl reload`).
-* **`wall-restore`** — запускается при старте Hyprland и восстанавливает палитру последних обоев из кэша.
-* **`wall-random` / `wall-picker`** — выбор случайной картинки или интерактивный поиск через `fuzzel -d` из каталога `~/wallpapers`. Смена обоев идёт через `awww` на 144 Гц с эффектом `wipe`, параллельно обновляется фон в GSettings (для синхронизации с сессией GNOME) и вызывается `wall-colors --colors-only`.
-* **`proxy {on|off|toggle|status|restore}`** — централизованное управление прокси (`HTTP 127.0.0.1:10809`, `SOCKS5 127.0.0.1:10808`, обход локальных подсетей). Синхронно прописывает настройки в переменные окружения Hyprland, GSettings и `~/.config/environment.d/proxy.conf`, а также выводит уведомление и сохраняет статус в `~/.local/state/proxy`.
-* **`keybinds`** — читает и парсит `~/.config/hypr/binds.lua` напрямую при каждом вызове, нормализует названия клавиш и выводит их в `fuzzel -d`. Благодаря этому шпаргалка никогда не отстаёт от реального конфига.
-* **`screenshot {area|window|full}`** — захват экрана через `grim`, `slurp` и `jq` с одновременным сохранением PNG, копированием в `wl-copy` и уведомлением с миниатюрой.
-* **`nowplaying`** — аккуратный информер для `hyprlock`: берёт метаданные из `playerctl`, очищает висящие тире и суффикс `- YouTube`, обрезает строку до 50 символов и выводит `♪ Исполнитель — Название` (молчит, если ничего не играет).
+* **`wall-colors [--colors-only] <img>`** — сохраняет путь обоев, гоняет `matugen` и обновляет Kitty (`SIGUSR1`), Mako, Fuzzel, Hyprlock, Hyprland (`hyprctl reload`) и Mango (`mmsg dispatch reload_config`).
+* **`wall-restore`** — восстанавливает палитру последних обоев при старте сессии.
+* **`wall-random` / `wall-picker`** — случайные обои / выбор через Fuzzel, смена через `awww`, синхронизация GSettings.
+* **`proxy {on|off|toggle|status|restore}`** — HTTP `127.0.0.1:10809`, SOCKS5 `127.0.0.1:10808`, обход локальных сетей. Hyprland — `hyprctl keyword env`; Mango — генерация `~/.config/mango/proxy.conf` + reload; плюс GSettings и `environment.d`. Состояние — `~/.local/state/proxy`.
+* **`keybinds`** — парсит `binds.lua` и показывает шпаргалку в Fuzzel.
+* **`screenshot {area|window|full}`** — `grim` + `slurp` + `jq`, PNG и `wl-copy`.
+* **`nowplaying`** — текущий трек для `hyprlock`.
+* **`audio-sink-menu`** — выбор аудиовыхода через Fuzzel.
+* **`audio-combine`** — объединяет MCHOSE V9 Pro и CMF Buds 2 Pro в один sink (unit `audio-combine.service`).
 
 ---
 
 <a id="shell"></a>
-## (づ｡◕‿‿◕｡)づ Шелл, алиасы и медиа-пайплайн (`.zshrc`)
+## (づ｡◕‿‿◕｡)づ Шелл, алиасы и медиа
 
-При открытии интерактивного терминала запускается компактный `fastfetch -l arch_small` (автоматически подавляется, если шелл вызван внутри сессии Aider).
+`fastfetch -l arch_small` запускается только в интерактивном шелле и не запускается внутри AI-агента.
 
-### Медиа и утилиты
-* `y <url>` — скачать видео в максимальном качестве в контейнер `mp4` через `yt-dlp`.
-* `ya <url>` — скачать аудиодорожку (`opus`/`m4a`) в `~/Music` с автоматическим вырезанием рекламы, интро и аутро через **SponsorBlock**, вшиванием обложки и метаданных.
-* `nya [номер_первой_серии] <url1> <url2> ...` — потоковый загрузчик серий аниме в `~/Videos/Anime` (`Серия_N.mkv`). Автоматически вшивает русские и английские субтитры, главы и обложку, используя `aria2c` в **5 одновременных фрагментов** (`--concurrent-fragments 5`).
-* `phone` — мобильный мост с Termux: пробрасывает порт `adb forward tcp:8022 tcp:8022` и сразу открывает SSH-сессию на смартфон.
-* `update` — быстрое обновление системы и AUR (`yay -Syu`).
-* `set-wall <путь>` — быстрая смена обоев через `awww img`.
-
-### Декоративные скринсейверы для терминала
-* `matrix` — матрица в пурпурных тонах (`cmatrix -b -C magenta -u 3`).
-* `lava` — лава-лампа в терминале (`lavat -c magenta -s 2 -R 1`).
-* `zen` — процедурное дерево бонсай с табличкой (`cbonsai -l -i -w 3 -m "zev1ce"`).
-* `clock` — минималистичные терминальные часы (`tty-clock -s -c -b -C 5`).
+* `y <url>` — видео в mp4 через `yt-dlp`; `ya <url>` — аудио с SponsorBlock, обложкой и метаданными.
+* `nya [серия] <url...>` — серии аниме в `~/Videos/Anime` с субтитрами и `aria2c`.
+* `phone` — `adb forward` + SSH на Termux.
+* `update` — `yay -Syu`.
+* `set-wall <путь>` — обои через `awww img`.
+* Декоративные: `matrix`, `lava`, `zen`, `clock`.
 
 ---
 
 <a id="install"></a>
-## (╯°□°)╯ Быстрая установка на чистую Arch-систему
+## (╯°□°)╯ Установка
 
-> **Требования:**
-> * Arch Linux (`x86_64`), сборка оптимизирована под AMD GPU (`amdgpu` / `radeonsi`). На NVIDIA или Intel проверьте переменные окружения в `.config/hypr/env.lua` и параметры монитора в `.config/hypr/monitors.lua`.
-> * Свежий **Hyprland (0.56+)** с поддержкой нативного Lua-конфига (`hyprland.lua`).
-
-### Шаг 1. Базовые зависимости и Oh My Zsh
+Требования: Arch Linux, свежий Hyprland с поддержкой Lua-конфига, Mango (mangowm), matugen 2.x. Сборка заточена под AMD GPU.
 
 ```bash
-sudo pacman -S --needed base-devel git zsh curl
+sudo pacman -S --needed base-devel git zsh curl starship
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-```
 
-### Шаг 2. Тема Powerlevel10k и плагины Zsh
-
-```bash
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
 git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
 git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+git clone https://github.com/kudryashalex367-create/dotfiles.git "$HOME/dotfiles"
+git clone https://github.com/kudryashalex367-create/wallpapers.git "$HOME/wallpapers"
 ```
 
-### Шаг 3. Бэкап старых конфигов, клонирование Dotfiles (Git Bare) и обоев
-
-> (ノಠ益ಠ)ノ **Внимание:** распаковка перезапишет совпадающие файлы в `$HOME`, поэтому сначала переносим существующие конфиги в `~/dotfiles-backup`.
+Затем:
 
 ```bash
-mkdir -p ~/dotfiles-backup ~/wallpapers
-for f in ~/.zshrc ~/.bashrc ~/.p10k.zsh ~/.aiderCode.md ~/README.md ~/.config ~/.local/bin; do
-  [ -e "$f" ] && cp -a "$f" ~/dotfiles-backup/ 2>/dev/null
-done
-
-git clone --bare https://github.com/kudryashalex367-create/dotfiles.git "$HOME/.cfg"
-git clone https://github.com/kudryashalex367-create/wallpapers.git "$HOME/wallpapers"
-
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-config checkout -f
-config config --local status.showUntrackedFiles no
+cd ~/dotfiles
+./install.sh
 ```
 
-> (´・ω・\`) Нужна старая сборка с **Niri**? Вместо `config checkout -f` выполните `config checkout -f niri`.
+`install.sh` переносит конфликтующие файлы в `~/dotfiles-backup/stow-<дата>` и для каждого пакета выполняет `stow --no-folding -R`. Новые, удалённые и переименованные файлы подхватываются только повторным запуском.
+
+Unit `audio-combine.service` лежит в `.config/systemd/user/` и ставится отдельно (в список пакетов `install.sh` не входит).
 
 ---
 
 <a id="packages"></a>
-## (づ｡◕‿‿◕｡)づ Восстановление пакетов и финальная настройка
-
-### Шаг 1. Официальные пакеты Arch Linux
+## (づ｡◕‿‿◕｡)づ Пакеты
 
 ```bash
 sudo pacman -S --needed - < ~/.config/pkglist_repo.txt
-```
 
-### Шаг 2. AUR-пакеты через `yay`
-
-```bash
 git clone https://aur.archlinux.org/yay.git /tmp/yay && cd /tmp/yay && makepkg -si --noconfirm && cd ~
 yay -S --needed - < ~/.config/pkglist_aur.txt
-```
 
-### Шаг 3. Права, шрифты, аватар и первый запуск
-
-```bash
-chmod +x ~/.local/bin/* 2>/dev/null || true
+chmod +x ~/.local/bin/*
 fc-cache -fv
 chsh -s /usr/bin/zsh
 ```
 
-* **Аватар для `hyprlock`:** положите свою картинку в `~/.config/hypr/assets/avatar.png` и при необходимости замените путь `/home/zev1ce/...` на свой домашний каталог в шаблоне `~/.config/matugen/templates/hyprlock.conf`, после чего нажмите `Super + A` для генерации темы.
-* **Ключи для Aider (опционально):** если планируете использовать `aider-dotfiles` или `aider-agent`, создайте файл `~/.zshrc_secrets` с вашим `export OPENAI_API_KEY="..."` (он игнорируется git и защищён от чтения агентом).
-
-Перезапустите оболочку:
-
-```bash
-exec zsh
-```
+Mango в этих списках нет — ставится отдельно по инструкции mangowm.
 
 ---
 
-<a id="how"></a>
-## (¬‿¬) Как это сделано (Aider AI-агент)
+<a id="themes"></a>
+## (｡◕‿◕｡) Темы и сессии
 
-Честно: основную часть конфигов и скриптов пишет ИИ. С тех пор как я начал работать через [aider](https://aider.chat) (модель DeepSeek V4.1 Flash), на него приходится примерно 4/5 добавленных строк в этом репозитории, а README пишет Claude. Моя часть: ставлю задачи, читаю диффы, проверяю ошибки конфигов на своей системе и решаю, что оставить, а что откатить.
+* **Hyprland:** правки Lua-модулей применяются при сохранении; проверка — `hyprctl configerrors`, перезагрузка — `Super + Shift + R`.
+* **Mango:** `mmsg dispatch reload_config` (или `Super + Shift + R`); проверки конфига — по логу композитора.
+* **Обои и палитра:** `Super + A` / `Super + W` → `awww` → `matugen` → перегенерация файлов и reload.
+* **Fallback:** если `colors.conf` нет, используется Obsidian Violet (`#0b0912`, `#a78bfa`, `#c4b5fd`).
+* **Аватар для hyprlock:** положите картинку в `~/.config/hypr/assets/avatar.png` и поправьте путь в `matugen/templates/hyprlock.conf`, затем смените обои.
 
-Чтобы агент не сломал живую систему в `$HOME`, в корне репозитория лежит жёсткий регламент **`.aiderCode.md`**:
-* **Безопасность:** агенту запрещено вызывать `sudo`, `pacman`/`yay`, `systemctl`, `rm -rf`, перезапускать сессию, использовать сырой `git push` или читать секреты (`~/.zshrc_secrets`, `~/.ssh`, `~/.gnupg`, `.env`).
-* **Страховка и бэкапы:** перед правкой файлов с незакоммиченными изменениями или неотслеживаемых файлов агент автоматически сохраняет копию в `~/dotfiles-backup/aider/<timestamp>/` и следит, чтобы файл случайно не «похудел».
-* **Автопроверки после каждой правки:** `hyprctl configerrors` для Hyprland, `zsh -n` / `bash -n` / `shellcheck` для скриптов, `makoctl reload` для уведомлений, валидация `jq` и `tomllib` для JSON/TOML.
-* **Ритуал коммита:** агент одной командой собирает `status`, `diff`, `log`, проверяет дифф регуляркой на утечку ключей/токенов, формулирует короткое описание на русском и ждёт моего явного подтверждения перед запуском `cpush`.
+---
 
-Если интересно, как это видно в истории: коммиты без галочки Verified сделаны через aider, а с галочкой — это правки через веб-интерфейс GitHub.
+<a id="ai"></a>
+## (¬‿¬) AI-агент
+
+Конфиги пишутся с помощью [opencode](https://opencode.ai) (провайдер AITunnel, модель DeepSeek V4.1 Flash) и Antigravity. Правила лежат в [`AGENTS.md`](./AGENTS.md): правки только внутри `~/dotfiles`, запрет `sudo`/`pacman`/`systemctl`/секретов, обязательные проверки, ритуал коммита с подтверждением. Конфиг opencode — в `ai/.config/opencode/opencode.json`, ключ берётся из `OPENAI_API_KEY` (файл `~/.zshrc_secrets`, в git не попадает).
+
+Запуск из каталога дотфайлов: `oc-dots` (opencode) или `agy-dots` (Antigravity).
 
 ---
 
 <a id="manage"></a>
-## (≧▽≦) Управление конфигурациями
+## (≧▽≦) Управление конфигами
 
-Управление bare-репозиторием осуществляется через встроенные алиасы и функции в `.zshrc`:
+```bash
+config status        # git -C ~/dotfiles status
+config diff          # git -C ~/dotfiles diff
+config add -- <file> # взять новый файл под контроль
 
-* `config status` — проверить статус отслеживаемых файлов.
-* `config diff` — просмотреть точные изменения перед коммитом.
-* `config add -- <файл>` — взять новый файл под контроль версий (так как `status.showUntrackedFiles` выключен, новые файлы не видны, пока их не добавят явно).
-* `cpush "сообщение"` — автоматически проиндексировать все изменённые отслеживаемые файлы (`config add -u`), создать коммит и запушить в ветку `main`.
-* `cpull` — подтянуть свежие изменения с GitHub (`--no-rebase`) и перезапустить `zsh`.
-* `aider-dotfiles <файлы>` — запустить интерактивного AI-ассистента Aider в режиме ручного подтверждения.
-* `aider-agent` — запустить автономного агента (`agentaider --yes-always`) с автоматическим чтением правил из `.aiderCode.md`.
-* `~/.local/bin/wall-colors <путь_к_обоям>` — вручную применить обои, пересобрать палитру `matugen` и перезагрузить все компоненты.
+cpush "сообщение"    # add -u + commit + push origin main (алиас dpush)
+cpull                # pull --no-rebase + install.sh + exec zsh
+```
+
+Каталог дотфайлов: `$DOTFILES` (`~/dotfiles`). Исходники не отслеживаемых файлов не коммитятся автоматически — `dpush` только предупредит о них.
 
 ---
 
 ## (︶︹︶) Лицензия
 
-Проект распространяется по лицензии [GNU GPL v3.0](./LICENSE).%
+Проект распространяется по лицензии [GNU GPL v3.0](./LICENSE).

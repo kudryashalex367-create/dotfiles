@@ -34,7 +34,8 @@ mkdir -p "$(dirname "$STATE_FILE")" "$(dirname "$ENV_FILE")"
 
 hypr_env() {
     command -v hyprctl >/dev/null 2>&1 || return 0
-    hyprctl keyword env "$1" "$2" >/dev/null
+    # В Mango hyprctl стоит, но композитора нет: не валим скрипт под set -e.
+    hyprctl keyword env "$1" "$2" >/dev/null 2>&1 || true
 }
 
 apply_hypr() {
@@ -48,6 +49,51 @@ apply_hypr() {
     hypr_env ALL_PROXY   "$socks"
     hypr_env no_proxy    "$no"
     hypr_env NO_PROXY    "$no"
+}
+
+# Mango не принимает env через IPC, поэтому пишем фрагмент конфига,
+# который подключён в config.conf через source_optional, и перечитываем его.
+mango_env_file() {
+    echo "${XDG_CONFIG_HOME:-$HOME/.config}/mango/proxy.conf"
+}
+
+apply_mango() {
+    local http="$1" socks="$2" no="$3"
+    local file
+    file="$(mango_env_file)"
+    mkdir -p "$(dirname "$file")"
+
+    if [[ -n "$http" ]]; then
+        cat > "$file" <<EOF
+# Сгенерировано ~/.local/bin/proxy — правьте скрипт, не этот файл.
+env=http_proxy,${http}
+env=https_proxy,${http}
+env=all_proxy,${socks}
+env=HTTP_PROXY,${http}
+env=HTTPS_PROXY,${http}
+env=ALL_PROXY,${socks}
+env=no_proxy,${no}
+env=NO_PROXY,${no}
+EOF
+    else
+        cat > "$file" <<EOF
+# Прокси отключён (~/.local/bin/proxy off).
+# env-строки не пишем: пустое значение Mango отвергает ("Invalid bind format").
+EOF
+    fi
+
+    command -v mmsg >/dev/null 2>&1 || return 0
+    mmsg dispatch reload_config >/dev/null 2>&1 || true
+}
+
+current_compositor() {
+    if command -v hyprctl >/dev/null 2>&1 && hyprctl activeworkspace >/dev/null 2>&1; then
+        echo hypr
+    elif [[ -n "${MANGO_INSTANCE_SIGNATURE:-}" ]] || pgrep -x mango >/dev/null 2>&1; then
+        echo mango
+    else
+        echo none
+    fi
 }
 
 apply_gsettings() {
@@ -93,22 +139,46 @@ notify() {
     notify-send -a proxy -t 2000 "$1" "$2"
 }
 
+# Проверяем, что локальный клиент реально слушает порт: иначе включение
+# прокси оставит браузер и прочие приложения без сети.
+port_open() {
+    (exec 3<>"/dev/tcp/${PROXY_HOST}/$1") >/dev/null 2>&1
+}
+
 set_state() {
     local state="$1"
+
+    if [[ "$state" == "on" ]] && { ! port_open "$HTTP_PORT" || ! port_open "$SOCKS_PORT"; }; then
+        notify "Прокси не запущен" "${PROXY_HOST}:${HTTP_PORT}/${SOCKS_PORT} не слушает — включение отменено"
+        return 1
+    fi
+
     echo "$state" > "$STATE_FILE"
 
     if [[ "$state" == "on" ]]; then
-        apply_hypr "$HTTP_URL" "$SOCKS_URL" "$NO_PROXY_LIST"
+        apply_compositor_env "$HTTP_URL" "$SOCKS_URL" "$NO_PROXY_LIST"
         apply_gsettings on
         apply_environment_d on
         notify "Прокси включён" "${HTTP_URL} / ${SOCKS_URL}"
     else
-        # Hyprland не умеет unset — выставляем пустые значения.
-        apply_hypr "" "" "$NO_PROXY_LIST"
+        # Выключение: пустые значения (Hyprland/Mango не умеют unset).
+        apply_compositor_env "" "" "$NO_PROXY_LIST"
         apply_gsettings off
         apply_environment_d off
         notify "Прокси выключен" "прямое подключение"
     fi
+}
+
+apply_compositor_env() {
+    case "$(current_compositor)" in
+        hypr)  apply_hypr "$@" ;;
+        mango) apply_mango "$@" ;;
+        *)
+            # Неизвестная сессия: пробуем оба безопасно.
+            apply_hypr "$@"
+            apply_mango "$@"
+            ;;
+    esac
 }
 
 current_state() {
