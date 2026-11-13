@@ -123,6 +123,10 @@ hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),  { locked = true })
 hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
 
+-- Выбор аудиовыхода: fuzzel-меню (MCHOSE, BT-наушники, multi, HDMI).
+-- Переключает дефолтный sink и переносит на него уже играющие потоки.
+hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/audio-sink-menu'"))
+
 -- Мультимедиа (плеер)
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"),       { locked = true })

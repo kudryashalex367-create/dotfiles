@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Выбор аудиовыхода через fuzzel.
+set -u
+
+choice=$(
+    pactl list sinks | awk '
+        /^[[:space:]]*Name: / { name=$2 }
+        /^[[:space:]]*Description: / {
+            sub(/^[[:space:]]*Description: /, "")
+            printf "%s (%s)\n", $0, name
+        }
+    ' | fuzzel --dmenu --prompt "Аудиовыход: " --lines 10
+)
+
+[ -z "$choice" ] && exit 0
+
+name=${choice##* (}
+name=${name%)}
+
+pactl set-default-sink "$name"
+pactl list short sink-inputs | awk '{print $1}' | while read -r id; do
+    pactl move-sink-input "$id" "$name"
+done

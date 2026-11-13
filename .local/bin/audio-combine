@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Держит sink "multi" из MCHOSE V9 Pro + CMF Buds 2 Pro.
+# Слушает события PipeWire и создаёт объединённый sink, когда оба устройства на месте.
+
+set -u
+
+MCHOSE="alsa_output.usb-C-Media_Electronics_Inc_MCHOSE_V9_PRO_0123456789AB-01.analog-stereo"
+BUDS="bluez_output.2C_BE_EE_3F_67_BB.1"
+SINK="multi"
+
+sink_exists() {
+    pactl list short sinks | awk '{print $2}' | grep -qx "$1"
+}
+
+ensure() {
+    sink_exists "$SINK" && return
+    sink_exists "$MCHOSE" || return
+    sink_exists "$BUDS" || return
+    pactl load-module module-combine-sink sink_name="$SINK" slaves="$MCHOSE,$BUDS" >/dev/null
+    pactl set-default-sink "$SINK"
+}
+
+ensure
+pactl subscribe | while read -r _; do
+    ensure
+done
