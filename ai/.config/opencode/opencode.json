@@ -14,7 +14,7 @@
       },
       "models": {
         "deepseek-v4.1-flash-1017": {
-          "name": "DeepSeek V4.1 Flash",
+          "name": "DeepSeek V4.1 Flash 1017",
           "tool_call": true
         }
       }

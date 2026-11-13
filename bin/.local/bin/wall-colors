@@ -56,12 +56,13 @@ fi
 makoctl reload 2>/dev/null || true
 pkill -SIGUSR1 -x kitty 2>/dev/null || true
 
-# 4. Hyprland: цвета живут в ~/.config/hypr/colors.lua, его читает hyprland.lua
-#    при загрузке. hyprctl keyword для gradient-ключей col.*_border отказывает
-#    (unknown request), поэтому просто перечитываем конфиг целиком.
-if [[ -r "$HOME/.config/hypr/colors.lua" ]] && command -v hyprctl >/dev/null 2>&1; then
-    if ! out=$(hyprctl reload 2>&1) || [[ "$out" != "ok" ]]; then
-        printf 'hyprctl reload: %s\n' "$out" >&2
-        printf 'reload: %s\n' "$out" >>"$state_dir/errors.log"
+# 4. Композитор: Hyprland читает colors.lua, Mango — colors.conf.
+#    Не важно, какая сессия запущена: сработает доступный IPC.
+reload_wm() {
+    if command -v hyprctl >/dev/null 2>&1 && hyprctl version >/dev/null 2>&1; then
+        hyprctl reload >/dev/null 2>&1 || true
+    elif command -v mmsg >/dev/null 2>&1; then
+        mmsg dispatch reload_config >/dev/null 2>&1 || true
     fi
-fi
+}
+reload_wm

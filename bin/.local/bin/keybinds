@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
-# Шпаргалка по хоткеям Hyprland (Mod = Super), открывается по Super+/
-# Читает бинды из binds.lua (hyprland.lua — только загрузчик модулей)
-# и выводит полный список в fuzzel -d.
+# Шпаргалка по хоткеям: Hyprland (binds.lua) или Mango (config.conf),
+# открывается по Super+/. Выводит список в fuzzel -d.
 
 CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/binds.lua"
+MANGO_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/mango/config.conf"
+
+# В сессии Mango читаем его конфиг; XDG_CURRENT_DESKTOP = "mango".
+USE_MANGO=0
+if [[ "${XDG_CURRENT_DESKTOP:-}" == *mango* || -n "${MANGO_INSTANCE_SIGNATURE:-}" ]]; then
+    USE_MANGO=1
+fi
 
 # Имя модификатора берём из конфига (local mainMod = "SUPER"), по умолчанию Super
 MOD_DISPLAY="Super"
@@ -15,12 +21,37 @@ if [[ -r "$CONFIG" ]]; then
     fi
 fi
 
-# Достаём первый аргумент hl.bind(...) и нормализуем:
+# Hyprland: первый аргумент hl.bind(...); Mango: bind=/axisbind=/mousebind=.
 #   mainMod .. " + N"          -> Super+N
 #   mainMod .. " + " .. i      -> Super+1..9   (цикл for i = 1, 9)
 #   "CTRL + SHIFT + code:39"   -> Ctrl+Shift+code:39
+#   SUPER+SHIFT,1,tag,1        -> Super+Shift+1
 LIST=$(
-    if [[ -r "$CONFIG" ]]; then
+    if (( USE_MANGO )); then
+        if [[ -r "$MANGO_CONFIG" ]]; then
+            sed -nE 's/^[[:space:]]*(bind[a-z]*|axisbind|mousebind)=([^,]+),([^,]+),.*/\2+\3/p' "$MANGO_CONFIG" \
+                | sed -E \
+                    -e 's/\bSUPER\b/Super/g' \
+                    -e 's/\bSHIFT\b/Shift/g' \
+                    -e 's/\bCTRL\b/Ctrl/g' \
+                    -e 's/\bALT\b/Alt/g' \
+                    -e 's/\bNONE\+//g' \
+                    -e 's/\bNONE\b//g' \
+                    -e 's/\bRETURN\b/Enter/g' \
+                    -e 's/code:61/\//g' \
+                    -e 's/code:39/S/g' \
+                    -e 's/Page_Up/PageUp/g' \
+                    -e 's/Page_Down/PageDown/g' \
+                    -e 's/\bUP\b/WheelUp/g' \
+                    -e 's/\bDOWN\b/WheelDown/g' \
+                    -e 's/btn_left/MouseLeft/g' \
+                    -e 's/btn_right/MouseRight/g' \
+                    -e 's/btn_middle/MouseMiddle/g' \
+                    -e 's/^[[:space:]]+//' \
+                    -e 's/[[:space:]]+$//' \
+                | awk 'NF && !seen[$0]++'
+        fi
+    elif [[ -r "$CONFIG" ]]; then
         sed -nE 's/.*hl\.bind\(([^,]+),.*/\1/p' "$CONFIG" \
             | sed -E \
                 -e "s/mainMod \.\. /$MOD_DISPLAY/" \

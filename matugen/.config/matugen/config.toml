@@ -27,3 +27,8 @@ output_path = '~/.config/fuzzel/fuzzel.ini'
 [templates.hyprlock]
 input_path  = '~/.config/matugen/templates/hyprlock.conf'
 output_path = '~/.config/hypr/hyprlock.conf'
+
+# Mango: только четыре цвета в 0xRRGGBBAA, остальное — в config.conf.
+[templates.mango]
+input_path  = '~/.config/matugen/templates/mango-colors.conf'
+output_path = '~/.config/mango/colors.conf'
