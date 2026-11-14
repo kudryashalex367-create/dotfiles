@@ -147,6 +147,16 @@
 
 <img width="1920" height="1080" alt="keybinds_showcase" src="https://github.com/user-attachments/assets/aac3ccf6-1437-42ee-9e94-db56de700452" />
 
+### (⚙️‿⚙️) Центр управления Quick Settings (Fuzzel + Hub)
+
+<!-- Вставьте ссылку на скриншот Quick Settings (Super + X) в src -->
+<img width="1920" height="1080" alt="quick_settings_showcase" src="" />
+
+### (💬‿💬) Тёмная тема Telegram Desktop (Material You)
+
+<!-- Вставьте ссылку на скриншот Telegram Desktop в src -->
+<img width="1920" height="1080" alt="telegram_theme_showcase" src="" />
+
 ---
 
 <a id="hotkeys"></a>
