@@ -149,13 +149,11 @@
 
 ### (⚙️‿⚙️) Центр управления Quick Settings (Fuzzel + Hub)
 
-<!-- Вставьте ссылку на скриншот Quick Settings (Super + X) в src -->
-<img width="1920" height="1080" alt="quick_settings_showcase" src="" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fe4160f9-bee6-489e-979d-09d33816980d" />
 
 ### (💬‿💬) Тёмная тема Telegram Desktop (Material You)
 
-<!-- Вставьте ссылку на скриншот Telegram Desktop в src -->
-<img width="1920" height="1080" alt="telegram_theme_showcase" src="" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a3cf759e-d49a-4c89-b0ca-c9e16c654507" />
 
 ---
 
