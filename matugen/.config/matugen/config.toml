@@ -52,9 +52,4 @@ output_path = '~/.config/gtk-3.0/gtk.css'
 input_path  = '~/.config/matugen/templates/gtk-colors.css'
 output_path = '~/.config/gtk-4.0/gtk.css'
 
-# Firefox userChrome.css
-[templates.firefox]
-input_path  = '~/.config/matugen/templates/firefox-userChrome.css'
-output_path = '~/.config/mozilla/firefox/rkvh3te4.default-release/chrome/userChrome.css'
-
 

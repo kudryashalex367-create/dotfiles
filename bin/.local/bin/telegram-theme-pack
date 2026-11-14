@@ -34,19 +34,47 @@ fi
 
 mkdir -p "$state_dir"
 
-# Telegram Desktop ожидает colors.tdesktop-theme внутри архива.
-# Включаем и colors.tdesktop, и colors.tdesktop-theme для максимальной совместимости.
-# Обои (background.jpg) намеренно НЕ упаковываем: они перекрывают чат и делают текст нечитаемым.
-tdesktop_theme_file="$state_dir/colors.tdesktop-theme"
-cp "$colors_file" "$tdesktop_theme_file"
+# Telegram Desktop ожидает .tdesktop-theme архив, внутри которого строго:
+# 1) colors.tdesktop-theme (текстовый файл с палитрой цветов)
+# 2) background.jpg (фоновое изображение чата)
+# Без background.jpg Telegram считает архив повреждённым (Bad theme content size: 0)
+# и откатывается на дефолтную классическую светлую тему с зелёным фоном.
+# Чтобы не перекрывать чат обоями рабочего стола, генерируем сплошной тёмный фон цвета windowBg.
+python3 - <<EOF
+import os, re, zipfile
+from PIL import Image
 
-# Собираем zip-архив .tdesktop-theme (без фоновой картинки — чистый солидный фон чата)
-(
-    cd "$state_dir"
-    python3 -m zipfile -c "$theme_file" "colors.tdesktop" "colors.tdesktop-theme" >/dev/null 2>&1
-)
+colors_file = "$colors_file"
+theme_file = "$theme_file"
+state_dir = "$state_dir"
+tdesktop_theme_file = os.path.join(state_dir, "colors.tdesktop-theme")
+bg_file = os.path.join(state_dir, "background.jpg")
 
-rm -f "$tdesktop_theme_file"
+bg_color = "#18120f"
+if os.path.exists(colors_file):
+    with open(colors_file, "r", encoding="utf-8") as f:
+        for line in f:
+            m = re.match(r"^windowBg:\s*(#[0-9a-fA-F]{6});", line)
+            if m:
+                bg_color = m.group(1)
+                break
+
+# Генерируем сплошной фоновый тайл цвета windowBg (без растягивания обоев)
+img = Image.new("RGB", (64, 64), color=bg_color)
+img.save(bg_file, "JPEG", quality=95)
+
+# Копируем палитру с именем colors.tdesktop-theme
+with open(colors_file, "r", encoding="utf-8") as src, open(tdesktop_theme_file, "w", encoding="utf-8") as dst:
+    dst.write(src.read())
+
+# Собираем валидный zip-архив .tdesktop-theme
+with zipfile.ZipFile(theme_file, "w", compression=zipfile.ZIP_DEFLATED) as z:
+    z.write(tdesktop_theme_file, arcname="colors.tdesktop-theme")
+    z.write(bg_file, arcname="background.jpg")
+
+if os.path.exists(bg_file):
+    os.remove(bg_file)
+EOF
 
 # Уведомление отправляем ТОЛЬКО при явном вызове с --open или если запущено вручную,
 # чтобы не дублировать уведомление о смене обоев из wall-picker / wall-random.
