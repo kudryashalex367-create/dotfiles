@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Питание
+GenericName=Power Menu
+Comment=Выключение, перезагрузка, сон и выход из сессии
+Exec=sh -c "exec \\$HOME/.local/bin/powermenu"
+Icon=system-shutdown
+Terminal=false
+Categories=System;
+Keywords=power;shutdown;reboot;lock;выключение;перезагрузка;сон;

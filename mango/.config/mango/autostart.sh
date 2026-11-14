@@ -11,8 +11,11 @@ awww-daemon >/dev/null 2>&1 &
 # Палитра от последних обоев (matugen) + reload композитора
 "$HOME/.local/bin/wall-restore" >/dev/null 2>&1 &
 
+# Пути окружения
+export PATH="$HOME/.local/bin:$PATH"
+
 # Импорт переменных окружения для порталов и PipeWire
-dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=mango 2>/dev/null || true
+dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=mango PATH 2>/dev/null || true
 
 # Портал для скриншотов и трансляции экрана (ScreenCast/PipeWire)
 /usr/lib/xdg-desktop-portal-wlr >/dev/null 2>&1 &

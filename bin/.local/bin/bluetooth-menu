@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+# Меню управления Bluetooth через bluetoothctl и fuzzel.
+set -euo pipefail
+
+command -v bluetoothctl >/dev/null 2>&1 || {
+    notify-send -u critical -a "Bluetooth" "Bluetooth" "bluetoothctl не найден"
+    exit 1
+}
+command -v fuzzel >/dev/null 2>&1 || {
+    notify-send -u critical -a "Bluetooth" "Bluetooth" "fuzzel не найден"
+    exit 1
+}
+
+# Проверяем питание Bluetooth-адаптера
+is_powered() {
+    LC_ALL=C bluetoothctl show 2>/dev/null | grep -q "Powered: yes"
+}
+
+# Список подключенных MAC-адресов
+get_connected_macs() {
+    local macs=()
+    while read -r _ mac _; do
+        [[ -n "$mac" ]] && macs+=("$mac")
+    done < <(bluetoothctl devices Connected 2>/dev/null || true)
+    echo "${macs[*]:-}"
+}
+
+menu=()
+declare -A dev_mac dev_name dev_state
+
+if is_powered; then
+    menu+=("󰂲 Выключить Bluetooth")
+else
+    menu+=("󰂯 Включить Bluetooth")
+fi
+
+# Получаем подключенные устройства для быстрой сверки
+connected_list=" $(get_connected_macs) "
+
+# Считываем спаренные устройства
+paired_devices=$(bluetoothctl devices Paired 2>/dev/null || true)
+if [[ -z "$paired_devices" ]]; then
+    paired_devices=$(bluetoothctl devices 2>/dev/null || true)
+fi
+
+connected_items=()
+disconnected_items=()
+
+if [[ -n "$paired_devices" ]]; then
+    while read -r _type mac name; do
+        [[ -z "$mac" ]] && continue
+        name="${name:-$mac}"
+
+        # Проверяем, подключено ли устройство
+        is_conn=0
+        if [[ "$connected_list" == *" $mac "* ]]; then
+            is_conn=1
+        elif bluetoothctl info "$mac" 2>/dev/null | grep -q "Connected: yes"; then
+            is_conn=1
+        fi
+
+        if (( is_conn == 1 )); then
+            item="󰄬 󰂱  ${name}  (подключено)"
+            connected_items+=("$item")
+            dev_mac["$item"]="$mac"
+            dev_name["$item"]="$name"
+            dev_state["$item"]="connected"
+        else
+            item="  󰂯  ${name}  (отключено)"
+            disconnected_items+=("$item")
+            dev_mac["$item"]="$mac"
+            dev_name["$item"]="$name"
+            dev_state["$item"]="disconnected"
+        fi
+    done <<< "$paired_devices"
+fi
+
+for it in "${connected_items[@]}"; do
+    menu+=("$it")
+done
+for it in "${disconnected_items[@]}"; do
+    menu+=("$it")
+done
+
+choice=$(printf '%s\n' "${menu[@]}" | fuzzel -d -p "󰂯 Bluetooth ❯ " || true)
+[ -z "$choice" ] && exit 0
+
+case "$choice" in
+    "󰂲 Выключить Bluetooth")
+        bluetoothctl power off >/dev/null 2>&1
+        notify-send -a "Bluetooth" "Bluetooth" "Bluetooth выключен"
+        exit 0
+        ;;
+    "󰂯 Включить Bluetooth")
+        bluetoothctl power on >/dev/null 2>&1
+        notify-send -a "Bluetooth" "Bluetooth" "Bluetooth включён"
+        exit 0
+        ;;
+esac
+
+mac="${dev_mac["$choice"]:-}"
+[ -z "$mac" ] && exit 0
+name="${dev_name["$choice"]:-$mac}"
+state="${dev_state["$choice"]:-}"
+
+if [[ "$state" == "connected" ]]; then
+    notify-send -a "Bluetooth" "Bluetooth" "Отключение от «$name»..."
+    if output=$(bluetoothctl disconnect "$mac" 2>&1); then
+        notify-send -a "Bluetooth" "Bluetooth" "Отключено от «$name»"
+    else
+        notify-send -u critical -a "Bluetooth" "Ошибка отключения «$name»" "$output"
+    fi
+else
+    # Если адаптер выключен, сначала включаем питание
+    if ! is_powered; then
+        bluetoothctl power on >/dev/null 2>&1
+        sleep 1
+    fi
+
+    notify-send -a "Bluetooth" "Bluetooth" "Подключение к «$name»..."
+    output=$(bluetoothctl connect "$mac" 2>&1)
+    status=$?
+
+    if (( status == 0 )) && ! echo "$output" | grep -qi "Failed to connect"; then
+        notify-send -a "Bluetooth" "Bluetooth" "Подключено к «$name»"
+    else
+        notify-send -u critical -a "Bluetooth" "Ошибка подключения к «$name»" "$output"
+    fi
+fi

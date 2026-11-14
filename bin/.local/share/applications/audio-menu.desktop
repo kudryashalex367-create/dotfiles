@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Звук и Микрофон
+GenericName=Audio Control
+Comment=Выбор источников и выходов звука
+Exec=sh -c "exec \\$HOME/.local/bin/audio-menu"
+Icon=audio-card
+Terminal=false
+Categories=AudioVideo;Audio;Settings;
+Keywords=audio;sound;mic;микрофон;звук;наушники;

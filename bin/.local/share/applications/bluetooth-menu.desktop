@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Bluetooth
+GenericName=Bluetooth Devices
+Comment=Подключение Bluetooth устройств
+Exec=sh -c "exec \\$HOME/.local/bin/bluetooth-menu"
+Icon=bluetooth
+Terminal=false
+Categories=Settings;HardwareSettings;
+Keywords=bluetooth;блютуз;наушники;устройства;

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Музыка
+GenericName=Media Control
+Comment=Управление воспроизведением и плеерами
+Exec=sh -c "exec \\$HOME/.local/bin/media-menu"
+Icon=audio-x-generic
+Terminal=false
+Categories=Audio;AudioVideo;
+Keywords=music;media;player;музыка;плеер;трек;

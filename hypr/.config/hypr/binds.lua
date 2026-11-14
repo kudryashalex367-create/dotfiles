@@ -22,6 +22,14 @@ hl.bind(mainMod .. " + Q",      hl.dsp.window.close())
 -- История буфера обмена (cliphist наполняется в AUTOSTART)
 hl.bind(mainMod .. " + SHIFT + V",
     hl.dsp.exec_cmd("bash -c 'cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'"))
+-- Центр управления (Хаб всех меню в одном окне)
+hl.bind(mainMod .. " + X",         hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/hub'"))
+-- Меню питания, медиа, сети и bluetooth
+hl.bind(mainMod .. " + Escape",    hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/powermenu'"))
+hl.bind(mainMod .. " + M",         hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/media-menu'"))
+hl.bind(mainMod .. " + SHIFT + W", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/wifi-menu'"))
+hl.bind(mainMod .. " + B",         hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/bluetooth-menu'"))
+
 -- Выход из сессии: подальше от SUPER+E (nautilus), чтобы не промахнуться
 hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exit())
 
@@ -123,9 +131,9 @@ hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO
 hl.bind("XF86AudioMute",        hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"),  { locked = true })
 hl.bind("XF86AudioMicMute",     hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true })
 
--- Выбор аудиовыхода: fuzzel-меню (MCHOSE, BT-наушники, multi, HDMI).
--- Переключает дефолтный sink и переносит на него уже играющие потоки.
-hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/audio-sink-menu'"))
+-- Выбор аудиовыхода и микрофона: fuzzel-меню.
+-- Переключает дефолтный sink/source и переносит активные потоки.
+hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/audio-menu'"))
 
 -- Мультимедиа (плеер)
 hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })

@@ -1,0 +1,214 @@
+#!/usr/bin/env bash
+# Управление звуковыми устройствами и микрофонами через pactl и fuzzel.
+set -euo pipefail
+
+get_default_sink() {
+    local def
+    def=$(pactl get-default-sink 2>/dev/null || true)
+    if [[ -z "$def" ]]; then
+        def=$(pactl info 2>/dev/null | awk -F': ' '/Default Sink:/{print $2}' || true)
+    fi
+    echo "$def"
+}
+
+get_default_source() {
+    local def
+    def=$(pactl get-default-source 2>/dev/null || true)
+    if [[ -z "$def" ]]; then
+        def=$(pactl info 2>/dev/null | awk -F': ' '/Default Source:/{print $2}' || true)
+    fi
+    echo "$def"
+}
+
+is_mic_muted() {
+    if LC_ALL=C pactl get-source-mute @DEFAULT_SOURCE@ 2>/dev/null | grep -qi "yes"; then
+        return 0
+    fi
+    if LC_ALL=C wpctl get-volume @DEFAULT_AUDIO_SOURCE@ 2>/dev/null | grep -qi "MUTED"; then
+        return 0
+    fi
+    return 1
+}
+
+toggle_mic() {
+    if command -v wpctl >/dev/null 2>&1; then
+        wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle 2>/dev/null || pactl set-source-mute @DEFAULT_SOURCE@ toggle 2>/dev/null || true
+    elif command -v pactl >/dev/null 2>&1; then
+        pactl set-source-mute @DEFAULT_SOURCE@ toggle 2>/dev/null || true
+    fi
+
+    if is_mic_muted; then
+        notify-send -a "Аудио" -i "microphone-sensitivity-muted" "Микрофон отключён" "Звук выключен"
+    else
+        notify-send -a "Аудио" -i "audio-input-microphone" "Микрофон включён" "Звук включён"
+    fi
+}
+
+select_sink() {
+    local default_sink raw_list choice name desc
+    default_sink="$(get_default_sink)"
+
+    raw_list=$(pactl list sinks 2>/dev/null | awk -v def="$default_sink" '
+        function flush_entry() {
+            if (name != "") {
+                mark = (name == def) ? "󰄬 " : "   "
+                if (desc == "") desc = name
+                printf "%s%s (%s)\n", mark, desc, name
+            }
+            name = ""
+            desc = ""
+        }
+        /^[[:space:]]*Sink #[0-9]+/ {
+            flush_entry()
+        }
+        /^[[:space:]]*Name:[[:space:]]*/ {
+            sub(/^[[:space:]]*Name:[[:space:]]*/, "")
+            name = $0
+        }
+        /^[[:space:]]*Description:[[:space:]]*/ {
+            sub(/^[[:space:]]*Description:[[:space:]]*/, "")
+            desc = $0
+        }
+        END {
+            flush_entry()
+        }
+    ')
+
+    if [[ -z "$raw_list" ]]; then
+        notify-send -a "Аудио" "Ошибка" "Устройства вывода не найдены"
+        return
+    fi
+
+    choice=$(echo "$raw_list" | fuzzel -d -p "󰓃 Выход звука ❯ " -l 10 -w 50 || true)
+    [[ -z "$choice" ]] && return
+
+    name="${choice##* (}"
+    name="${name%)}"
+
+    desc="${choice% (*)}"
+    desc="${desc#󰄬 }"
+    desc="${desc#   }"
+
+    pactl set-default-sink "$name"
+    pactl list short sink-inputs 2>/dev/null | awk '{print $1}' | while read -r id; do
+        [[ -n "$id" ]] && pactl move-sink-input "$id" "$name" 2>/dev/null || true
+    done
+
+    notify-send -a "Аудио" -i "audio-speakers" "Выход звука изменён" "$desc"
+}
+
+select_source() {
+    local default_source raw_list choice name desc
+    default_source="$(get_default_source)"
+
+    raw_list=$(pactl list sources 2>/dev/null | awk -v def="$default_source" '
+        function flush_entry() {
+            if (name != "") {
+                if (name !~ /\.monitor$/) {
+                    mark = (name == def) ? "󰄬 " : "   "
+                    if (desc == "") desc = name
+                    printf "%s%s (%s)\n", mark, desc, name
+                }
+            }
+            name = ""
+            desc = ""
+        }
+        /^[[:space:]]*Source #[0-9]+/ {
+            flush_entry()
+        }
+        /^[[:space:]]*Name:[[:space:]]*/ {
+            sub(/^[[:space:]]*Name:[[:space:]]*/, "")
+            name = $0
+        }
+        /^[[:space:]]*Description:[[:space:]]*/ {
+            sub(/^[[:space:]]*Description:[[:space:]]*/, "")
+            desc = $0
+        }
+        END {
+            flush_entry()
+        }
+    ')
+
+    if [[ -z "$raw_list" ]]; then
+        notify-send -a "Аудио" "Ошибка" "Микрофоны не найдены"
+        return
+    fi
+
+    choice=$(echo "$raw_list" | fuzzel -d -p "󰍬 Вход звука ❯ " -l 10 -w 50 || true)
+    [[ -z "$choice" ]] && return
+
+    name="${choice##* (}"
+    name="${name%)}"
+
+    desc="${choice% (*)}"
+    desc="${desc#󰄬 }"
+    desc="${desc#   }"
+
+    pactl set-default-source "$name"
+    pactl list short source-outputs 2>/dev/null | awk '{print $1}' | while read -r id; do
+        [[ -n "$id" ]] && pactl move-source-output "$id" "$name" 2>/dev/null || true
+    done
+
+    notify-send -a "Аудио" -i "audio-input-microphone" "Микрофон изменён" "$desc"
+}
+
+run_combine() {
+    local script="$HOME/.local/bin/audio-combine"
+    if [[ ! -x "$script" ]]; then
+        if command -v audio-combine >/dev/null 2>&1; then
+            script="$(command -v audio-combine)"
+        else
+            notify-send -a "Аудио" -u critical "Ошибка" "Скрипт audio-combine не найден"
+            return
+        fi
+    fi
+
+    if pgrep -f "audio-combine" >/dev/null; then
+        notify-send -a "Аудио" "audio-combine" "Скрипт уже запущен"
+    else
+        nohup "$script" >/dev/null 2>&1 &
+        notify-send -a "Аудио" "audio-combine" "Объединение устройств запущено"
+    fi
+}
+
+main() {
+    if ! command -v pactl >/dev/null 2>&1; then
+        notify-send -a "Аудио" -u critical "Ошибка" "pactl не установлен"
+        exit 1
+    fi
+
+    local mic_status mic_item action
+    if is_mic_muted; then
+        mic_status="Выкл"
+    else
+        mic_status="Вкл"
+    fi
+    mic_item="󰍭 Переключить микрофон (Mute/Unmute) [${mic_status}]"
+
+    local options=(
+        "󰓃 Выход звука (Динамики / Наушники)"
+        "󰍬 Вход звука (Микрофоны)"
+        "$mic_item"
+        "󱄠 Объединить аудиоустройства (audio-combine)"
+    )
+
+    action=$(printf '%s\n' "${options[@]}" | fuzzel -d -p "󰕾 Звук ❯ " -l 10 -w 45 || true)
+    [[ -z "$action" ]] && exit 0
+
+    case "$action" in
+        "󰓃 Выход звука (Динамики / Наушники)"*)
+            select_sink
+            ;;
+        "󰍬 Вход звука (Микрофоны)"*)
+            select_source
+            ;;
+        "󰍭 Переключить микрофон"*)
+            toggle_mic
+            ;;
+        "󱄠 Объединить аудиоустройства"*)
+            run_combine
+            ;;
+    esac
+}
+
+main "$@"

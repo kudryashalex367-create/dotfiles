@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+Name=Wi-Fi
+GenericName=Wi-Fi Networks
+Comment=Выбор и подключение к Wi-Fi сетям
+Exec=sh -c "exec \\$HOME/.local/bin/wifi-menu"
+Icon=network-wireless
+Terminal=false
+Categories=Network;
+Keywords=wifi;network;вайфай;сеть;интернет;

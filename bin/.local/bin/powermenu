@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+confirm() {
+    local answer
+    answer=$(printf "󰄬 Да\n󰅖 Нет\n" | fuzzel -d -p "Точно? ❯ " -l 2 -w 15 || true)
+    [[ "$answer" == "󰄬 Да" ]]
+}
+
+lock_screen() {
+    if command -v hyprlock >/dev/null 2>&1; then
+        hyprlock
+    else
+        loginctl lock-session
+    fi
+}
+
+logout_session() {
+    local desktop="${XDG_CURRENT_DESKTOP:-}"
+    if [[ -n "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]] || [[ "${desktop,,}" == *"hyprland"* ]]; then
+        hyprctl dispatch exit
+    elif [[ -n "${MANGO_INSTANCE_SIGNATURE:-}" ]] || [[ "${desktop,,}" == *"mango"* ]]; then
+        pkill -x mango || pkill -x mangowm
+    else
+        loginctl terminate-user "${USER:-$(id -un)}"
+    fi
+}
+
+main() {
+    local entries choice
+    entries=$(printf "󰐥 Выключить\n󰜉 Перезагрузить\n󰤄 Сон\n󰌾 Заблокировать\n󰍃 Выйти\n")
+    choice=$(echo -n "$entries" | fuzzel -d -p "󰐥 Питание ❯ " -l 6 -w 22 || true)
+
+    case "$choice" in
+        "󰐥 Выключить")
+            if confirm; then
+                systemctl poweroff
+            fi
+            ;;
+        "󰜉 Перезагрузить")
+            if confirm; then
+                systemctl reboot
+            fi
+            ;;
+        "󰤄 Сон")
+            systemctl suspend
+            ;;
+        "󰌾 Заблокировать")
+            lock_screen
+            ;;
+        "󰍃 Выйти")
+            logout_session
+            ;;
+        *)
+            exit 0
+            ;;
+    esac
+}
+
+main "$@"
