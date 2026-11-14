@@ -48,7 +48,7 @@
 * ( ͡° ͜ʖ ͡°) **Terminal:** Kitty (начальный размер 960x600, OpenType-глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
 * (づ｡◕‿‿◕｡)づ **Shell:** Zsh + Oh My Zsh + Starship
 * ヽ(´▽`)/ **UI Suite:** Fuzzel (Overlay, скругление 16px), Mako, Hyprlock + Hypridle, awww (144Hz Wipe Engine)
-* (⌐■_■) **Theming:** `matugen` 2.x — генерация палитры Material You из обоев для Hyprland, Mango, Kitty, Fuzzel, Mako и Hyprlock (fallback — Obsidian Violet)
+* (⌐■_■) **Theming:** `matugen` 4.x — генерация палитры Material You из обоев для Hyprland, Mango, Kitty, Fuzzel, Mako, Hyprlock, GTK 3/4, Firefox и Telegram (fallback — Obsidian Violet)
 * (｀・ω・´) **Cursor:** Bibata-Modern-Ice (24px, сквозная синхронизация в Hyprcursor, XCursor и GSettings)
 * (ง •̀_•́)ง **Bootloader:** systemd-boot
 
@@ -60,7 +60,7 @@
 * (づ｡◕‿‿◕｡)づ **Две Wayland-сессии.** Hyprland — рабочая, Mango — альтернатива с той же раскладкой биндов, прозрачностью, тенью и блюром. Обе используют общие скрипты из `~/.local/bin` и общую палитру matugen.
 * (⚙️‿⚙️) **Модульный Lua-конфиг Hyprland.** Точка входа `hyprland.lua` через `dofile` загружает 8 независимых модулей: `theme`, `monitors`, `env`, `input`, `animations`, `autostart`, `binds`, `rules`.
 * ⚙️ **Один конфиг Mango.** `~/.config/mango/config.conf` плюс `autostart.sh` и `source_optional` для сгенерированных `colors.conf` и `proxy.conf`.
-* (づ｡◕‿‿◕｡)づ **Динамическая палитра Material You (`matugen`).** Смена обоев автоматически перекрашивает рамки и тени окон Hyprland, Mango, терминал Kitty, лаунчер Fuzzel, уведомления Mako и экран блокировки Hyprlock. Если файл палитры отсутствует, система откатывается к тёмно-фиолетовой схеме **Obsidian Violet** (`#0b0912`, `#a78bfa`, `#c4b5fd`).
+* (づ｡◕‿‿◕｡)づ **Динамическая палитра Material You (`matugen`).** Смена обоев автоматически перекрашивает рамки и тени окон Hyprland, Mango, терминал Kitty, лаунчер Fuzzel, уведомления Mako, экран блокировки Hyprlock, темы GTK 3/4 (Nautilus и системные диалоги), Firefox (userChrome) и генерирует готовую тему Telegram Desktop. Если файл палитры отсутствует, система откатывается к тёмно-фиолетовой схеме **Obsidian Violet** (`#0b0912`, `#a78bfa`, `#c4b5fd`).
 * (︶︹︶) **Безбаровый стол.** 100% площади экрана отдано контенту без панелей задач. Воркспейсы `1–5` закреплены как постоянные и не схлопываются при пустоте, навигация замкнута в кольцо.
 * (o゜▽゜)o☆ **Выверенный объём и фокус.** Окна обрамлены компактными мягкими тенями (`range = 12`, `render_power = 2`). Неактивные окна приглушаются на **5.5%** (`dim_strength = 0.055`) и получают лёгкую прозрачность `inactive_opacity = 0.975` (у Kitty — отдельное правило `opacity = 0.97 0.95`).
 * ヽ(´▽`)/ **Физическая пружина в анимациях.** Перемещение окон, смена воркспейсов и выезд scratchpad работают на кастомной пружине `smoothSpring` без лишних колебаний, а открытие окон использует кривую `popIn` с живым микро-отскоком.
@@ -93,6 +93,7 @@
 │   ├── powermenu                  # меню выключения, сна и блокировки через Fuzzel
 │   ├── proxy                      # менеджер прокси (on/off/toggle/status/restore)
 │   ├── screenshot                 # скриншоты (area/window/full) в файл и буфер
+│   ├── telegram-theme-pack        # упаковка Material You темы Telegram (.tdesktop-theme)
 │   ├── wall-colors                # пайплайн: matugen + hot-reload (mako, kitty, hyprland, mango)
 │   ├── wall-picker                # выбор обоев через Fuzzel + awww + синхронизация
 │   ├── wall-random                # случайные обои из ~/wallpapers в 1 клик
@@ -231,7 +232,8 @@
 <a id="scripts"></a>
 ## (🛠️‿🛠️) Скрипты и автоматизация (`~/.local/bin`)
 
-* **`wall-colors [--colors-only] <img>`** — ядро динамической темы. Сохраняет путь к обоям в `~/.cache/wall-colors/last`, генерирует тёмную палитру Material You через `matugen` и на лету обновляет цвета в `mako`, `kitty` (`SIGUSR1`), `fuzzel`, `hyprlock`, `Hyprland` (`hyprctl reload`) и `Mango` (`mmsg dispatch reload_config`).
+* **`wall-colors [--colors-only] <img>`** — ядро динамической темы. Сохраняет путь к обоям в `~/.cache/wall-colors/last`, генерирует тёмную палитру Material You через `matugen` и на лету обновляет цвета в `mako`, `kitty` (`SIGUSR1`), `fuzzel`, `hyprlock`, `Hyprland` (`hyprctl reload`), `Mango` (`mmsg dispatch reload_config`), `GTK 3/4` (CSS переменные), `Firefox` (userChrome) и упаковывает тему Telegram.
+* **`telegram-theme-pack [--open]`** — собирает архив темы `.tdesktop-theme` с палитрой Material You и фоновым изображением из обоев (с флагом `--open` сразу открывает окно применения в Telegram).
 * **`wall-restore`** — запускается при старте сессии, восстанавливает палитру последних обоев из кэша.
 * **`wall-random` / `wall-picker`** — выбор случайной картинки или интерактивный поиск через `fuzzel -d`. Смена идёт через `awww` на 144 Гц с эффектом `wipe`, параллельно обновляется фон в GSettings и вызывается `wall-colors`.
 * **`proxy {on|off|toggle|status|restore}`** — централизованное управление прокси (`HTTP 127.0.0.1:10809`, `SOCKS5 127.0.0.1:10808`). Синхронно прописывает настройки в переменные окружения Hyprland, Mango (`proxy.conf` + reload), GSettings и `~/.config/environment.d/proxy.conf`. Состояние сохраняется в `~/.local/state/proxy`.

@@ -1,0 +1,81 @@
+#!/usr/bin/env bash
+# Упаковка темы Telegram Desktop под Material You из текущей палитры обоев.
+set -euo pipefail
+
+state_dir="${XDG_CACHE_HOME:-$HOME/.cache}/wall-colors"
+colors_file="$state_dir/colors.tdesktop"
+theme_file="$state_dir/Material-You.tdesktop-theme"
+last_wall_file="$state_dir/last"
+
+open_theme=0
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --open)
+            open_theme=1
+            shift
+            ;;
+        -h|--help)
+            echo "Использование: $(basename "$0") [--open]"
+            exit 0
+            ;;
+        *)
+            echo "Неизвестный аргумент: $1" >&2
+            echo "Использование: $(basename "$0") [--open]" >&2
+            exit 1
+            ;;
+    esac
+done
+
+if [[ ! -f "$colors_file" ]]; then
+    echo "Палитра Telegram не найдена: $colors_file" >&2
+    echo "Сначала сгенерируй палитру через wall-colors или matugen." >&2
+    exit 1
+fi
+
+mkdir -p "$state_dir"
+
+# Telegram Desktop ожидает colors.tdesktop-theme внутри архива.
+# Включаем и colors.tdesktop, и colors.tdesktop-theme для совместимости.
+tdesktop_theme_file="$state_dir/colors.tdesktop-theme"
+cp "$colors_file" "$tdesktop_theme_file"
+
+files_to_pack=("$colors_file" "$tdesktop_theme_file")
+
+bg_copied=0
+bg_file="$state_dir/background.jpg"
+
+if [[ -f "$last_wall_file" ]]; then
+    wall_img=$(head -n 1 "$last_wall_file" || true)
+    if [[ -n "$wall_img" && -f "$wall_img" ]]; then
+        cp "$wall_img" "$bg_file"
+        files_to_pack+=("$bg_file")
+        bg_copied=1
+    fi
+fi
+
+# Упаковываем тему через python3 -m zipfile
+python3 -m zipfile -c "$theme_file" "${files_to_pack[@]}"
+
+# Очистка временных файлов
+rm -f "$tdesktop_theme_file"
+if (( bg_copied == 1 )); then
+    rm -f "$bg_file"
+fi
+
+# Уведомление
+if command -v notify-send >/dev/null 2>&1; then
+    notify-send -a "Telegram" "Тема Telegram обновлена" "Открой Material-You.tdesktop-theme для применения" 2>/dev/null || true
+fi
+
+# Открытие окна подтверждения темы в Telegram
+if (( open_theme == 1 )); then
+    if [[ -x /usr/bin/Telegram ]]; then
+        /usr/bin/Telegram "$theme_file" >/dev/null 2>&1 &
+    elif command -v telegram-desktop >/dev/null 2>&1; then
+        telegram-desktop "$theme_file" >/dev/null 2>&1 &
+    elif command -v xdg-open >/dev/null 2>&1; then
+        xdg-open "$theme_file" >/dev/null 2>&1 || true
+    fi
+fi
+
+echo "Тема Telegram упакована: $theme_file"

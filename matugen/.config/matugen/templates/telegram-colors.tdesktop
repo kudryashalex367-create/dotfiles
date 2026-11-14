@@ -1,0 +1,45 @@
+// Telegram Desktop Material You Palette
+// Сгенерировано через Matugen из текущих обоев
+
+// Основные цвета
+windowBg: {{colors.surface.default.hex}};
+windowFg: {{colors.on_surface.default.hex}};
+windowBgOver: {{colors.surface_container.default.hex}};
+windowBgActive: {{colors.primary.default.hex}};
+windowFgActive: {{colors.on_primary.default.hex}};
+windowActiveTextId: {{colors.primary.default.hex}};
+windowActiveTextFg: {{colors.primary.default.hex}};
+windowSubTextFg: {{colors.outline.default.hex}};
+
+// Кнопки и ссылки
+lightButtonBg: {{colors.primary.default.hex}};
+lightButtonFg: {{colors.on_primary.default.hex}};
+lightButtonBgOver: {{colors.primary_container.default.hex}};
+activeButtonBg: {{colors.primary.default.hex}};
+activeButtonFg: {{colors.on_primary.default.hex}};
+activeLineTitle: {{colors.primary.default.hex}};
+
+// Боковая панель / список диалогов
+sideBarBg: {{colors.surface_container_low.default.hex}};
+sideBarText: {{colors.on_surface.default.hex}};
+sideBarTextFg: {{colors.on_surface.default.hex}};
+dialogsBg: {{colors.surface_container_low.default.hex}};
+dialogsNameFg: {{colors.on_surface.default.hex}};
+dialogsTextFg: {{colors.outline.default.hex}};
+dialogsBgActive: {{colors.primary_container.default.hex}};
+dialogsTextActive: {{colors.on_primary_container.default.hex}};
+dialogsTextFgActive: {{colors.on_primary_container.default.hex}};
+dialogsNameActive: {{colors.on_primary_container.default.hex}};
+dialogsNameFgActive: {{colors.on_primary_container.default.hex}};
+dialogsUnreadBg: {{colors.primary.default.hex}};
+dialogsUnreadFg: {{colors.on_primary.default.hex}};
+
+// Сообщения
+msgInBg: {{colors.surface_container.default.hex}};
+msgInText: {{colors.on_surface.default.hex}};
+historyTextInFg: {{colors.on_surface.default.hex}};
+msgOutBg: {{colors.primary_container.default.hex}};
+msgOutText: {{colors.on_primary_container.default.hex}};
+historyTextOutFg: {{colors.on_primary_container.default.hex}};
+historyFileNameIn: {{colors.primary.default.hex}};
+historyFileNameOut: {{colors.primary.default.hex}};

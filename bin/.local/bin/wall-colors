@@ -55,6 +55,12 @@ fi
 # 3. Reload целей, которые умеют перечитывать конфиг на лету
 makoctl reload 2>/dev/null || true
 pkill -SIGUSR1 -x kitty 2>/dev/null || true
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark' 2>/dev/null || true
+
+# Упаковываем тему Telegram под новые цвета и обои
+if [[ -x "$HOME/.local/bin/telegram-theme-pack" ]]; then
+    "$HOME/.local/bin/telegram-theme-pack" >/dev/null 2>&1 || true
+fi
 
 # 4. Композитор: Hyprland читает colors.lua, Mango — colors.conf.
 #    Не важно, какая сессия запущена: сработает доступный IPC.
