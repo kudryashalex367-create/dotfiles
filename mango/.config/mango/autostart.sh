@@ -11,6 +11,9 @@ awww-daemon >/dev/null 2>&1 &
 # Палитра от последних обоев (matugen) + reload композитора
 "$HOME/.local/bin/wall-restore" >/dev/null 2>&1 &
 
+# Портал для скриншотов и трансляции экрана (ScreenCast/PipeWire)
+/usr/lib/xdg-desktop-portal-hyprland >/dev/null 2>&1 &
+
 # Порталы, буфер обмена, секреты
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1 &
 wl-paste --watch cliphist store >/dev/null 2>&1 &
