@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-PKGS=(zsh hypr mango kitty fuzzel mako fastfetch matugen bin pkglists ai starship)
+if [[ $# -gt 0 ]]; then
+  PKGS=("$@")
+else
+  mapfile -t PKGS < <(find . -maxdepth 1 -mindepth 1 -type d ! -name '.*' -printf '%P\n' | sort)
+fi
 BK="$HOME/dotfiles-backup/stow-$(date +%F_%H%M%S)"
 for p in "${PKGS[@]}"; do
   [[ -d $p ]] || continue
