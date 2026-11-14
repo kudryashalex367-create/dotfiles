@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Управление звуковыми устройствами и микрофонами через pactl и fuzzel.
+# Управление звуковыми устройствами, микрофонами и громкостью через pactl/wpctl и fuzzel.
 set -euo pipefail
 
 get_default_sink() {
@@ -18,6 +18,35 @@ get_default_source() {
         def=$(pactl info 2>/dev/null | awk -F': ' '/Default Source:/{print $2}' || true)
     fi
     echo "$def"
+}
+
+get_sink_volume_display() {
+    local vol=""
+    if command -v wpctl >/dev/null 2>&1; then
+        vol=$(LC_ALL=C wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null \
+            | awk '/Volume:/{ vol=int($2*100); if (/MUTED/) printf "%d%% [Mute]", vol; else printf "%d%%", vol }' || true)
+    fi
+    if [[ -z "$vol" ]] && command -v pactl >/dev/null 2>&1; then
+        vol=$(LC_ALL=C pactl get-sink-volume @DEFAULT_SINK@ 2>/dev/null | head -n1 | grep -oE '[0-9]+%' | head -n1 || true)
+    fi
+    echo "${vol:-100%}"
+}
+
+adjust_volume() {
+    local delta="$1"
+    if command -v wpctl >/dev/null 2>&1; then
+        wpctl set-volume -l 1.5 @DEFAULT_AUDIO_SINK@ "$delta" 2>/dev/null || true
+    elif command -v pactl >/dev/null 2>&1; then
+        pactl set-sink-volume @DEFAULT_SINK@ "$delta" 2>/dev/null || true
+    fi
+}
+
+toggle_sink_mute() {
+    if command -v wpctl >/dev/null 2>&1; then
+        wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle 2>/dev/null || true
+    elif command -v pactl >/dev/null 2>&1; then
+        pactl set-sink-mute @DEFAULT_SINK@ toggle 2>/dev/null || true
+    fi
 }
 
 is_mic_muted() {
@@ -89,10 +118,7 @@ select_sink() {
     desc="${desc#󰄬 }"
     desc="${desc#   }"
 
-    pactl set-default-sink "$name"
-    pactl list short sink-inputs 2>/dev/null | awk '{print $1}' | while read -r id; do
-        [[ -n "$id" ]] && pactl move-sink-input "$id" "$name" 2>/dev/null || true
-    done
+    pactl set-default-sink "$name" 2>/dev/null || true
 
     notify-send -a "Аудио" -i "audio-speakers" "Выход звука изменён" "$desc"
 }
@@ -144,10 +170,7 @@ select_source() {
     desc="${desc#󰄬 }"
     desc="${desc#   }"
 
-    pactl set-default-source "$name"
-    pactl list short source-outputs 2>/dev/null | awk '{print $1}' | while read -r id; do
-        [[ -n "$id" ]] && pactl move-source-output "$id" "$name" 2>/dev/null || true
-    done
+    pactl set-default-source "$name" 2>/dev/null || true
 
     notify-send -a "Аудио" -i "audio-input-microphone" "Микрофон изменён" "$desc"
 }
@@ -177,38 +200,59 @@ main() {
         exit 1
     fi
 
-    local mic_status mic_item action
-    if is_mic_muted; then
-        mic_status="Выкл"
-    else
-        mic_status="Вкл"
-    fi
-    mic_item="󰍭 Переключить микрофон (Mute/Unmute) [${mic_status}]"
+    while true; do
+        local cur_vol mic_status mic_item action
+        cur_vol="$(get_sink_volume_display)"
 
-    local options=(
-        "󰓃 Выход звука (Динамики / Наушники)"
-        "󰍬 Вход звука (Микрофоны)"
-        "$mic_item"
-        "󱄠 Объединить аудиоустройства (audio-combine)"
-    )
+        if is_mic_muted; then
+            mic_status="Выкл"
+        else
+            mic_status="Вкл"
+        fi
+        mic_item="󰍭 Переключить микрофон [${mic_status}]"
 
-    action=$(printf '%s\n' "${options[@]}" | fuzzel -d -p "󰕾 Звук ❯ " -l 10 -w 45 || true)
-    [[ -z "$action" ]] && exit 0
+        local options=(
+            "󰕾 Громкость +5%  (сейчас ${cur_vol})"
+            "󰖀 Громкость -5%"
+            "󰝟 Вкл/выкл звук динамиков (Mute)"
+            "$mic_item"
+            "󰓃 Выход звука (Динамики / Наушники)"
+            "󰍬 Вход звука (Микрофоны)"
+            "󱄠 Объединить аудиоустройства (audio-combine)"
+            "󰅖 Закрыть"
+        )
 
-    case "$action" in
-        "󰓃 Выход звука (Динамики / Наушники)"*)
-            select_sink
-            ;;
-        "󰍬 Вход звука (Микрофоны)"*)
-            select_source
-            ;;
-        "󰍭 Переключить микрофон"*)
-            toggle_mic
-            ;;
-        "󱄠 Объединить аудиоустройства"*)
-            run_combine
-            ;;
-    esac
+        action=$(printf '%s\n' "${options[@]}" | fuzzel -d -p "󰕾 Звук [${cur_vol}] ❯ " -l 9 -w 45 || true)
+        [[ -z "$action" || "$action" == "󰅖 Закрыть" ]] && break
+
+        case "$action" in
+            *"Громкость +5%"*)
+                adjust_volume "5%+"
+                sleep 0.05
+                ;;
+            *"Громкость -5%"*)
+                adjust_volume "5%-"
+                sleep 0.05
+                ;;
+            *"Вкл/выкл звук динамиков"*)
+                toggle_sink_mute
+                sleep 0.05
+                ;;
+            "󰍭 Переключить микрофон"*)
+                toggle_mic
+                sleep 0.05
+                ;;
+            "󰓃 Выход звука (Динамики / Наушники)"*)
+                select_sink
+                ;;
+            "󰍬 Вход звука (Микрофоны)"*)
+                select_source
+                ;;
+            "󱄠 Объединить аудиоустройства"*)
+                run_combine
+                ;;
+        esac
+    done
 }
 
 main "$@"

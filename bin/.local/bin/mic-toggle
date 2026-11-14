@@ -1,0 +1,64 @@
+#!/usr/bin/env bash
+# mic-toggle — фоновая запись микрофона по хоткею.
+# Первый вызов: стартует pw-record в .wav, уведомляет Mako.
+# Второй вызов: останавливает запись, конвертирует в .opus,
+#               копирует файл в буфер обмена (wl-copy), уведомляет Mako.
+
+set -uo pipefail
+
+PIDFILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/mic-toggle.pid"
+WAVFILE="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/mic-toggle.wav"
+DIR="$HOME/Recordings"
+
+# Гарантируем доступ к D-Bus сессии (нужно при запуске из хоткея без полного окружения)
+if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
+    _rt="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=${_rt}/bus"
+fi
+
+notify() {
+    notify-send -a "mic-toggle" -t 4000 "$1" "${2:-}" 2>/dev/null || true
+}
+
+stop_and_convert() {
+    local pid
+    pid=$(cat "$PIDFILE" 2>/dev/null) || { notify "(>_<) Нет активной записи" ""; exit 0; }
+    rm -f "$PIDFILE"
+
+    kill -INT "$pid" 2>/dev/null || true
+    local i=0
+    while kill -0 "$pid" 2>/dev/null && (( i++ < 30 )); do sleep 0.1; done
+
+    if [[ ! -s "$WAVFILE" ]]; then
+        notify "(╥﹏╥) Файл пустой" "Запись не удалась или была слишком короткой"
+        exit 1
+    fi
+
+    mkdir -p "$DIR"
+    local out="$DIR/mic_$(date +%F_%H-%M-%S).opus"
+
+    if ffmpeg -hide_banner -loglevel error -i "$WAVFILE" \
+              -c:a libopus -b:a 48k -vbr on "$out" 2>/dev/null; then
+        rm -f "$WAVFILE"
+        printf 'file://%s' "$out" | wl-copy -t text/uri-list 2>/dev/null || true
+        notify "(^_^)b Запись сохранена" "$(basename "$out") — скопировано в буфер"
+    else
+        notify "(x_x) Ошибка конвертации" "$out"
+        exit 1
+    fi
+}
+
+start_record() {
+    mkdir -p "$DIR"
+    pw-record --channels=1 --rate=48000 --format=s16 \
+              --target="source.clean_mic" "$WAVFILE" &
+    echo $! > "$PIDFILE"
+    notify "(o_o) Запись пошла..." "Super+Shift+M — остановить и сохранить"
+}
+
+if [[ -f "$PIDFILE" ]] && kill -0 "$(cat "$PIDFILE" 2>/dev/null)" 2>/dev/null; then
+    stop_and_convert
+else
+    rm -f "$PIDFILE"
+    start_record
+fi

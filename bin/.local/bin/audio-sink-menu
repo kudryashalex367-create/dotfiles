@@ -18,6 +18,3 @@ name=${choice##* (}
 name=${name%)}
 
 pactl set-default-sink "$name"
-pactl list short sink-inputs | awk '{print $1}' | while read -r id; do
-    pactl move-sink-input "$id" "$name"
-done

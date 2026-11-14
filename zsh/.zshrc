@@ -95,6 +95,24 @@ cpull() {
 
 alias phone='adb forward tcp:8022 tcp:8022 && ssh -p 8022 localhost'
 
+recmic() {
+    local dir="$HOME/Recordings"
+    mkdir -p "$dir"
+    local f="$dir/mic_$(date +%F_%H-%M-%S)"
+
+    echo "(o_o) Запись в WAV. Остановка: Ctrl+C"
+    trap ':' INT
+    pw-record --channels=1 --rate=48000 --format=s16 "$f.wav"
+    trap - INT
+
+    if [[ -s "$f.wav" ]]; then
+        echo "\n(^-^) Конвертация в Opus..."
+        ffmpeg -hide_banner -loglevel error -i "$f.wav" -c:a libopus -b:a 48k -vbr on "$f.opus" && \
+            rm -f "$f.wav" && \
+            echo "(^_^)b Готово: $f.opus"
+    fi
+}
+
 # --- AI-агенты ---
 [[ -f "$HOME/.zshrc_secrets" ]] && source "$HOME/.zshrc_secrets"
 

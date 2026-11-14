@@ -11,9 +11,6 @@ command -v fuzzel >/dev/null 2>&1 || {
     exit 1
 }
 
-# Проверяем статус адаптера Wi-Fi
-wifi_state=$(LC_ALL=C nmcli radio wifi 2>/dev/null || echo "disabled")
-
 get_signal_icon() {
     local sig="${1:-0}"
     if (( sig >= 80 )); then
@@ -51,121 +48,198 @@ is_known_network() {
     return 1
 }
 
-menu=()
-declare -A net_ssid net_security
+connect_with_password() {
+    local ssid="$1"
+    local password
 
-if [[ "$wifi_state" == "enabled" ]]; then
-    menu+=("󰤮 Выключить Wi-Fi")
+    # Окно ввода пароля: видимый ввод (без скрытия звездочками) и понятный placeholder
+    password=$(fuzzel -d --prompt-only="Пароль для $ssid ❯ " --placeholder="Введите пароль..." -w 42 || true)
+    [[ -z "$password" ]] && return 0
 
-    # Считываем доступные сети
-    declare -A seen_ssid best_signal best_security best_inuse
-    order=()
+    notify-send -a "Wi-Fi" "Wi-Fi" "Подключение к «$ssid»..."
 
-    while IFS=: read -r in_use signal security ssid; do
-        [[ -z "$ssid" || "$ssid" == "--" ]] && continue
+    # Удаляем старый профиль, если он существовал с неверным паролем
+    nmcli connection delete id "$ssid" >/dev/null 2>&1 || true
 
-        if [[ -z "${seen_ssid[$ssid]:-}" ]]; then
-            seen_ssid["$ssid"]=1
-            order+=("$ssid")
-            best_signal["$ssid"]="${signal:-0}"
-            best_security["$ssid"]="$security"
-            best_inuse["$ssid"]="$in_use"
-        else
-            if [[ "$in_use" == "*" ]]; then
-                best_inuse["$ssid"]="*"
-            fi
-            if (( ${signal:-0} > ${best_signal[$ssid]:-0} )); then
+    local output
+    if output=$(nmcli dev wifi connect "$ssid" password "$password" 2>&1); then
+        notify-send -a "Wi-Fi" -i "network-wireless" "Wi-Fi" "Подключено к «$ssid»"
+    else
+        notify-send -u critical -a "Wi-Fi" "Ошибка подключения" "$output"
+    fi
+}
+
+show_active_network_menu() {
+    local ssid="$1"
+    local action
+    action=$(printf '%s\n' \
+        "󰅖 Отключиться" \
+        "󰑐 Переподключиться" \
+        "󰆴 Забыть сеть (удалить)" \
+        "󰌍 Назад" \
+        | fuzzel -d -p "Сеть $ssid ❯ " -l 4 -w 32 || true)
+
+    case "$action" in
+        "󰅖 Отключиться")
+            nmcli connection down "$ssid" 2>/dev/null || true
+            notify-send -a "Wi-Fi" "Wi-Fi" "Отключено от «$ssid»"
+            ;;
+        "󰑐 Переподключиться")
+            notify-send -a "Wi-Fi" "Wi-Fi" "Переподключение к «$ssid»..."
+            nmcli connection up "$ssid" 2>/dev/null || true
+            ;;
+        "󰆴 Забыть сеть (удалить)")
+            nmcli connection delete id "$ssid" 2>/dev/null || true
+            notify-send -a "Wi-Fi" "Wi-Fi" "Сеть «$ssid» удалена"
+            ;;
+        *)
+            ;;
+    esac
+}
+
+main() {
+    local wifi_state
+    wifi_state=$(LC_ALL=C nmcli radio wifi 2>/dev/null || echo "disabled")
+
+    local menu=()
+    declare -A net_ssid net_security net_is_active
+
+    if [[ "$wifi_state" == "enabled" ]]; then
+        menu+=("󰑐 Обновить список сетей")
+        menu+=("󰤮 Выключить Wi-Fi")
+
+        # Считываем доступные сети
+        declare -A seen_ssid best_signal best_security best_inuse
+        local order=()
+
+        while IFS=: read -r in_use signal security ssid; do
+            [[ -z "$ssid" || "$ssid" == "--" ]] && continue
+
+            if [[ -z "${seen_ssid[$ssid]:-}" ]]; then
+                seen_ssid["$ssid"]=1
+                order+=("$ssid")
                 best_signal["$ssid"]="${signal:-0}"
                 best_security["$ssid"]="$security"
+                best_inuse["$ssid"]="$in_use"
+            else
+                if [[ "$in_use" == "*" ]]; then
+                    best_inuse["$ssid"]="*"
+                fi
+                if (( ${signal:-0} > ${best_signal[$ssid]:-0} )); then
+                    best_signal["$ssid"]="${signal:-0}"
+                    best_security["$ssid"]="$security"
+                fi
             fi
-        fi
-    done < <(nmcli -t -e no -f "IN-USE,SIGNAL,SECURITY,SSID" device wifi list 2>/dev/null || true)
+        done < <(nmcli -t -e no -f "IN-USE,SIGNAL,SECURITY,SSID" device wifi list 2>/dev/null || true)
 
-    # Разделяем на активные (подключенные) и остальные
-    active_ssids=()
-    other_ssids=()
-    for s in "${order[@]}"; do
-        if [[ "${best_inuse[$s]:-}" == "*" ]]; then
-            active_ssids+=("$s")
-        else
-            other_ssids+=("$s")
-        fi
-    done
+        local active_ssids=()
+        local other_ssids=()
+        for s in "${order[@]}"; do
+            if [[ "${best_inuse[$s]:-}" == "*" ]]; then
+                active_ssids+=("$s")
+            else
+                other_ssids+=("$s")
+            fi
+        done
 
-    sorted_order=()
-    for s in "${active_ssids[@]}"; do
-        sorted_order+=("$s")
-    done
-    for s in "${other_ssids[@]}"; do
-        sorted_order+=("$s")
-    done
+        local sorted_order=()
+        for s in "${active_ssids[@]}"; do
+            sorted_order+=("$s")
+        done
+        for s in "${other_ssids[@]}"; do
+            sorted_order+=("$s")
+        done
 
-    for s in "${sorted_order[@]}"; do
-        sig="${best_signal[$s]:-0}"
-        sec="${best_security[$s]:-}"
-        inuse="${best_inuse[$s]:-}"
+        for s in "${sorted_order[@]}"; do
+            local sig="${best_signal[$s]:-0}"
+            local sec="${best_security[$s]:-}"
+            local inuse="${best_inuse[$s]:-}"
 
-        conn_mark="  "
-        if [[ "$inuse" == "*" ]]; then
-            conn_mark="󰄬 "
-        fi
+            local conn_mark="  "
+            local is_act=0
+            if [[ "$inuse" == "*" ]]; then
+                conn_mark="󰄬 "
+                is_act=1
+            fi
 
-        sig_icon=$(get_signal_icon "$sig")
+            local sig_icon
+            sig_icon=$(get_signal_icon "$sig")
 
-        if is_open_network "$sec"; then
-            sec_label="Open"
-        else
-            sec_label="$sec"
-        fi
+            local sec_label
+            if is_open_network "$sec"; then
+                sec_label="Открытая"
+            else
+                sec_label="$sec"
+            fi
 
-        item="${conn_mark}${sig_icon}  ${s}  (${sig}%, ${sec_label})"
-        menu+=("$item")
-        net_ssid["$item"]="$s"
-        net_security["$item"]="$sec"
-    done
-else
-    menu+=("󰤨 Включить Wi-Fi")
-fi
+            local item="${conn_mark}${sig_icon}  ${s}  (${sig}%, ${sec_label})"
+            menu+=("$item")
+            net_ssid["$item"]="$s"
+            net_security["$item"]="$sec"
+            net_is_active["$item"]="$is_act"
+        done
+    else
+        menu+=("󰤨 Включить Wi-Fi")
+    fi
 
-choice=$(printf '%s\n' "${menu[@]}" | fuzzel -d -p "󰤨 Wi-Fi ❯ " || true)
-[ -z "$choice" ] && exit 0
+    local choice
+    choice=$(printf '%s\n' "${menu[@]}" | fuzzel -d -p "󰤨 Wi-Fi ❯ " -w 45 -l 12 || true)
+    [[ -z "$choice" ]] && exit 0
 
-case "$choice" in
-    "󰤮 Выключить Wi-Fi")
-        nmcli radio wifi off
-        notify-send -a "Wi-Fi" "Wi-Fi" "Wi-Fi выключен"
-        exit 0
-        ;;
-    "󰤨 Включить Wi-Fi")
-        nmcli radio wifi on
-        notify-send -a "Wi-Fi" "Wi-Fi" "Wi-Fi включён"
-        exit 0
-        ;;
-esac
+    case "$choice" in
+        "󰑐 Обновить список сетей")
+            nmcli dev wifi rescan 2>/dev/null || true
+            exec "$0"
+            ;;
+        "󰤮 Выключить Wi-Fi")
+            nmcli radio wifi off
+            notify-send -a "Wi-Fi" "Wi-Fi" "Wi-Fi выключен"
+            exit 0
+            ;;
+        "󰤨 Включить Wi-Fi")
+            nmcli radio wifi on
+            notify-send -a "Wi-Fi" "Wi-Fi" "Wi-Fi включён"
+            exit 0
+            ;;
+    esac
 
-ssid="${net_ssid["$choice"]:-}"
-[ -z "$ssid" ] && exit 0
-security="${net_security["$choice"]:-}"
+    local ssid="${net_ssid["$choice"]:-}"
+    [[ -z "$ssid" ]] && exit 0
+    local security="${net_security["$choice"]:-}"
+    local is_act="${net_is_active["$choice"]:-0}"
 
-if is_known_network "$ssid" || is_open_network "$security"; then
-    notify-send -a "Wi-Fi" "Wi-Fi" "Подключение к «$ssid»..."
-    if output=$(nmcli dev wifi connect "$ssid" 2>&1); then
-        notify-send -a "Wi-Fi" "Wi-Fi" "Подключено к «$ssid»"
+    # Если уже подключены к этой сети — открываем меню управления
+    if (( is_act )); then
+        show_active_network_menu "$ssid"
         exit 0
     fi
 
+    # Если сеть открытая — подключаемся сразу
     if is_open_network "$security"; then
-        notify-send -u critical -a "Wi-Fi" "Ошибка подключения" "$output"
-        exit 1
+        notify-send -a "Wi-Fi" "Wi-Fi" "Подключение к открытой сети «$ssid»..."
+        local output
+        if output=$(nmcli dev wifi connect "$ssid" 2>&1); then
+            notify-send -a "Wi-Fi" "Wi-Fi" "Подключено к «$ssid»"
+        else
+            notify-send -u critical -a "Wi-Fi" "Ошибка подключения" "$output"
+        fi
+        exit 0
     fi
-fi
 
-password=$(fuzzel -d -p "Пароль для $ssid ❯ " --password -w 30 </dev/null || true)
-[ -z "$password" ] && exit 0
+    # Если сеть известна, пробуем быстрое подключение
+    if is_known_network "$ssid"; then
+        notify-send -a "Wi-Fi" "Wi-Fi" "Подключение к «$ssid»..."
+        local output
+        if output=$(nmcli connection up "$ssid" 2>&1 || nmcli dev wifi connect "$ssid" 2>&1); then
+            notify-send -a "Wi-Fi" "Wi-Fi" "Подключено к «$ssid»"
+            exit 0
+        fi
+        # Если сохранённый пароль не сработал — уведомляем и запрашиваем пароль
+        notify-send -a "Wi-Fi" "Wi-Fi" "Сохранённое подключение не удалось. Введите пароль."
+    fi
 
-notify-send -a "Wi-Fi" "Wi-Fi" "Подключение к «$ssid»..."
-if output=$(nmcli dev wifi connect "$ssid" password "$password" 2>&1); then
-    notify-send -a "Wi-Fi" "Wi-Fi" "Подключено к «$ssid»"
-else
-    notify-send -u critical -a "Wi-Fi" "Ошибка подключения" "$output"
-fi
+    # Запрашиваем пароль для новой или не подключившейся сети
+    connect_with_password "$ssid"
+}
+
+main "$@"

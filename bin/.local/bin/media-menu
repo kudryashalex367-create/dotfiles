@@ -1,12 +1,21 @@
 #!/usr/bin/env bash
-# Управление медиаплеерами через playerctl и fuzzel.
+# Управление медиаплеерами через playerctl и fuzzel в интерактивном цикле.
 set -euo pipefail
 
+if ! command -v playerctl >/dev/null 2>&1; then
+    notify-send -a "Медиа" -u critical "Ошибка" "playerctl не установлен"
+    exit 1
+fi
+
 notify_track() {
+    local target_player="${1:-}"
+    local p_args=()
+    [[ -n "$target_player" ]] && p_args=(-p "$target_player")
+
     local status artist title icon
-    status=$(playerctl status 2>/dev/null || echo "Остановлено")
-    artist=$(playerctl metadata --format '{{artist}}' 2>/dev/null || echo "")
-    title=$(playerctl metadata --format '{{title}}' 2>/dev/null || echo "")
+    status=$(playerctl "${p_args[@]}" status 2>/dev/null || echo "Остановлено")
+    artist=$(playerctl "${p_args[@]}" metadata --format '{{artist}}' 2>/dev/null || echo "")
+    title=$(playerctl "${p_args[@]}" metadata --format '{{title}}' 2>/dev/null || echo "")
 
     case "$status" in
         "Playing") icon="media-playback-start" ;;
@@ -17,7 +26,7 @@ notify_track() {
     if [[ -n "$title" ]]; then
         local msg="$title"
         [[ -n "$artist" ]] && msg="$artist — $title"
-        notify-send -a "Медиа" -i "$icon" -t 2000 "$status" "$msg"
+        notify-send -a "Медиа" -i "$icon" -t 1500 "$status" "$msg"
     fi
 }
 
@@ -26,86 +35,122 @@ choose_player() {
     players=$(playerctl -l 2>/dev/null || true)
     if [[ -z "$players" ]]; then
         notify-send -a "Медиа" "Плееры не найдены"
-        return
+        return ""
     fi
-    chosen=$(echo "$players" | fuzzel -d -p "󰋋 Выбор плеера ❯ " -l 5 -w 25 || true)
-    if [[ -n "$chosen" ]]; then
-        notify-send -a "Медиа" "Активный плеер: $chosen"
-    fi
+    chosen=$(printf "%s\n" "$players" | fuzzel -d -p "󰋋 Выбор плеера ❯ " -l 6 -w 30 || true)
+    echo "$chosen"
 }
 
 main() {
-    if ! command -v playerctl >/dev/null 2>&1; then
-        notify-send -a "Медиа" -u critical "Ошибка" "playerctl не установлен"
-        exit 1
-    fi
+    local active_player=""
 
-    local status artist title prompt_text play_pause_icon play_pause_label
+    while true; do
+        local p_args=()
+        [[ -n "$active_player" ]] && p_args=(-p "$active_player")
 
-    status=$(playerctl status 2>/dev/null || echo "Нет плеера")
-    artist=$(playerctl metadata --format '{{artist}}' 2>/dev/null || echo "")
-    title=$(playerctl metadata --format '{{title}}' 2>/dev/null || echo "")
+        local status artist title vol vol_pct prompt_text play_pause_icon play_pause_label
 
-    # Формируем заголовок в промпте
-    if [[ -n "$title" ]]; then
-        prompt_text="$artist — $title"
-        [[ -z "$artist" ]] && prompt_text="$title"
-        if (( ${#prompt_text} > 32 )); then
-            prompt_text="${prompt_text:0:31}…"
+        status=$(playerctl "${p_args[@]}" status 2>/dev/null || echo "Нет плеера")
+        artist=$(playerctl "${p_args[@]}" metadata --format '{{artist}}' 2>/dev/null || echo "")
+        title=$(playerctl "${p_args[@]}" metadata --format '{{title}}' 2>/dev/null || echo "")
+        vol=$(playerctl "${p_args[@]}" volume 2>/dev/null || echo "")
+
+        vol_pct=""
+        if [[ -n "$vol" ]]; then
+            vol_pct=$(awk -v v="$vol" 'BEGIN { printf "%.0f%%", v * 100 }')
         fi
-        prompt_text="󰝚 $prompt_text ❯ "
-    else
-        prompt_text="󰝚 Музыка ❯ "
-    fi
 
-    if [[ "$status" == "Playing" ]]; then
-        play_pause_icon="󰏤"
-        play_pause_label="Пауза"
-    else
-        play_pause_icon="󰐊"
-        play_pause_label="Воспроизвести"
-    fi
+        # Формируем аккуратный заголовок в промпте
+        if [[ -n "$title" ]]; then
+            local track_info="$title"
+            [[ -n "$artist" ]] && track_info="$artist — $title"
+            if (( ${#track_info} > 26 )); then
+                track_info="${track_info:0:25}…"
+            fi
+            if [[ -n "$vol_pct" ]]; then
+                prompt_text="󰝚 [${vol_pct}] ${track_info} ❯ "
+            else
+                prompt_text="󰝚 ${track_info} ❯ "
+            fi
+        else
+            if [[ -n "$vol_pct" ]]; then
+                prompt_text="󰝚 Музыка [${vol_pct}] ❯ "
+            else
+                prompt_text="󰝚 Музыка ❯ "
+            fi
+        fi
 
-    local menu_items choice
-    menu_items=$(printf "%s %s\n󰒭 Следующий трек\n󰒮 Предыдущий трек\n󰑐 Назад 10с\n󰑒 Вперед 10с\n󰕾 Громкость +5%%\n󰖀 Громкость -5%%\n󰋋 Выбрать плеер\n" "$play_pause_icon" "$play_pause_label")
+        if [[ "$status" == "Playing" ]]; then
+            play_pause_icon="󰏤"
+            play_pause_label="Пауза"
+        else
+            play_pause_icon="󰐊"
+            play_pause_label="Воспроизвести"
+        fi
 
-    choice=$(echo -n "$menu_items" | fuzzel -d -p "$prompt_text" -l 8 -w 32 || true)
+        local vol_label="󰕾 Громкость +5%"
+        local vol_down_label="󰖀 Громкость -5%"
+        if [[ -n "$vol_pct" ]]; then
+            vol_label="󰕾 Громкость +5%  (сейчас $vol_pct)"
+        fi
 
-    case "$choice" in
-        *"Пауза"*|*"Воспроизвести"*)
-            playerctl play-pause
-            sleep 0.1
-            notify_track
-            ;;
-        "󰒭 Следующий трек")
-            playerctl next
-            sleep 0.15
-            notify_track
-            ;;
-        "󰒮 Предыдущий трек")
-            playerctl previous
-            sleep 0.15
-            notify_track
-            ;;
-        "󰑐 Назад 10с")
-            playerctl position 10-
-            ;;
-        "󰑒 Вперед 10с")
-            playerctl position 10+
-            ;;
-        "󰕾 Громкость +5%")
-            playerctl volume 0.05+
-            ;;
-        "󰖀 Громкость -5%")
-            playerctl volume 0.05-
-            ;;
-        "󰋋 Выбрать плеер")
-            choose_player
-            ;;
-        *)
-            exit 0
-            ;;
-    esac
+        local player_label="󰋋 Сменить плеер"
+        if [[ -n "$active_player" ]]; then
+            player_label="󰋋 Плеер: $active_player"
+        fi
+
+        local menu_items
+        menu_items=$(printf "%s %s\n󰒭 Следующий трек\n󰒮 Предыдущий трек\n%s\n%s\n󰑒 Вперёд 10с\n󰑐 Назад 10с\n%s\n󰅖 Закрыть\n" \
+            "$play_pause_icon" "$play_pause_label" \
+            "$vol_label" \
+            "$vol_down_label" \
+            "$player_label")
+
+        local choice
+        choice=$(echo -n "$menu_items" | fuzzel -d -p "$prompt_text" -l 9 -w 36 || true)
+
+        [[ -z "$choice" || "$choice" == "󰅖 Закрыть" ]] && break
+
+        case "$choice" in
+            *"Пауза"*|*"Воспроизвести"*)
+                playerctl "${p_args[@]}" play-pause 2>/dev/null || true
+                sleep 0.05
+                notify_track "$active_player"
+                ;;
+            "󰒭 Следующий трек")
+                playerctl "${p_args[@]}" next 2>/dev/null || true
+                sleep 0.1
+                notify_track "$active_player"
+                ;;
+            "󰒮 Предыдущий трек")
+                playerctl "${p_args[@]}" previous 2>/dev/null || true
+                sleep 0.1
+                notify_track "$active_player"
+                ;;
+            *"Громкость +5%"*)
+                playerctl "${p_args[@]}" volume 0.05+ 2>/dev/null || true
+                sleep 0.05
+                ;;
+            *"Громкость -5%"*)
+                playerctl "${p_args[@]}" volume 0.05- 2>/dev/null || true
+                sleep 0.05
+                ;;
+            "󰑒 Вперёд 10с")
+                playerctl "${p_args[@]}" position 10+ 2>/dev/null || true
+                ;;
+            "󰑐 Назад 10с")
+                playerctl "${p_args[@]}" position 10- 2>/dev/null || true
+                ;;
+            *"Сменить плеер"*|*"Плеер:"*)
+                local chosen
+                chosen=$(choose_player)
+                if [[ -n "$chosen" ]]; then
+                    active_player="$chosen"
+                    notify-send -a "Медиа" "Выбран плеер: $active_player"
+                fi
+                ;;
+        esac
+    done
 }
 
 main "$@"

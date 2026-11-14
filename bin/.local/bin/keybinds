@@ -1,125 +1,58 @@
 #!/usr/bin/env bash
-# Шпаргалка по хоткеям: Hyprland (binds.lua) или Mango (config.conf),
-# открывается по Super+/. Выводит список в fuzzel -d.
+# Шпаргалка по хоткеям системы (Hyprland / Mango).
+# Открывается по Super+/ или через Hub. Выводит список в fuzzel -d.
 
-CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/hypr/binds.lua"
-MANGO_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/mango/config.conf"
-
-# В сессии Mango читаем его конфиг; XDG_CURRENT_DESKTOP = "mango".
-USE_MANGO=0
-if [[ "${XDG_CURRENT_DESKTOP:-}" == *mango* || -n "${MANGO_INSTANCE_SIGNATURE:-}" ]]; then
-    USE_MANGO=1
-fi
-
-# Имя модификатора берём из конфига (local mainMod = "SUPER"), по умолчанию Super
-MOD_DISPLAY="Super"
-if [[ -r "$CONFIG" ]]; then
-    MOD=$(grep -oE 'local mainMod *= *"[^"]+"' "$CONFIG" \
-        | head -n1 | sed -E 's/.*"([^"]+)".*/\1/')
-    if [[ -n "$MOD" ]]; then
-        MOD_DISPLAY=$(printf '%s' "$MOD" | tr '[:upper:]' '[:lower:]' | sed -E 's/^./\U&/')
-    fi
-fi
-
-# Hyprland: первый аргумент hl.bind(...); Mango: bind=/axisbind=/mousebind=.
-#   mainMod .. " + N"          -> Super+N
-#   mainMod .. " + " .. i      -> Super+1..9   (цикл for i = 1, 9)
-#   "CTRL + SHIFT + code:39"   -> Ctrl+Shift+code:39
-#   SUPER+SHIFT,1,tag,1        -> Super+Shift+1
-LIST=$(
-    if (( USE_MANGO )); then
-        if [[ -r "$MANGO_CONFIG" ]]; then
-            sed -nE 's/^[[:space:]]*(bind[a-z]*|axisbind|mousebind)=([^,]+),([^,]+),.*/\2+\3/p' "$MANGO_CONFIG" \
-                | sed -E \
-                    -e 's/\bSUPER\b/Super/g' \
-                    -e 's/\bSHIFT\b/Shift/g' \
-                    -e 's/\bCTRL\b/Ctrl/g' \
-                    -e 's/\bALT\b/Alt/g' \
-                    -e 's/\bNONE\+//g' \
-                    -e 's/\bNONE\b//g' \
-                    -e 's/\bRETURN\b/Enter/g' \
-                    -e 's/code:61/\//g' \
-                    -e 's/code:39/S/g' \
-                    -e 's/Page_Up/PageUp/g' \
-                    -e 's/Page_Down/PageDown/g' \
-                    -e 's/\bUP\b/WheelUp/g' \
-                    -e 's/\bDOWN\b/WheelDown/g' \
-                    -e 's/btn_left/MouseLeft/g' \
-                    -e 's/btn_right/MouseRight/g' \
-                    -e 's/btn_middle/MouseMiddle/g' \
-                    -e 's/^[[:space:]]+//' \
-                    -e 's/[[:space:]]+$//' \
-                | awk 'NF && !seen[$0]++'
-        fi
-    elif [[ -r "$CONFIG" ]]; then
-        sed -nE 's/.*hl\.bind\(([^,]+),.*/\1/p' "$CONFIG" \
-            | sed -E \
-                -e "s/mainMod \.\. /$MOD_DISPLAY/" \
-                -e 's/ \+ /+/g' \
-                -e 's/"//g' \
-                -e 's/\+[[:space:]]*\.\.[[:space:]]*i/+1..9/' \
-                -e 's/\bSUPER\b/Super/g' \
-                -e 's/\bSHIFT\b/Shift/g' \
-                -e 's/\bCTRL\b/Ctrl/g' \
-                -e 's/\bALT\b/Alt/g' \
-                -e 's/code:61/\//g' \
-                -e 's/code:39/S/g' \
-                -e 's/Page_Up/PageUp/g' \
-                -e 's/Page_Down/PageDown/g' \
-                -e 's/mouse_up/WheelUp/g' \
-                -e 's/mouse_down/WheelDown/g' \
-                -e 's/mouse:272/LMB/g' \
-                -e 's/mouse:273/RMB/g' \
-                -e 's/^[[:space:]]+//' \
-                -e 's/[[:space:]]+$//' \
-            | awk 'NF && !seen[$0]++'
-    fi
+LIST=$(cat <<'EOF'
+Super + Return               Терминал (Kitty)
+Super + D                  󰀻  Меню приложений (Fuzzel)
+Super + E                    Файловый менеджер (Nautilus)
+Super + Q                    Закрыть активное окно
+Super + X                  󱗼  Центр управления (Hub)
+Super + M                  󰝚  Меню музыки и медиа
+Super + Shift + W          󰤨  Меню сетей Wi-Fi
+Super + B                  󰂯  Меню устройств Bluetooth
+Super + Shift + A          󰕾  Меню звука и микрофонов
+Super + Escape             󰐥  Меню питания и сессии
+Super + Shift + V          󰅍  История буфера (Cliphist)
+Super + Shift + Q          󰗼  Выход из системы
+Super + L                    Блокировка экрана (Hyprlock)
+Super + V                    Плавающий / плиточный режим (Float)
+Super + /                  ⌨  Шпаргалка по хоткеям
+Super + A                  󰸉  Случайные обои
+Super + W                  󰸉  Выбор обоев
+Super + F                  󰊓  Развернуть окно (Maximized)
+Super + Shift + F          󰊓  Полный экран (Fullscreen)
+Super + C                  󰆢  Центрировать активное окно
+Super + R                  󰕰  Переключить разделение (Dwindle Split)
+Super + Tab                󱂬  Сменить раскладку окон (Layout)
+Super + Стрелки            󰁌  Фокус окна (Влево/Вправо/Вверх/Вниз)
+Super + Shift + Стрелки    󰁌  Переместить окно в направлении
+Super + Ctrl + Стрелки     󰁌  Изменить размер окна (Resize)
+Super + Alt + Ctrl + Стр   󰁌  Точный пиксельный ресайз
+Super + Ctrl + Shift + Стр 󰁌  Поменять окна местами (Swap)
+Super + G                  󰓩  Создать / войти в группу окон (Табы)
+Super + Alt + G            󰓩  Вынуть окно из группы
+Super + Alt + Left/Right   󰓩  Переключение вкладок в группе
+Super + Alt + Shift + Стр  󰓩  Закинуть окно в группу
+Super + Alt + L            󰓩  Заблокировать группу
+Super + S                  󱂬  Показать / скрыть Scratchpad
+Super + Shift + S          󱂬  Отправить окно в Scratchpad
+Super + 1..9               󰎤  Перейти на рабочий стол 1..9
+Super + Shift + 1..9       󰎤  Перенести окно на рабочий стол 1..9
+Super + PageUp / PageDown  󰎤  Соседний рабочий стол
+Super + Колесо мыши        󰎤  Соседний рабочий стол
+Super + N                  󰂚  Показать скрытые уведомления
+Super + Shift + N          󰂛  Закрыть все уведомления
+Super + Shift + R          󰑐  Перезагрузить конфиг WM
+Super + Shift + P          󰖂  Включить / выключить Proxy
+Ctrl + Shift + S             Скриншот выделенной области
+Ctrl + Print                 Скриншот всего экрана
+Alt + Print                  Скриншот активного окна
+XF86 Play / Pause          󰐊  Воспроизведение / Пауза
+XF86 Next / Prev           󰒭  Следующий / Предыдущий трек
+XF86 Volume Up / Down      󰕾  Громкость звука +5% / -5%
+XF86 Mute / MicMute        󰝟  Выключить звук / микрофон
+EOF
 )
 
-# Фолбэк, если конфиг не найден или пуст
-if [[ -z "$LIST" ]]; then
-    LIST=$(
-        cat <<'EOF'
-Super+ENTER        — Kitty
-Super+D            — Fuzzel
-Super+E            — Nautilus
-Super+Q            — закрыть окно
-Super+V            — плавающее/плиточное
-Super+P            — pseudo-tile
-Super+N            — вернуть уведомления
-Super+SHIFT+N      — закрыть все уведомления
-Super+SHIFT+V      — история буфера (cliphist)
-Super+L            — hyprlock
-Super+SHIFT+Q      — выход из сессии
-Super+A            — случайные обои
-Super+W            — выбор обоев
-Super+F            — maximized
-Super+SHIFT+F      — fullscreen
-Super+C            — центр окна
-Super+R            — togglesplit
-Super+G            — группа окон (табы)
-Super+ALT+Left     — предыдущее окно в группе
-Super+ALT+Right    — следующее окно в группе
-Super+ALT+SHIFT+*  — окно в группу
-Super+ALT+L        — заморозить группу
-Super+CTRL+*       — ресайз окна
-Super+ALT+CTRL+*   — пиксельный ресайз floating
-Super+CTRL+SHIFT+* — swap окон
-Super+S            — scratchpad
-Super+SHIFT+S      — окно в scratchpad
-Super+SHIFT+R      — reload конфига
-Super+SHIFT+P      — прокси вкл/выкл
-Super+1..9         — воркспейс
-Super+SHIFT+1..9   — окно на воркспейс
-Super+PageUp       — соседний воркспейс
-Super+PageDown     — соседний воркспейс
-Super+WheelUp      — соседний воркспейс
-Super+WheelDown    — соседний воркспейс
-Ctrl+Shift+S       — скриншот области
-Ctrl+Print         — скриншот экрана
-Alt+Print          — скриншот окна
-EOF
-    )
-fi
-
-printf '%s\n' "$LIST" | fuzzel -d -p "⌨ Хоткеи ❯ " -w 55 -l 30
+printf '%s\n' "$LIST" | fuzzel -d -p "⌨ Хоткеи ❯ " -w 58 -l 28

@@ -65,6 +65,7 @@ starship
 steam
 stow
 sudo
+swh-plugins
 tealdeer
 teamspeak3
 telegram-desktop
