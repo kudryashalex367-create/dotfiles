@@ -35,40 +35,26 @@ fi
 mkdir -p "$state_dir"
 
 # Telegram Desktop ожидает colors.tdesktop-theme внутри архива.
-# Включаем и colors.tdesktop, и colors.tdesktop-theme для совместимости.
+# Включаем и colors.tdesktop, и colors.tdesktop-theme для максимальной совместимости.
+# Обои (background.jpg) намеренно НЕ упаковываем: они перекрывают чат и делают текст нечитаемым.
 tdesktop_theme_file="$state_dir/colors.tdesktop-theme"
 cp "$colors_file" "$tdesktop_theme_file"
 
-files_to_pack=("$colors_file" "$tdesktop_theme_file")
+# Собираем zip-архив .tdesktop-theme (без фоновой картинки — чистый солидный фон чата)
+(
+    cd "$state_dir"
+    python3 -m zipfile -c "$theme_file" "colors.tdesktop" "colors.tdesktop-theme" >/dev/null 2>&1
+)
 
-bg_copied=0
-bg_file="$state_dir/background.jpg"
-
-if [[ -f "$last_wall_file" ]]; then
-    wall_img=$(head -n 1 "$last_wall_file" || true)
-    if [[ -n "$wall_img" && -f "$wall_img" ]]; then
-        cp "$wall_img" "$bg_file"
-        files_to_pack+=("$bg_file")
-        bg_copied=1
-    fi
-fi
-
-# Упаковываем тему через python3 -m zipfile
-python3 -m zipfile -c "$theme_file" "${files_to_pack[@]}"
-
-# Очистка временных файлов
 rm -f "$tdesktop_theme_file"
-if (( bg_copied == 1 )); then
-    rm -f "$bg_file"
-fi
 
-# Уведомление
-if command -v notify-send >/dev/null 2>&1; then
-    notify-send -a "Telegram" "Тема Telegram обновлена" "Открой Material-You.tdesktop-theme для применения" 2>/dev/null || true
-fi
-
-# Открытие окна подтверждения темы в Telegram
+# Уведомление отправляем ТОЛЬКО при явном вызове с --open или если запущено вручную,
+# чтобы не дублировать уведомление о смене обоев из wall-picker / wall-random.
 if (( open_theme == 1 )); then
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -a "Telegram" "Тема Telegram" "Открываю окно применения темы..." 2>/dev/null || true
+    fi
+
     if [[ -x /usr/bin/Telegram ]]; then
         /usr/bin/Telegram "$theme_file" >/dev/null 2>&1 &
     elif command -v telegram-desktop >/dev/null 2>&1; then
