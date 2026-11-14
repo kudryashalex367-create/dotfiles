@@ -97,7 +97,7 @@
 ├── hypr/.config/hypr/
 │   ├── hyprland.lua               # загрузчик модулей (dofile)
 │   ├── theme.lua                  # палитра, гапсы, тени (range 12), dim (5.5%), blur, dwindle
-│   ├── monitors.lua               # монитор DP-2 (144/120/60 Гц) + persistent workspaces 1–5
+│   ├── monitors.lua               # монитор DP-2 (144/120/60 Гц) + дефолтный fallback + persistent workspaces 1–5
 │   ├── env.lua                    # курсор Bibata, Wayland-флаги, AMD VA-API (radeonsi)
 │   ├── input.lua                  # клавиатура, мышь, DPMS-пробуждение, direct_scanout
 │   ├── animations.lua             # пружина smoothSpring и кривые Безье (popIn)
@@ -285,7 +285,7 @@ cd ~/dotfiles
 ./install.sh
 ```
 
-`install.sh` переносит конфликтующие файлы в `~/dotfiles-backup/stow-<дата>` и для каждого пакета выполняет `stow --no-folding -R`. Новые, удалённые и переименованные файлы подхватываются только повторным запуском.
+`install.sh` автоматически находит все директории пакетов (или принимает конкретные аргументами: `./install.sh hypr`), переносит конфликтующие файлы в `~/dotfiles-backup/stow-<дата>` и выполняет `stow --no-folding -R`. Новые, удалённые и переименованные файлы подхватываются повторным запуском.
 
 ---
 
