@@ -11,13 +11,13 @@ $username$hostname$directory$git_branch$git_status$cmd_duration$status$line_brea
 right_format = "$time"
 
 [palettes.material]
-lavender = "#ffe45b"
-mauve    = "#d7c781"
-text     = "#e9e2d1"
-green    = "#c8e8ff"
-yellow   = "#e3c61f"
+lavender = "#abc7ff"
+mauve    = "#b0c7f5"
+text     = "#e1e2eb"
+green    = "#ffb68b"
+yellow   = "#abc7ff"
 red      = "#ffb4ab"
-dim      = "#cec6ad"
+dim      = "#c1c6d5"
 
 [username]
 show_always = false

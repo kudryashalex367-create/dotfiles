@@ -43,6 +43,7 @@ lib32-vulkan-radeon
 linux-firmware
 linux-zen
 mako
+mangowm
 mesa
 mkinitcpio
 nano
@@ -60,7 +61,9 @@ python-pipx
 qt6ct
 ripgrep
 slurp
+starship
 steam
+stow
 sudo
 tealdeer
 teamspeak3
@@ -77,6 +80,7 @@ wireplumber
 wl-clipboard
 woff2-font-awesome
 xdg-desktop-portal-hyprland
+xdg-desktop-portal-wlr
 xwayland-satellite
 yt-dlp
 zram-generator

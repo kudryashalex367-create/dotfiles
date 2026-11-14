@@ -11,8 +11,11 @@ awww-daemon >/dev/null 2>&1 &
 # Палитра от последних обоев (matugen) + reload композитора
 "$HOME/.local/bin/wall-restore" >/dev/null 2>&1 &
 
+# Импорт переменных окружения для порталов и PipeWire
+dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=mango 2>/dev/null || true
+
 # Портал для скриншотов и трансляции экрана (ScreenCast/PipeWire)
-/usr/lib/xdg-desktop-portal-hyprland >/dev/null 2>&1 &
+/usr/lib/xdg-desktop-portal-wlr >/dev/null 2>&1 &
 
 # Порталы, буфер обмена, секреты
 /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 >/dev/null 2>&1 &

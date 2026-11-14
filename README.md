@@ -45,7 +45,7 @@
 * (≧▽≦) **Display:** `DP-2` — 1920x1080 @ 144 Hz (с автоматическим fallback-каскадом `144 → 120 → 60 → preferred`)
 * (｡◕‿◕｡) **WM / Session:** Hyprland (Lua-конфиг) — основная; Mango — вторая; GNOME (GDM) — запасная
 * (✿◠‿◠) **Browser:** Firefox (Wayland-нативный режим, uBlock Origin)
-* ( ͡° ͜ʖ ͡°) **Terminal:** Kitty (OpenType-глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
+* ( ͡° ͜ʖ ͡°) **Terminal:** Kitty (начальный размер 960x600, OpenType-глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
 * (づ｡◕‿‿◕｡)づ **Shell:** Zsh + Oh My Zsh + Starship
 * ヽ(´▽`)/ **UI Suite:** Fuzzel (Overlay, скругление 16px), Mako, Hyprlock + Hypridle, awww (144Hz Wipe Engine)
 * (⌐■_■) **Theming:** `matugen` 2.x — генерация палитры Material You из обоев для Hyprland, Mango, Kitty, Fuzzel, Mako и Hyprlock (fallback — Obsidian Violet)
@@ -241,7 +241,7 @@
 * `ya <url>` — скачать аудиодорожку в `~/Music` с вырезанием рекламы через **SponsorBlock**, вшиванием обложки и метаданных.
 * `nya [номер_первой_серии] <url1> <url2> ...` — потоковый загрузчик серий аниме в `~/Videos/Anime` с вшиванием субтитров, глав и обложки через `aria2c` (**5 одновременных фрагментов**).
 * `phone` — мобильный мост с Termux: `adb forward tcp:8022 tcp:8022` + SSH-сессия на смартфон.
-* `update` — быстрое обновление системы и AUR (`yay -Syu`).
+* `update` — быстрое обновление системы и AUR (`yay`).
 * `set-wall <путь>` — быстрая смена обоев через `awww img`.
 
 ### Декоративные скринсейверы для терминала
@@ -313,9 +313,8 @@ fc-cache -fv
 chsh -s /usr/bin/zsh
 ```
 
-Mango в этих списках нет — ставится отдельно по инструкции mangowm.
-
-* **Аватар для `hyprlock`:** положите картинку в `~/.config/hypr/assets/avatar.png` и поправьте путь в `matugen/templates/hyprlock.conf`, затем нажмите `Super + A` для генерации темы.
+* **Сессия Mango и стриминг:** пакет `mangowm` и портал `xdg-desktop-portal-wlr` (необходим для трансляции экрана в Vesktop под Mango) включены в `pkglist_repo.txt`.
+* **Аватар для `hyprlock`:** положите картинку в `~/.config/hypr/assets/avatar.png` (путь динамический через `$HOME`, править шаблон не нужно) и нажмите `Super + A` для генерации темы.
 * **Ключ для AI-агента (опционально):** создайте файл `~/.zshrc_secrets` с вашим `export OPENAI_API_KEY="..."` (игнорируется git и защищён от чтения агентом).
 
 Перезапустите оболочку:
@@ -354,16 +353,24 @@ exec zsh
 <a id="manage"></a>
 ## (≧▽≦) Управление конфигами
 
-```bash
-config status        # git -C ~/dotfiles status
-config diff          # git -C ~/dotfiles diff
-config add -- <file> # взять новый файл под контроль
+Дотфайлы хранятся в обычном git-репозитории `~/dotfiles` и линкуются в `$HOME` через **GNU Stow** (`./install.sh`). Все правки вносятся **только внутри `~/dotfiles`**, а git используется напрямую:
 
-cpush "сообщение"    # add -u + commit + push origin main (алиас dpush)
-cpull                # pull --no-rebase + install.sh + exec zsh
+```bash
+cd ~/dotfiles        # или алиас dots
+
+# Стандартный рабочий процесс
+git status
+git diff
+git add <файл>
+git commit -m "описание изменений"
+git push origin main
+
+# Быстрые хелперы из .zshrc
+dpush "сообщение"    # add -u + commit + push origin main (предупредит о неотслеживаемых файлах)
+cpull                # pull --no-rebase + install.sh (рестоу) + exec zsh
 ```
 
-Каталог дотфайлов: `$DOTFILES` (`~/dotfiles`). Неотслеживаемые файлы не коммитятся автоматически — `dpush` только предупредит о них.
+> **Важно:** никогда не редактируйте файлы по путям в `$HOME`, если утилита ломает симлинки (например, `sed -i`). Конфиги правим только внутри `~/dotfiles` — изменения сразу видны в системе. Новые, удалённые или переименованные файлы подхватываются повторным запуском `./install.sh`.
 
 ---
 

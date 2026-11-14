@@ -73,20 +73,19 @@ alias clock='tty-clock -s -c -b -C 5'
 
 # ── Dotfiles (GNU Stow) ──────────────────────────────────────────
 export DOTFILES="$HOME/dotfiles"
-alias config='git -C "$DOTFILES"'
+alias dots='cd "$DOTFILES"'
 
 dpush() {
   git -C "$DOTFILES" add -u || return
   local new
   new=$(git -C "$DOTFILES" ls-files --others --exclude-standard)
   if [[ -n $new ]]; then
-    echo "⚠ не добавлены новые файлы (config add -- <файл>):"
+    echo "⚠ не добавлены новые файлы (git add <файл>):"
     echo "$new"
   fi
   git -C "$DOTFILES" commit -m "${1:-Update dotfiles $(date +'%F %H:%M')}" \
     && git -C "$DOTFILES" push -u origin main
 }
-alias cpush=dpush
 
 cpull() {
   git -C "$DOTFILES" pull --no-rebase origin main \
@@ -104,7 +103,7 @@ agy-dots() { (cd "$DOTFILES" && AI_AGENT_RUNNING=1 agy "$@") }
 
 
 # Added by Antigravity CLI installer
-export PATH="/home/zev1ce/.local/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # Промпт Starship (конфиг — ~/.config/starship.toml)
 eval "$(starship init zsh)"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")"
-PKGS=(zsh hypr mango kitty alacritty fuzzel anyrun mako fastfetch matugen bin pkglists ai starship helix bottom macchina)
+PKGS=(zsh hypr mango kitty fuzzel mako fastfetch matugen bin pkglists ai starship)
 BK="$HOME/dotfiles-backup/stow-$(date +%F_%H%M%S)"
 for p in "${PKGS[@]}"; do
   [[ -d $p ]] || continue

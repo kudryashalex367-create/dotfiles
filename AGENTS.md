@@ -2,7 +2,7 @@
 
 ## 0. Контекст
 - Рабочая директория — `$HOME/dotfiles`. Обычный git-репозиторий, публичный, ветка только `main`, remote `origin`.
-- Пакеты Stow: zsh, hypr, mango, kitty, alacritty, fuzzel, anyrun, mako, fastfetch, matugen, bin, pkglists, ai и др. Линкуются в `$HOME` командой `./install.sh` (или `stow --no-folding -d "$HOME/dotfiles" -t "$HOME" -R <пакет>`).
+- Пакеты Stow: zsh, hypr, mango, kitty, fuzzel, mako, fastfetch, matugen, bin, pkglists, ai, starship. Линкуются в `$HOME` командой `./install.sh` (или `stow --no-folding -d "$HOME/dotfiles" -t "$HOME" -R <пакет>`).
 - Править ТОЛЬКО файлы внутри `~/dotfiles`, никогда по путям в `$HOME` (`sed -i` ломает симлинк).
 - Новый, удалённый или переименованный файл в пакете появится в системе после рестоу.
 - Git использовать напрямую (`git status`, `git diff`, `git log`).
