@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Запуск nchat в плавающем окне Kitty
+set -euo pipefail
+
+if ! command -v nchat >/dev/null 2>&1; then
+    if command -v notify-send >/dev/null 2>&1; then
+        notify-send -a "Telegram" "(o_o) nchat не установлен" "Установите командой: yay -S nchat" 2>/dev/null || true
+    fi
+    exec kitty --hold -e sh -c "echo 'nchat не установлен.'; echo 'Для установки выполните: yay -S nchat'; echo; read -p 'Нажмите Enter для выхода...'"
+fi
+
+# Автонастройка SOCKS5-прокси (127.0.0.1:10808) при первом запуске
+nchat_conf="${XDG_CONFIG_HOME:-$HOME/.config}/nchat/app.conf"
+if [[ -f "$nchat_conf" ]] && grep -q '^proxy_host=$' "$nchat_conf" 2>/dev/null; then
+    sed -i -E 's/^proxy_host=.*/proxy_host=127.0.0.1/; s/^proxy_port=.*/proxy_port=10808/' "$nchat_conf"
+fi
+
+exec kitty --class nchat -T "Telegram (nchat)" -o initial_window_width=950 -o initial_window_height=650 -e nchat "$@"

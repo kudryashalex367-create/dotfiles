@@ -134,6 +134,17 @@ EOF
     fi
 }
 
+apply_nchat() {
+    local conf="${XDG_CONFIG_HOME:-$HOME/.config}/nchat/app.conf"
+    [[ -f "$conf" ]] || return 0
+
+    if [[ "$1" == "on" ]]; then
+        sed -i -E "s/^proxy_host=.*/proxy_host=${PROXY_HOST}/; s/^proxy_port=.*/proxy_port=${SOCKS_PORT}/" "$conf"
+    else
+        sed -i -E "s/^proxy_host=.*/proxy_host=/; s/^proxy_port=.*/proxy_port=/" "$conf"
+    fi
+}
+
 notify() {
     command -v notify-send >/dev/null 2>&1 || return 0
     notify-send -a proxy -t 2000 "$1" "$2"
@@ -159,12 +170,14 @@ set_state() {
         apply_compositor_env "$HTTP_URL" "$SOCKS_URL" "$NO_PROXY_LIST"
         apply_gsettings on
         apply_environment_d on
+        apply_nchat on
         notify "(^_^)b Прокси включён" "${HTTP_URL} / ${SOCKS_URL}"
     else
         # Выключение: пустые значения (Hyprland/Mango не умеют unset).
         apply_compositor_env "" "" "$NO_PROXY_LIST"
         apply_gsettings off
         apply_environment_d off
+        apply_nchat off
         notify "(•_•) Прокси выключен" "прямое подключение"
     fi
 }

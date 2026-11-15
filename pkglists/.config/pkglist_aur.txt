@@ -4,9 +4,9 @@ gnome-shell-extension-blur-my-shell
 gnome-shell-extension-compiz-windows-effect-git
 gnome-shell-extension-dash-to-dock
 happ-desktop-bin
-horizon-launcher-bin
 lavat-git
 matugen-bin
+nchat
 opencode-bin
 tty-clock
 vesktop-bin

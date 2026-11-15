@@ -38,11 +38,6 @@ output_path = '~/.config/mango/colors.conf'
 input_path  = '~/.config/matugen/templates/starship.toml'
 output_path = '~/.config/starship.toml'
 
-# Telegram Desktop: палитра генерируется в кэш wall-colors
-[templates.telegram]
-input_path  = '~/.config/matugen/templates/telegram-colors.tdesktop'
-output_path = '~/.cache/wall-colors/colors.tdesktop'
-
 # GTK 3 & GTK 4 (libadwaita safe color variables)
 [templates.gtk3]
 input_path  = '~/.config/matugen/templates/gtk-colors.css'

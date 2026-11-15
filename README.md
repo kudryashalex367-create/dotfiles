@@ -48,7 +48,7 @@
 * ( ͡° ͜ʖ ͡°) **Terminal:** Kitty (начальный размер 960x600, OpenType-глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
 * (づ｡◕‿‿◕｡)づ **Shell:** Zsh + Oh My Zsh + Starship
 * ヽ(´▽`)/ **UI Suite:** Fuzzel (Overlay, скругление 16px), Mako, Hyprlock + Hypridle, awww (144Hz Wipe Engine)
-* (⌐■_■) **Theming:** `matugen` 4.x — генерация палитры Material You из обоев для Hyprland, Mango, Kitty, Fuzzel, Mako, Hyprlock, GTK 3/4 и Telegram (fallback — Obsidian Violet)
+* (⌐■_■) **Theming:** `matugen` 4.x — генерация палитры Material You из обоев для Hyprland, Mango, Kitty, Fuzzel, Mako, Hyprlock и GTK 3/4 (fallback — Obsidian Violet)
 * (｀・ω・´) **Cursor:** Bibata-Modern-Ice (24px, сквозная синхронизация в Hyprcursor, XCursor и GSettings)
 * (ง •̀_•́)ง **Bootloader:** systemd-boot
 
@@ -61,7 +61,7 @@
 * (•̀ᴗ•́)و **Модульный Lua-конфиг Hyprland.** Точка входа `hyprland.lua` через `dofile` загружает 8 независимых модулей: `theme`, `monitors`, `env`, `input`, `animations`, `autostart`, `binds`, `rules`.
 * (◕‿◕) **Один конфиг Mango.** `~/.config/mango/config.conf` плюс `autostart.sh` и `source_optional` для сгенерированных `colors.conf` и `proxy.conf`.
 * (ง •̀_•́)ง **Чистая обработка микрофона (PipeWire).** Виртуальный источник `source.clean_mic` на уровне PipeWire filter-chain без тяжелых GUI: High-Pass 80 Гц (срез вибраций стола), Peaking EQ 3500 Гц (+1.5 dB разборчивости речи), мягкий LADSPA-компрессор `sc4m` и прозрачный `fast_lookahead_limiter` (-1.5 dB защита от клиппинга).
-* (づ｡◕‿‿◕｡)づ **Динамическая палитра Material You (`matugen`).** Смена обоев автоматически перекрашивает рамки и тени окон Hyprland, Mango, терминал Kitty, лаунчер Fuzzel, уведомления Mako, экран блокировки Hyprlock, темы GTK 3/4 (Nautilus и системные диалоги) и генерирует тёмную тему Telegram Desktop со сплошным фоном чата и контрастным текстом. Если файл палитры отсутствует, система откатывается к тёмно-фиолетовой схеме **Obsidian Violet** (`#0b0912`, `#a78bfa`, `#c4b5fd`).
+* (づ｡◕‿‿◕｡)づ **Динамическая палитра Material You (`matugen`).** Смена обоев автоматически перекрашивает рамки и тени окон Hyprland, Mango, терминал Kitty, лаунчер Fuzzel, уведомления Mako, экран блокировки Hyprlock, темы GTK 3/4 (Nautilus и системные диалоги). Если файл палитры отсутствует, система откатывается к тёмно-фиолетовой схеме **Obsidian Violet** (`#0b0912`, `#a78bfa`, `#c4b5fd`).
 * (︶︹︶) **Безбаровый стол.** 100% площади экрана отдано контенту без панелей задач. Воркспейсы `1–5` закреплены как постоянные и не схлопываются при пустоте, навигация замкнута в кольцо.
 * (o゜▽゜)o☆ **Выверенный объём и фокус.** Окна обрамлены компактными мягкими тенями (`range = 12`, `render_power = 2`). Неактивные окна приглушаются на **5.5%** (`dim_strength = 0.055`) и получают лёгкую прозрачность `inactive_opacity = 0.975` (у Kitty — отдельное правило `opacity = 0.97 0.95`).
 * ヽ(´▽`)/ **Физическая пружина в анимациях.** Перемещение окон, смена воркспейсов и выезд scratchpad работают на кастомной пружине `smoothSpring` без лишних колебаний, а открытие окон использует кривую `popIn` с живым микро-отскоком.
@@ -95,7 +95,7 @@
 │   ├── powermenu                  # меню выключения, сна и блокировки через Fuzzel
 │   ├── proxy                      # менеджер прокси (on/off/toggle/status/restore)
 │   ├── screenshot                 # скриншоты (area/window/full) в файл и буфер
-│   ├── telegram-theme-pack        # упаковка Material You темы Telegram (.tdesktop-theme)
+│   ├── telegram-chat              # запуск плавающего nchat в Kitty (Super + T / Hub)
 │   ├── wall-colors                # пайплайн: matugen + hot-reload (mako, kitty, hyprland, mango)
 │   ├── wall-picker                # выбор обоев через Fuzzel + awww + синхронизация
 │   ├── wall-random                # случайные обои из ~/wallpapers в 1 клик
@@ -153,10 +153,6 @@
 ### (•̀ᴗ•́)و Центр управления Quick Settings (Fuzzel + Hub)
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fe4160f9-bee6-489e-979d-09d33816980d" />
-
-### ( ˘▽˘)っ Тёмная тема Telegram Desktop (Material You)
-
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a3cf759e-d49a-4c89-b0ca-c9e16c654507" />
 
 ---
 
@@ -244,8 +240,8 @@
 <a id="scripts"></a>
 ## (ง'̀-'́)ง Скрипты и автоматизация (`~/.local/bin`)
 
-* **`wall-colors [--colors-only] <img>`** — ядро динамической темы. Сохраняет путь к обоям в `~/.cache/wall-colors/last`, генерирует тёмную палитру Material You через `matugen` и на лету обновляет цвета в `mako`, `kitty` (`SIGUSR1`), `fuzzel`, `hyprlock`, `Hyprland` (`hyprctl reload`), `Mango` (`mmsg dispatch reload_config`), `GTK 3/4` (CSS переменные) и упаковывает тему Telegram.
-* **`telegram-theme-pack [--open]`** — собирает валидный `.tdesktop-theme` архив с тёмной палитрой Material You и сплошным фоном чата цвета `windowBg` (без растягивания обоев). Входящие и исходящие пузыри тёмные (в стиле Catppuccin Mocha), весь текст сообщений — высококонтрастный белый (`#ffffff`), ссылки и галочки прочтения — акцентные. Флаг `--open` открывает окно применения темы в Telegram (также доступно через `hub` по `Super + X`).
+* **`wall-colors [--colors-only] <img>`** — ядро динамической темы. Сохраняет путь к обоям в `~/.cache/wall-colors/last`, генерирует тёмную палитру Material You через `matugen` и на лету обновляет цвета в `mako`, `kitty` (`SIGUSR1`), `fuzzel`, `hyprlock`, `Hyprland` (`hyprctl reload`), `Mango` (`mmsg dispatch reload_config`) и `GTK 3/4` (CSS переменные).
+* **`telegram-chat`** — запуск легковесного TUI-клиента `nchat` в плавающем окне Kitty по центру экрана с палитрой терминала (доступно по `Super + T`, через `hub` по `Super + X` или из меню приложений).
 * **`wall-restore`** — запускается при старте сессии, восстанавливает палитру последних обоев из кэша.
 * **`wall-random` / `wall-picker`** — выбор случайной картинки или интерактивный поиск через `fuzzel -d`. Смена идёт через `awww` на 144 Гц с эффектом `wipe`, параллельно обновляется фон в GSettings и вызывается `wall-colors`.
 * **`proxy {on|off|toggle|status|restore}`** — централизованное управление прокси (`HTTP 127.0.0.1:10809`, `SOCKS5 127.0.0.1:10808`). Синхронно прописывает настройки в переменные окружения Hyprland, Mango (`proxy.conf` + reload), GSettings и `~/.config/environment.d/proxy.conf`. Состояние сохраняется в `~/.local/state/proxy`.

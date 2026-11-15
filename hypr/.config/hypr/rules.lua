@@ -96,6 +96,16 @@ hl.window_rule({
     center = true,
 })
 
+-- Плавающий мессенджер Telegram (nchat)
+hl.window_rule({
+    name   = "nchat-float",
+    match  = {
+        class = "^(nchat)$",
+    },
+    float  = true,
+    center = true,
+})
+
 -- PiP (Firefox/Chrome/YouTube): маленькое окно поверх, по центру.
 -- Размер не навязываем — сервис сам выставляет его при первом показе.
 hl.window_rule({
