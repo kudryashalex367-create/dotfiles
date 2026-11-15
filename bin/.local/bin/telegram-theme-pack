@@ -80,7 +80,7 @@ EOF
 # чтобы не дублировать уведомление о смене обоев из wall-picker / wall-random.
 if (( open_theme == 1 )); then
     if command -v notify-send >/dev/null 2>&1; then
-        notify-send -a "Telegram" "Тема Telegram" "Открываю окно применения темы..." 2>/dev/null || true
+        notify-send -a "Telegram" "(o_o) Тема Telegram" "Открываю окно применения темы..." 2>/dev/null || true
     fi
 
     if [[ -x /usr/bin/Telegram ]]; then

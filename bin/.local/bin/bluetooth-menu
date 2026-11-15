@@ -3,11 +3,11 @@
 set -euo pipefail
 
 command -v bluetoothctl >/dev/null 2>&1 || {
-    notify-send -u critical -a "Bluetooth" "Bluetooth" "bluetoothctl не найден"
+    notify-send -u critical -a "Bluetooth" "(>_<) Ошибка" "bluetoothctl не найден"
     exit 1
 }
 command -v fuzzel >/dev/null 2>&1 || {
-    notify-send -u critical -a "Bluetooth" "Bluetooth" "fuzzel не найден"
+    notify-send -u critical -a "Bluetooth" "(>_<) Ошибка" "fuzzel не найден"
     exit 1
 }
 
@@ -88,12 +88,12 @@ choice=$(printf '%s\n' "${menu[@]}" | fuzzel -d -p "󰂯 Bluetooth ❯ " || true
 case "$choice" in
     "󰂲 Выключить Bluetooth")
         bluetoothctl power off >/dev/null 2>&1
-        notify-send -a "Bluetooth" "Bluetooth" "Bluetooth выключен"
+        notify-send -a "Bluetooth" "(•_•) Bluetooth" "Bluetooth выключен"
         exit 0
         ;;
     "󰂯 Включить Bluetooth")
         bluetoothctl power on >/dev/null 2>&1
-        notify-send -a "Bluetooth" "Bluetooth" "Bluetooth включён"
+        notify-send -a "Bluetooth" "(^_^)b Bluetooth" "Bluetooth включён"
         exit 0
         ;;
 esac
@@ -104,11 +104,11 @@ name="${dev_name["$choice"]:-$mac}"
 state="${dev_state["$choice"]:-}"
 
 if [[ "$state" == "connected" ]]; then
-    notify-send -a "Bluetooth" "Bluetooth" "Отключение от «$name»..."
+    notify-send -a "Bluetooth" "(o_o) Отключение" "Отключение от «$name»..."
     if output=$(bluetoothctl disconnect "$mac" 2>&1); then
-        notify-send -a "Bluetooth" "Bluetooth" "Отключено от «$name»"
+        notify-send -a "Bluetooth" "(•_•) Отключено" "Отключено от «$name»"
     else
-        notify-send -u critical -a "Bluetooth" "Ошибка отключения «$name»" "$output"
+        notify-send -u critical -a "Bluetooth" "(>_<) Ошибка отключения" "$output"
     fi
 else
     # Если адаптер выключен, сначала включаем питание
@@ -117,13 +117,13 @@ else
         sleep 1
     fi
 
-    notify-send -a "Bluetooth" "Bluetooth" "Подключение к «$name»..."
+    notify-send -a "Bluetooth" "(o_o) Подключение" "Подключение к «$name»..."
     output=$(bluetoothctl connect "$mac" 2>&1)
     status=$?
 
     if (( status == 0 )) && ! echo "$output" | grep -qi "Failed to connect"; then
-        notify-send -a "Bluetooth" "Bluetooth" "Подключено к «$name»"
+        notify-send -a "Bluetooth" "(^_^)b Подключено" "Подключено к «$name»"
     else
-        notify-send -u critical -a "Bluetooth" "Ошибка подключения к «$name»" "$output"
+        notify-send -u critical -a "Bluetooth" "(>_<) Ошибка подключения" "$output"
     fi
 fi

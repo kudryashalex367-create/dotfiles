@@ -5,7 +5,7 @@ WALL_DIR="$HOME/wallpapers"
 
 # Проверяем, существует ли папка
 if [ ! -d "$WALL_DIR" ]; then
-    notify-send -u low "Wallpaper" "Папка $WALL_DIR не найдена!"
+    notify-send -u low -a "Wall-Random" "(>_<) Ошибка" "Папка $WALL_DIR не найдена!"
     exit 1
 fi
 
@@ -14,7 +14,7 @@ RANDOM_WALL=$(find "$WALL_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -
 
 # Если ничего не нашли — выходим
 if [ -z "$RANDOM_WALL" ]; then
-    notify-send -u low "Wallpaper" "В папке $WALL_DIR нет изображений!"
+    notify-send -u low -a "Wall-Random" "(╥﹏╥) Нет картинок" "В папке $WALL_DIR нет изображений!"
     exit 1
 fi
 
@@ -27,8 +27,8 @@ gsettings set org.gnome.desktop.background picture-uri-dark "file://$RANDOM_WALL
 
 # 3. Перегенерируем палитру из нового цвета обоев (обои уже поставлены выше)
 "$HOME/.local/bin/wall-colors" --colors-only "$RANDOM_WALL" >/dev/null 2>&1 || \
-    notify-send -u low "Wallpaper" "matugen не смог перекрасить (проверь ~/.config/matugen)"
+    notify-send -u low -a "Wall-Random" "(>_<) matugen" "matugen не смог перекрасить (проверь ~/.config/matugen)"
 
 # 4. Аккуратное стеклянное уведомление через Mako с именем обоев (исчезнет через 2.5 сек)
 WALL_NAME=$(basename "$RANDOM_WALL")
-notify-send -t 2500 -a "Wall-Random" "Обои обновлены ✨" "$WALL_NAME"
+notify-send -t 2500 -a "Wall-Random" "(◕‿◕) Обои обновлены" "$WALL_NAME"

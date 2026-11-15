@@ -6,7 +6,7 @@ WALL_DIR="$HOME/wallpapers"
 IMAGES=$(find "$WALL_DIR" -maxdepth 1 -type f \( -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.webp" \) -exec basename {} \; | sort)
 
 if [ -z "$IMAGES" ]; then
-    notify-send "Обои" "Папка ~/wallpapers пуста. Закиньте туда картинки!"
+    notify-send -a "Обои" "(╥﹏╥) Папка пуста" "Закиньте картинки в ~/wallpapers!"
     exit 0
 fi
 
@@ -33,6 +33,6 @@ gsettings set org.gnome.desktop.background picture-uri-dark "file://$FULL_PATH" 
 
 # Перегенерация палитры под новые обои (обои уже поставлены)
 "$HOME/.local/bin/wall-colors" --colors-only "$FULL_PATH" >/dev/null 2>&1 || \
-    notify-send -u low "Обои" "matugen не смог перекрасить"
+    notify-send -u low -a "Обои" "(>_<) matugen" "matugen не смог перекрасить"
 
-notify-send -a "Обои" "Установлены новые обои" "$SELECTED"
+notify-send -a "Обои" "(◕‿◕) Обои обновлены" "$SELECTED"

@@ -3,11 +3,11 @@
 set -euo pipefail
 
 command -v nmcli >/dev/null 2>&1 || {
-    notify-send -u critical -a "Wi-Fi" "Wi-Fi" "nmcli не найден"
+    notify-send -u critical -a "Wi-Fi" "(>_<) Ошибка" "nmcli не найден"
     exit 1
 }
 command -v fuzzel >/dev/null 2>&1 || {
-    notify-send -u critical -a "Wi-Fi" "Wi-Fi" "fuzzel не найден"
+    notify-send -u critical -a "Wi-Fi" "(>_<) Ошибка" "fuzzel не найден"
     exit 1
 }
 
@@ -56,16 +56,16 @@ connect_with_password() {
     password=$(fuzzel -d --prompt-only="Пароль для $ssid ❯ " --placeholder="Введите пароль..." -w 42 || true)
     [[ -z "$password" ]] && return 0
 
-    notify-send -a "Wi-Fi" "Wi-Fi" "Подключение к «$ssid»..."
+    notify-send -a "Wi-Fi" "(o_o) Подключение" "Подключение к «$ssid»..."
 
     # Удаляем старый профиль, если он существовал с неверным паролем
     nmcli connection delete id "$ssid" >/dev/null 2>&1 || true
 
     local output
     if output=$(nmcli dev wifi connect "$ssid" password "$password" 2>&1); then
-        notify-send -a "Wi-Fi" -i "network-wireless" "Wi-Fi" "Подключено к «$ssid»"
+        notify-send -a "Wi-Fi" -i "network-wireless" "(^_^)b Подключено" "Подключено к «$ssid»"
     else
-        notify-send -u critical -a "Wi-Fi" "Ошибка подключения" "$output"
+        notify-send -u critical -a "Wi-Fi" "(>_<) Ошибка подключения" "$output"
     fi
 }
 
@@ -82,15 +82,15 @@ show_active_network_menu() {
     case "$action" in
         "󰅖 Отключиться")
             nmcli connection down "$ssid" 2>/dev/null || true
-            notify-send -a "Wi-Fi" "Wi-Fi" "Отключено от «$ssid»"
+            notify-send -a "Wi-Fi" "(•_•) Отключено" "Отключено от «$ssid»"
             ;;
         "󰑐 Переподключиться")
-            notify-send -a "Wi-Fi" "Wi-Fi" "Переподключение к «$ssid»..."
+            notify-send -a "Wi-Fi" "(o_o) Переподключение" "Переподключение к «$ssid»..."
             nmcli connection up "$ssid" 2>/dev/null || true
             ;;
         "󰆴 Забыть сеть (удалить)")
             nmcli connection delete id "$ssid" 2>/dev/null || true
-            notify-send -a "Wi-Fi" "Wi-Fi" "Сеть «$ssid» удалена"
+            notify-send -a "Wi-Fi" "(•_•) Сеть удалена" "Сеть «$ssid» удалена"
             ;;
         *)
             ;;
@@ -193,12 +193,12 @@ main() {
             ;;
         "󰤮 Выключить Wi-Fi")
             nmcli radio wifi off
-            notify-send -a "Wi-Fi" "Wi-Fi" "Wi-Fi выключен"
+            notify-send -a "Wi-Fi" "(•_•) Wi-Fi" "Wi-Fi выключен"
             exit 0
             ;;
         "󰤨 Включить Wi-Fi")
             nmcli radio wifi on
-            notify-send -a "Wi-Fi" "Wi-Fi" "Wi-Fi включён"
+            notify-send -a "Wi-Fi" "(^_^)b Wi-Fi" "Wi-Fi включён"
             exit 0
             ;;
     esac
@@ -216,26 +216,26 @@ main() {
 
     # Если сеть открытая — подключаемся сразу
     if is_open_network "$security"; then
-        notify-send -a "Wi-Fi" "Wi-Fi" "Подключение к открытой сети «$ssid»..."
+        notify-send -a "Wi-Fi" "(o_o) Подключение" "Подключение к открытой сети «$ssid»..."
         local output
         if output=$(nmcli dev wifi connect "$ssid" 2>&1); then
-            notify-send -a "Wi-Fi" "Wi-Fi" "Подключено к «$ssid»"
+            notify-send -a "Wi-Fi" -i "network-wireless" "(^_^)b Подключено" "Подключено к «$ssid»"
         else
-            notify-send -u critical -a "Wi-Fi" "Ошибка подключения" "$output"
+            notify-send -u critical -a "Wi-Fi" "(>_<) Ошибка подключения" "$output"
         fi
         exit 0
     fi
 
     # Если сеть известна, пробуем быстрое подключение
     if is_known_network "$ssid"; then
-        notify-send -a "Wi-Fi" "Wi-Fi" "Подключение к «$ssid»..."
+        notify-send -a "Wi-Fi" "(o_o) Подключение" "Подключение к «$ssid»..."
         local output
         if output=$(nmcli connection up "$ssid" 2>&1 || nmcli dev wifi connect "$ssid" 2>&1); then
-            notify-send -a "Wi-Fi" "Wi-Fi" "Подключено к «$ssid»"
+            notify-send -a "Wi-Fi" -i "network-wireless" "(^_^)b Подключено" "Подключено к «$ssid»"
             exit 0
         fi
         # Если сохранённый пароль не сработал — уведомляем и запрашиваем пароль
-        notify-send -a "Wi-Fi" "Wi-Fi" "Сохранённое подключение не удалось. Введите пароль."
+        notify-send -a "Wi-Fi" "(>_<) Ошибка" "Сохранённое подключение не удалось. Введите пароль."
     fi
 
     # Запрашиваем пароль для новой или не подключившейся сети

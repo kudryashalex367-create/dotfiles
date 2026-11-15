@@ -149,7 +149,7 @@ set_state() {
     local state="$1"
 
     if [[ "$state" == "on" ]] && { ! port_open "$HTTP_PORT" || ! port_open "$SOCKS_PORT"; }; then
-        notify "Прокси не запущен" "${PROXY_HOST}:${HTTP_PORT}/${SOCKS_PORT} не слушает — включение отменено"
+        notify "(>_<) Прокси не запущен" "${PROXY_HOST}:${HTTP_PORT}/${SOCKS_PORT} не слушает — включение отменено"
         return 1
     fi
 
@@ -159,13 +159,13 @@ set_state() {
         apply_compositor_env "$HTTP_URL" "$SOCKS_URL" "$NO_PROXY_LIST"
         apply_gsettings on
         apply_environment_d on
-        notify "Прокси включён" "${HTTP_URL} / ${SOCKS_URL}"
+        notify "(^_^)b Прокси включён" "${HTTP_URL} / ${SOCKS_URL}"
     else
         # Выключение: пустые значения (Hyprland/Mango не умеют unset).
         apply_compositor_env "" "" "$NO_PROXY_LIST"
         apply_gsettings off
         apply_environment_d off
-        notify "Прокси выключен" "прямое подключение"
+        notify "(•_•) Прокси выключен" "прямое подключение"
     fi
 }
 

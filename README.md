@@ -58,8 +58,9 @@
 ## ٩(◕‿◕)۶ Ключевые особенности сборки
 
 * (づ｡◕‿‿◕｡)づ **Две Wayland-сессии.** Hyprland — рабочая, Mango — альтернатива с той же раскладкой биндов, прозрачностью, тенью и блюром. Обе используют общие скрипты из `~/.local/bin` и общую палитру matugen.
-* (⚙️‿⚙️) **Модульный Lua-конфиг Hyprland.** Точка входа `hyprland.lua` через `dofile` загружает 8 независимых модулей: `theme`, `monitors`, `env`, `input`, `animations`, `autostart`, `binds`, `rules`.
-* ⚙️ **Один конфиг Mango.** `~/.config/mango/config.conf` плюс `autostart.sh` и `source_optional` для сгенерированных `colors.conf` и `proxy.conf`.
+* (•̀ᴗ•́)و **Модульный Lua-конфиг Hyprland.** Точка входа `hyprland.lua` через `dofile` загружает 8 независимых модулей: `theme`, `monitors`, `env`, `input`, `animations`, `autostart`, `binds`, `rules`.
+* (◕‿◕) **Один конфиг Mango.** `~/.config/mango/config.conf` плюс `autostart.sh` и `source_optional` для сгенерированных `colors.conf` и `proxy.conf`.
+* (ง •̀_•́)ง **Чистая обработка микрофона (PipeWire).** Виртуальный источник `source.clean_mic` на уровне PipeWire filter-chain без тяжелых GUI: High-Pass 80 Гц (срез вибраций стола), Peaking EQ 3500 Гц (+1.5 dB разборчивости речи), мягкий LADSPA-компрессор `sc4m` и прозрачный `fast_lookahead_limiter` (-1.5 dB защита от клиппинга).
 * (づ｡◕‿‿◕｡)づ **Динамическая палитра Material You (`matugen`).** Смена обоев автоматически перекрашивает рамки и тени окон Hyprland, Mango, терминал Kitty, лаунчер Fuzzel, уведомления Mako, экран блокировки Hyprlock, темы GTK 3/4 (Nautilus и системные диалоги) и генерирует тёмную тему Telegram Desktop со сплошным фоном чата и контрастным текстом. Если файл палитры отсутствует, система откатывается к тёмно-фиолетовой схеме **Obsidian Violet** (`#0b0912`, `#a78bfa`, `#c4b5fd`).
 * (︶︹︶) **Безбаровый стол.** 100% площади экрана отдано контенту без панелей задач. Воркспейсы `1–5` закреплены как постоянные и не схлопываются при пустоте, навигация замкнута в кольцо.
 * (o゜▽゜)o☆ **Выверенный объём и фокус.** Окна обрамлены компактными мягкими тенями (`range = 12`, `render_power = 2`). Неактивные окна приглушаются на **5.5%** (`dim_strength = 0.055`) и получают лёгкую прозрачность `inactive_opacity = 0.975` (у Kitty — отдельное правило `opacity = 0.97 0.95`).
@@ -89,6 +90,7 @@
 │   ├── hub                        # единый центр управления (дашборд со всеми меню)
 │   ├── keybinds                   # живой парсер binds.lua → шпаргалка в Fuzzel
 │   ├── media-menu                 # управление музыкой и плеерами через Fuzzel
+│   ├── mic-toggle                 # фоновая запись микрофона в Opus + копирование в буфер
 │   ├── nowplaying                 # текущий трек из playerctl для hyprlock
 │   ├── powermenu                  # меню выключения, сна и блокировки через Fuzzel
 │   ├── proxy                      # менеджер прокси (on/off/toggle/status/restore)
@@ -118,6 +120,7 @@
 ├── mako/.config/mako/             # уведомления (генерируется matugen)
 ├── mango/.config/                 # Mango: config.conf, autostart.sh, порталы
 ├── matugen/.config/matugen/       # config.toml и шаблоны для kitty, mako, hypr, fuzzel, mango
+├── pipewire/.config/pipewire/     # цепочка фильтров микрофона (99-mic-eq.conf)
 ├── pkglists/.config/              # pkglist_repo.txt / pkglist_aur.txt
 ├── starship/.config/starship.toml # промпт Starship (генерируется matugen)
 ├── .config/systemd/user/          # unit для audio-combine
@@ -147,11 +150,11 @@
 
 <img width="1920" height="1080" alt="keybinds_showcase" src="https://github.com/user-attachments/assets/aac3ccf6-1437-42ee-9e94-db56de700452" />
 
-### (⚙️‿⚙️) Центр управления Quick Settings (Fuzzel + Hub)
+### (•̀ᴗ•́)و Центр управления Quick Settings (Fuzzel + Hub)
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fe4160f9-bee6-489e-979d-09d33816980d" />
 
-### (💬‿💬) Тёмная тема Telegram Desktop (Material You)
+### ( ˘▽˘)っ Тёмная тема Telegram Desktop (Material You)
 
 <img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a3cf759e-d49a-4c89-b0ca-c9e16c654507" />
 
@@ -180,6 +183,7 @@
 | `Super + X` | **Центр управления (`hub`: единый дашборд со всеми меню)** |
 | `Super + Escape` | **Меню питания (`powermenu`: выключение, перезагрузка, сон, лок, выход)** |
 | `Super + M` | **Управление музыкой и плеерами через Fuzzel (`media-menu`)** |
+| `Super + Shift + M` | **Фоновая запись микрофона (`mic-toggle`: старт/стоп в Opus + копирование в буфер)** |
 | `Super + Shift + A` | **Выбор аудиовыхода и микрофона (`audio-menu`)** |
 | `Super + Shift + W` | **Выбор и подключение к Wi-Fi (`wifi-menu`)** |
 | `Super + B` | **Управление Bluetooth устройствами (`bluetooth-menu`)** |
@@ -238,7 +242,7 @@
 ---
 
 <a id="scripts"></a>
-## (🛠️‿🛠️) Скрипты и автоматизация (`~/.local/bin`)
+## (ง'̀-'́)ง Скрипты и автоматизация (`~/.local/bin`)
 
 * **`wall-colors [--colors-only] <img>`** — ядро динамической темы. Сохраняет путь к обоям в `~/.cache/wall-colors/last`, генерирует тёмную палитру Material You через `matugen` и на лету обновляет цвета в `mako`, `kitty` (`SIGUSR1`), `fuzzel`, `hyprlock`, `Hyprland` (`hyprctl reload`), `Mango` (`mmsg dispatch reload_config`), `GTK 3/4` (CSS переменные) и упаковывает тему Telegram.
 * **`telegram-theme-pack [--open]`** — собирает валидный `.tdesktop-theme` архив с тёмной палитрой Material You и сплошным фоном чата цвета `windowBg` (без растягивания обоев). Входящие и исходящие пузыри тёмные (в стиле Catppuccin Mocha), весь текст сообщений — высококонтрастный белый (`#ffffff`), ссылки и галочки прочтения — акцентные. Флаг `--open` открывает окно применения темы в Telegram (также доступно через `hub` по `Super + X`).
@@ -247,6 +251,7 @@
 * **`proxy {on|off|toggle|status|restore}`** — централизованное управление прокси (`HTTP 127.0.0.1:10809`, `SOCKS5 127.0.0.1:10808`). Синхронно прописывает настройки в переменные окружения Hyprland, Mango (`proxy.conf` + reload), GSettings и `~/.config/environment.d/proxy.conf`. Состояние сохраняется в `~/.local/state/proxy`.
 * **`keybinds`** — читает и парсит `~/.config/hypr/binds.lua` при каждом вызове, нормализует названия клавиш и выводит шпаргалку в `fuzzel -d`. Никогда не отстаёт от реального конфига.
 * **`screenshot {area|window|full}`** — захват экрана через `grim`, `slurp` и `jq` с одновременным сохранением PNG, копированием в `wl-copy` и уведомлением с миниатюрой.
+* **`mic-toggle`** — фоновая запись микрофона по хоткею `Super + Shift + M`. Первый вызов запускает `pw-record` с источника `source.clean_mic` в `$XDG_RUNTIME_DIR`, второй вызов останавливает запись, пережимает в `.opus` (48 kbps VBR), складывает в `~/Recordings` и через `wl-copy -t text/uri-list` копирует готовый файл в буфер обмена для быстрой отправки в браузер или мессенджер.
 * **`nowplaying`** — информер для `hyprlock`: берёт метаданные из `playerctl`, обрезает строку до 50 символов и выводит `♪ Исполнитель — Название` (молчит, если ничего не играет).
 * **`hub`** — единый центр управления («дашборд»), объединяющий меню музыки, аудио, Wi-Fi, Bluetooth, обоев, хоткеев и питания с бесшовным циклом.
 * **`audio-menu`** — выбор аудиовыхода (sinks) и микрофона (sources) через Fuzzel с переносом потоков и быстрым тогглом мута микрофона.
@@ -264,6 +269,7 @@
 При открытии интерактивного терминала запускается компактный `fastfetch -l arch_small` (подавляется, если шелл вызван внутри AI-агента).
 
 ### Медиа и утилиты
+* `recmic` — терминальная запись микрофона в WAV с мгновенной конвертацией в Opus при остановке по `Ctrl+C`.
 * `y <url>` — скачать видео в максимальном качестве в контейнер `mp4` через `yt-dlp`.
 * `ya <url>` — скачать аудиодорожку в `~/Music` с вырезанием рекламы через **SponsorBlock**, вшиванием обложки и метаданных.
 * `nya [номер_первой_серии] <url1> <url2> ...` — потоковый загрузчик серий аниме в `~/Videos/Anime` с вшиванием субтитров, глав и обложки через `aria2c` (**5 одновременных фрагментов**).

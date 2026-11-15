@@ -67,9 +67,9 @@ toggle_mic() {
     fi
 
     if is_mic_muted; then
-        notify-send -a "Аудио" -i "microphone-sensitivity-muted" "Микрофон отключён" "Звук выключен"
+        notify-send -a "Аудио" -i "microphone-sensitivity-muted" "(•_•) Микрофон выключен" "Звук отключён"
     else
-        notify-send -a "Аудио" -i "audio-input-microphone" "Микрофон включён" "Звук включён"
+        notify-send -a "Аудио" -i "audio-input-microphone" "(^_^)b Микрофон включён" "Звук включён"
     fi
 }
 
@@ -104,7 +104,7 @@ select_sink() {
     ')
 
     if [[ -z "$raw_list" ]]; then
-        notify-send -a "Аудио" "Ошибка" "Устройства вывода не найдены"
+        notify-send -a "Аудио" "(>_<) Ошибка" "Устройства вывода не найдены"
         return
     fi
 
@@ -120,7 +120,7 @@ select_sink() {
 
     pactl set-default-sink "$name" 2>/dev/null || true
 
-    notify-send -a "Аудио" -i "audio-speakers" "Выход звука изменён" "$desc"
+    notify-send -a "Аудио" -i "audio-speakers" "(^_^)b Выход изменён" "$desc"
 }
 
 select_source() {
@@ -156,7 +156,7 @@ select_source() {
     ')
 
     if [[ -z "$raw_list" ]]; then
-        notify-send -a "Аудио" "Ошибка" "Микрофоны не найдены"
+        notify-send -a "Аудио" "(>_<) Ошибка" "Микрофоны не найдены"
         return
     fi
 
@@ -172,7 +172,7 @@ select_source() {
 
     pactl set-default-source "$name" 2>/dev/null || true
 
-    notify-send -a "Аудио" -i "audio-input-microphone" "Микрофон изменён" "$desc"
+    notify-send -a "Аудио" -i "audio-input-microphone" "(^_^)b Микрофон изменён" "$desc"
 }
 
 run_combine() {
@@ -181,22 +181,22 @@ run_combine() {
         if command -v audio-combine >/dev/null 2>&1; then
             script="$(command -v audio-combine)"
         else
-            notify-send -a "Аудио" -u critical "Ошибка" "Скрипт audio-combine не найден"
+            notify-send -a "Аудио" -u critical "(>_<) Ошибка" "Скрипт audio-combine не найден"
             return
         fi
     fi
 
     if pgrep -f "audio-combine" >/dev/null; then
-        notify-send -a "Аудио" "audio-combine" "Скрипт уже запущен"
+        notify-send -a "Аудио" "(•_•) audio-combine" "Скрипт уже запущен"
     else
         nohup "$script" >/dev/null 2>&1 &
-        notify-send -a "Аудио" "audio-combine" "Объединение устройств запущено"
+        notify-send -a "Аудио" "(^_^)b audio-combine" "Объединение устройств запущено"
     fi
 }
 
 main() {
     if ! command -v pactl >/dev/null 2>&1; then
-        notify-send -a "Аудио" -u critical "Ошибка" "pactl не установлен"
+        notify-send -a "Аудио" -u critical "(>_<) Ошибка" "pactl не установлен"
         exit 1
     fi
 

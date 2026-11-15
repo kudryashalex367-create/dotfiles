@@ -3,7 +3,7 @@
 set -euo pipefail
 
 if ! command -v playerctl >/dev/null 2>&1; then
-    notify-send -a "Медиа" -u critical "Ошибка" "playerctl не установлен"
+    notify-send -a "Медиа" -u critical "(>_<) Ошибка" "playerctl не установлен"
     exit 1
 fi
 
@@ -12,21 +12,21 @@ notify_track() {
     local p_args=()
     [[ -n "$target_player" ]] && p_args=(-p "$target_player")
 
-    local status artist title icon
+    local status artist title icon label
     status=$(playerctl "${p_args[@]}" status 2>/dev/null || echo "Остановлено")
     artist=$(playerctl "${p_args[@]}" metadata --format '{{artist}}' 2>/dev/null || echo "")
     title=$(playerctl "${p_args[@]}" metadata --format '{{title}}' 2>/dev/null || echo "")
 
     case "$status" in
-        "Playing") icon="media-playback-start" ;;
-        "Paused")  icon="media-playback-pause" ;;
-        *)         icon="media-playback-stop" ;;
+        "Playing") label="(^o^) Играет"; icon="media-playback-start" ;;
+        "Paused")  label="(•_•) Пауза";  icon="media-playback-pause" ;;
+        *)         label="(•_•) Стоп";   icon="media-playback-stop" ;;
     esac
 
     if [[ -n "$title" ]]; then
         local msg="$title"
         [[ -n "$artist" ]] && msg="$artist — $title"
-        notify-send -a "Медиа" -i "$icon" -t 1500 "$status" "$msg"
+        notify-send -a "Медиа" -i "$icon" -t 1500 "$label" "$msg"
     fi
 }
 
@@ -34,7 +34,7 @@ choose_player() {
     local players chosen
     players=$(playerctl -l 2>/dev/null || true)
     if [[ -z "$players" ]]; then
-        notify-send -a "Медиа" "Плееры не найдены"
+        notify-send -a "Медиа" "(>_<) Медиа" "Плееры не найдены"
         return ""
     fi
     chosen=$(printf "%s\n" "$players" | fuzzel -d -p "󰋋 Выбор плеера ❯ " -l 6 -w 30 || true)
@@ -146,7 +146,7 @@ main() {
                 chosen=$(choose_player)
                 if [[ -n "$chosen" ]]; then
                     active_player="$chosen"
-                    notify-send -a "Медиа" "Выбран плеер: $active_player"
+                    notify-send -a "Медиа" "(^_^)b Медиа" "Выбран плеер: $active_player"
                 fi
                 ;;
         esac
