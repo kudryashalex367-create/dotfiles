@@ -4,7 +4,7 @@
 
 LIST=$(cat <<'EOF'
 Super + Return               Терминал (Kitty)
-Super + T                  󰭹  Telegram (nchat)
+Super + T                  󰭹  Telegram
 Super + D                  󰀻  Меню приложений (Fuzzel)
 Super + E                    Файловый менеджер (Nautilus)
 Super + Q                    Закрыть активное окно

@@ -15,7 +15,7 @@ local mainMod = "SUPER"
 hl.bind(mainMod .. " + N",         hl.dsp.exec_cmd("makoctl restore"))
 hl.bind(mainMod .. " + SHIFT + N", hl.dsp.exec_cmd("makoctl dismiss -a"))
 hl.bind(mainMod .. " + RETURN", hl.dsp.exec_cmd(terminal))
-hl.bind(mainMod .. " + T",      hl.dsp.exec_cmd("bash -c '$HOME/.local/bin/telegram-chat'"))
+hl.bind(mainMod .. " + T",      hl.dsp.exec_cmd("Telegram"))
 hl.bind(mainMod .. " + D",      hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + E",      hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + Q",      hl.dsp.window.close())

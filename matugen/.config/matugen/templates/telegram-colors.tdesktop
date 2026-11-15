@@ -1,0 +1,148 @@
+// Telegram Desktop Material You Dark Theme
+// Сгенерировано через Matugen из обоев
+
+// Базовые окна и диалоги
+windowBg: {{colors.surface.default.hex}};
+windowFg: #ffffff;
+windowBgOver: {{colors.surface_container_high.default.hex}};
+windowBgActive: {{colors.primary.default.hex}};
+windowFgActive: {{colors.on_primary.default.hex}};
+windowActiveTextFg: {{colors.primary.default.hex}};
+windowSubTextFg: {{colors.on_surface_variant.default.hex}};
+windowSubTextFgOver: #ffffff;
+windowBoldFg: #ffffff;
+windowBoldFgOver: #ffffff;
+windowShadowFg: #00000040;
+
+// Фон чата
+chatBg: {{colors.surface.default.hex}};
+
+// Верхняя панель (Header / Title bar)
+titleBg: {{colors.surface.default.hex}};
+titleShadow: #00000000;
+titleButtonBg: #00000000;
+titleButtonFg: #ffffff;
+titleButtonBgOver: {{colors.surface_container.default.hex}};
+titleButtonFgOver: #ffffff;
+titleButtonBgActive: {{colors.primary.default.hex}};
+titleButtonFgActive: {{colors.on_primary.default.hex}};
+
+// Кнопки
+lightButtonBg: {{colors.primary.default.hex}};
+lightButtonFg: {{colors.on_primary.default.hex}};
+lightButtonBgOver: {{colors.primary_container.default.hex}};
+lightButtonFgOver: {{colors.on_primary_container.default.hex}};
+activeButtonBg: {{colors.primary.default.hex}};
+activeButtonFg: {{colors.on_primary.default.hex}};
+activeButtonBgOver: {{colors.primary_container.default.hex}};
+activeButtonFgOver: {{colors.on_primary_container.default.hex}};
+activeLineTitle: {{colors.primary.default.hex}};
+activeLineTitleActive: {{colors.primary.default.hex}};
+
+// Список чатов (боковая панель)
+dialogsBg: {{colors.surface_container_low.default.hex}};
+dialogsBgOver: {{colors.surface_container.default.hex}};
+dialogsBgActive: {{colors.surface_container_highest.default.hex}};
+dialogsNameFg: #ffffff;
+dialogsNameFgOver: #ffffff;
+dialogsNameFgActive: #ffffff;
+dialogsTextFg: {{colors.on_surface_variant.default.hex}};
+dialogsTextFgOver: #ffffff;
+dialogsTextFgActive: {{colors.on_surface_variant.default.hex}};
+dialogsDateFg: {{colors.on_surface_variant.default.hex}};
+dialogsDateFgOver: #ffffff;
+dialogsDateFgActive: {{colors.primary.default.hex}};
+dialogsUnreadBg: {{colors.primary.default.hex}};
+dialogsUnreadFg: {{colors.on_primary.default.hex}};
+dialogsUnreadBgMuted: {{colors.surface_container_highest.default.hex}};
+dialogsUnreadFgMuted: {{colors.on_surface_variant.default.hex}};
+dialogsUnreadBgMutedActive: {{colors.surface_container_highest.default.hex}};
+dialogsUnreadFgMutedActive: #ffffff;
+dialogsDraftFg: {{colors.primary.default.hex}};
+dialogsVerifiedIconBg: {{colors.primary.default.hex}};
+dialogsVerifiedIconFg: {{colors.on_primary.default.hex}};
+
+// Входящие сообщения (тёмный контейнер + белый текст)
+msgInBg: {{colors.surface_container.default.hex}};
+msgInBgSelected: {{colors.surface_container_high.default.hex}};
+historyTextInFg: #ffffff;
+historyTextInFgSelected: #ffffff;
+msgInDateFg: {{colors.on_surface_variant.default.hex}};
+msgInDateFgSelected: #ffffff;
+msgInServiceFg: {{colors.primary.default.hex}};
+msgInServiceFgSelected: {{colors.primary.default.hex}};
+historyFileNameInFg: {{colors.primary.default.hex}};
+historyLinkInFg: {{colors.primary.default.hex}};
+historyPeer1NameFg: {{colors.primary.default.hex}};
+historyPeerUserFg: {{colors.primary.default.hex}};
+
+// Исходящие сообщения (тёмный акцентный контейнер + белый текст)
+msgOutBg: {{colors.surface_container_highest.default.hex}};
+msgOutBgSelected: {{colors.surface_container_high.default.hex}};
+historyTextOutFg: #ffffff;
+historyTextOutFgSelected: #ffffff;
+msgOutDateFg: {{colors.on_surface_variant.default.hex}};
+msgOutDateFgSelected: #ffffff;
+msgOutServiceFg: {{colors.primary.default.hex}};
+msgOutServiceFgSelected: {{colors.primary.default.hex}};
+historyFileNameOutFg: {{colors.primary.default.hex}};
+historyLinkOutFg: {{colors.primary.default.hex}};
+
+// Галочки статуса отправки / прочтения (checkmarks)
+historyOutIconFg: {{colors.primary.default.hex}};
+historyOutIconFgSelected: #ffffff;
+historySendingOutFg: {{colors.on_surface_variant.default.hex}};
+historySendingInvertedIconFg: {{colors.primary.default.hex}};
+
+// Ответы, цитаты и код
+msgInReplyBarColor: {{colors.primary.default.hex}};
+msgOutReplyBarColor: {{colors.primary.default.hex}};
+historyReplyInFg: {{colors.primary.default.hex}};
+historyReplyOutFg: {{colors.primary.default.hex}};
+historyReplyInDescriptionFg: {{colors.on_surface_variant.default.hex}};
+historyReplyOutDescriptionFg: {{colors.on_surface_variant.default.hex}};
+historyReplyInBorder: {{colors.primary.default.hex}};
+historyReplyOutBorder: {{colors.primary.default.hex}};
+historyTextInQuote: #ffffff;
+historyTextOutQuote: #ffffff;
+historyTextInCode: {{colors.primary.default.hex}};
+historyTextOutCode: {{colors.primary.default.hex}};
+historyBlockCodeInFg: {{colors.primary.default.hex}};
+historyBlockCodeOutFg: {{colors.primary.default.hex}};
+historyBlockCodeInBg: {{colors.surface_container_low.default.hex}};
+historyBlockCodeOutBg: {{colors.surface_container_low.default.hex}};
+
+// Сервисные сообщения (системные плашки в центре)
+msgServiceBg: {{colors.surface_container_highest.default.hex}}cc;
+msgServiceFg: #ffffff;
+
+// Поле ввода сообщения
+historyComposeAreaBg: {{colors.surface.default.hex}};
+historyComposeAreaFg: #ffffff;
+historyComposeField: {{colors.surface_container.default.hex}};
+historyComposeFieldPlaceholder: {{colors.on_surface_variant.default.hex}};
+historySendIcon: {{colors.primary.default.hex}};
+historySendIconOver: {{colors.primary_container.default.hex}};
+
+// Ответная панель над полем ввода
+historyReplyBg: {{colors.surface_container.default.hex}};
+historyReplyIconFg: {{colors.primary.default.hex}};
+historyReplyCancelFg: {{colors.on_surface_variant.default.hex}};
+historyReplyCancelFgOver: #ffffff;
+
+// Всплывающие меню и списки
+menuBg: {{colors.surface_container_high.default.hex}};
+menuBgOver: {{colors.surface_container_highest.default.hex}};
+menuFg: #ffffff;
+menuIconFg: {{colors.primary.default.hex}};
+menuIconFgOver: {{colors.primary.default.hex}};
+
+// Скроллбары
+scrollBarBg: {{colors.surface_container_highest.default.hex}}80;
+scrollBarBgOver: {{colors.primary.default.hex}};
+historyScrollBg: {{colors.surface_container_highest.default.hex}}80;
+historyScrollBarBg: {{colors.primary.default.hex}};
+
+// Тени сообщений
+msgInShadow: #00000020;
+msgOutShadow: #00000020;
