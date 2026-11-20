@@ -20,6 +20,22 @@
       }
     }
   },
+  "mcp": {
+    "git": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-git",
+        "--repository",
+        "/home/zev1ce/dotfiles"
+      ]
+    },
+    "fetch": {
+      "command": "uvx",
+      "args": [
+        "mcp-server-fetch"
+      ]
+    }
+  },
   "permission": {
     "*": "allow",
     "read": {
