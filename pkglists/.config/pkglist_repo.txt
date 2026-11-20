@@ -10,8 +10,6 @@ bluez
 bluez-utils
 btop
 cliphist
-cloud-guest-utils
-cmatrix
 dnsmasq
 dosfstools
 efibootmgr
@@ -32,9 +30,7 @@ grim
 gvfs-gphoto2
 gvfs-mtp
 hypridle
-hyprland
 hyprlock
-inxi
 iwd
 jq
 kitty
@@ -57,7 +53,6 @@ pipewire
 pipewire-pulse
 playerctl
 polkit-gnome
-python-pipx
 qt6ct
 ripgrep
 slurp
@@ -76,13 +71,11 @@ ttyper
 uv
 vlc
 vulkan-radeon
+wf-recorder
 wget
 wireplumber
 wl-clipboard
-woff2-font-awesome
-xdg-desktop-portal-hyprland
 xdg-desktop-portal-wlr
-xwayland-satellite
 yt-dlp
 zram-generator
 zsh

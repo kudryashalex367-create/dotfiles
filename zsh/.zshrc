@@ -43,8 +43,8 @@ nya() {
         yt-dlp -f "bv*+ba/best" \
           --merge-output-format mkv \
           --embed-subs --embed-thumbnail --embed-chapters --add-metadata \
-          --sub-langs "ru.*,en.*,all" \
-          --fragment-retries infinite --concurrent-fragments 5 --legacy-server-connect \
+          --sub-langs "all" \
+          --fragment-retries infinite --legacy-server-connect \
           --downloader aria2c \
           --downloader-args "aria2c:--console-log-level=warn --summary-interval=0" \
           -P "$HOME/Videos/Anime" \
@@ -61,12 +61,6 @@ alias update='yay'
 
 # Установка черно-белых обоев одной командой (через awww)
 alias set-wall='awww img'
-
-# ── Aesthetic Desk Launchers ─────────────────────────────────────
-alias matrix='cmatrix -b -C magenta -u 3'
-alias lava='lavat -c magenta -s 2 -R 1'
-alias zen='cbonsai -l -i -w 3 -m "zev1ce"'
-alias clock='tty-clock -s -c -b -C 5'
 
 # ── Dotfiles (GNU Stow) ──────────────────────────────────────────
 export DOTFILES="$HOME/dotfiles"
