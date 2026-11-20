@@ -1,18 +1,19 @@
-# ʕ•ᴥ•ʔ Arch Linux Dotfiles by zev1ce — Obsidian Violet<p align="center">
+# ʕ•ᴥ•ʔ Arch Linux Dotfiles by zev1ce — Ветка Niri (Скроллящийся Wayland-композитор)
 
 <p align="center">
   <img src="https://img.shields.io/badge/OS-Arch_Linux-a78bfa?style=flat-square&logo=archlinux&logoColor=white&labelColor=15111f" alt="Arch Linux">
   <img src="https://img.shields.io/badge/WM-Niri-c4b5fd?style=flat-square&labelColor=15111f" alt="Niri">
-  <img src="https://img.shields.io/badge/WM-Hyprland-a78bfa?style=flat-square&labelColor=15111f" alt="Hyprland">
-  <img src="https://img.shields.io/badge/DE-Gnome-a78bfa?style=flat-square&labelColor=15111f" alt="Gnome">
+  <img src="https://img.shields.io/badge/Branch-niri-a78bfa?style=flat-square&labelColor=15111f" alt="Branch niri">
   <a href="./LICENSE">
     <img src="https://img.shields.io/badge/License-GPL_v3-c4b5fd?style=flat-square&labelColor=15111f" alt="GNU GPL v3">
   </a>
 </p>
 
-> *"I use Arch, btw." — Minimalist 144Hz Scrollable-Tiling & Hybrid Workstation in Deep Midnight & Cyber-Lavender.*
+> *"I use Arch, btw." — минималистичная 144Hz рабочая станция на скроллящемся тайлинге Niri.*
 
-Добро пожаловать в мой репозиторий конфигурационных файлов. Здесь хранится минималистичная, вылизанная и сверхпроизводительная сборка рабочей станции на базе скроллингового тайлинга **Niri WM**, динамического **Hyprland** и классического окружения **GNOME 51**. Цветовая схема генерируется из текущих обоев через **matugen** (Material You), а **Obsidian Violet & Soft Lavender** остаётся базовой темой по умолчанию. Управление конфигурациями реализовано через концепцию **Git Bare Repository**.
+Ветка [`niri`](https://github.com/kudryashalex367-create/dotfiles/tree/niri) содержит полную конфигурацию сессии **Niri** — скроллящегося Wayland-композитора с бесконечной горизонтальной лентой окон, колоночной раскладкой, плавной физикой анимаций, интеграцией `xwayland-satellite` и динамической палитрой Material You через **matugen** (палитра по умолчанию: **Obsidian Violet & Soft Lavender**).
+
+> (o_o) **Другие ветки:** основная ветка с сессией **Mango** находится в [`main`](https://github.com/kudryashalex367-create/dotfiles/tree/main), а сессия **Hyprland** с нативным модульным Lua-конфигом — в ветке [`hyprland`](https://github.com/kudryashalex367-create/dotfiles/tree/hyprland).
 
 ---
 
@@ -20,227 +21,196 @@
 
 - [Характеристики системы](#specs)
 - [Ключевые особенности](#features)
-- [Скриншоты](#screenshots)
 - [Горячие клавиши](#hotkeys)
-- [Быстрая установка](#install)
+- [Скрипты и окружение](#scripts)
+- [Пошаговая установка](#install)
 - [Восстановление пакетов](#packages)
-- [Управление конфигурациями](#manage)
+- [Управление конфигурацией](#manage)
+
+---
 
 <a id="specs"></a>
 ## (⌐■_■) Характеристики системы
 
 * ʕ•ᴥ•ʔ **OS:** Arch Linux (x86_64)
-* (ง'̀-'́)ง **Kernel:** `linux-zen` (с BORE-планировщиком и оптимизацией задержек)
+* (ง'̀-'́)ง **Kernel:** `linux-zen` (с BORE-планировщиком и оптимизацией интерактивности)
 * (๑•̀ㅂ•́)و **CPU:** AMD Ryzen 5 5600H (6C/12T, Zen 3, до 4.28 GHz, 45W TDP)
-* (☞ﾟヮﾟ)☞ **GPU:** AMD Radeon Vega 7 / Cezanne (Открытый драйвер `amdgpu` + Vulkan RADV)
-* (≧▽≦) **Display:** 1920x1080 @ 144 Hz (Аппаратная V-Blank синхронизация)
-* (｡◕‿◕｡) **WM/DE:** Niri 26.04 (Основная лента) / Hyprland 0.56.2 / GNOME 51 (Медиа)
-* (✿◠‿◠) **Browser:** Firefox (uBlock Origin, Zero-Bloat)
-* ( ͡° ͜ʖ ͡°) **Terminal:** Kitty 0.49+ (OpenType глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
-* (づ｡◕‿‿◕｡)づ **Shell:** Zsh 5.9.2 + Oh My Zsh + Powerlevel10k (Lean 8-colors)
-* ヽ(´▽`)/ **UI Suite:** Fuzzel (Overlay скругление 16px), Mako (Obsidian Violet Glass, 23MB RAM), Hyprlock, awww (144Hz Wipe Engine)
-* (⌐■_■) **Theming:** matugen: палитра Material You из обоев, шаблоны для Niri, Kitty, Fuzzel, Mako и Hyprlock
-* (｀・ω・´) **Cursor:** Bibata-Modern-Ice (24px сквозная синхронизация во всех слоях)
-* (ง •̀_•́)ง **Bootloader:** systemd-boot
+* (☞ﾟヮﾟ)☞ **GPU:** AMD Radeon Vega 7 / Cezanne (драйвер `amdgpu` + Vulkan RADV + VA-API `radeonsi`)
+* (≧▽≦) **Display:** `DP-2` — 1920x1080 @ 144 Hz
+* (｡◕‿◕｡) **WM / Session:** Niri (`config.kdl`, скроллящийся тайлинг, dynamic column layout)
+* (✿◠‿◠) **Browser:** Firefox (нативный Wayland, аппаратное ускорение VA-API)
+* ( ͡° ͜ʖ ͡°) **Terminal:** Kitty (шрифт JetBrains Mono Nerd Font, лигатуры, вкладки)
+* (づ｡◕‿‿◕｡)づ **Shell:** Zsh + Oh My Zsh + Powerlevel10k
+* ヽ(´▽`)/ **UI Suite:** Fuzzel (меню запуска со скруглением), Mako (уведомления), Hyprlock, awww (144Hz обои)
+* (⌐■_■) **Theming:** `matugen` — синхронизация цветовой палитры Material You из текущих обоев
+* (｀・ω・´) **Cursor:** Bibata-Modern-Ice (24px, сквозная настройка в XCursor и GSettings)
 
 ---
 
 <a id="features"></a>
-## ٩(◕‿◕)۶ Ключевые особенности сборки
+## ٩(◕‿◕)۶ Ключевые особенности Niri-сессии
 
-* (ᵔᴥᵔ) **Эстетика Obsidian Violet:** Глубокий космический фон `#0b0912`, лавандовые акценты `#a78bfa`, пастельный ирис `#c4b5fd` и неоновый 45° градиент активного окна в Niri (`#a78bfa` ➔ `#e879f9`). Это базовая палитра: при смене обоев акценты подстраиваются под них.
-* (づ｡◕‿‿◕｡)づ **Динамические цвета (matugen):** Смена обоев автоматически перегенерирует палитру и применяет её к окружению, так что весь рабочий стол всегда в тон картинке.
-* (︶︹︶) **Безбаровый Дзен (Barless Setup):** 100% площади экрана отдано коду и контенту — никаких лишних панелей задач и системного мусора.
-* (o゜▽゜)o☆ **Трёхмерный объём и тени:** Окна парят над экраном благодаря мягким рассеянным теням (`#15111fcc`) с радиусом 20–30px.
-* ಠ_ಠ **Приглушение неактивных окон:** Тонкое затемнение неактивных окон на 5–8% (`dim_inactive` в Hyprland и селектор `is-active=false` в Niri, не ломающий прозрачность при вызове лаунчера).
-* ヽ(´▽`)/ **Живая кинематика и Overshoot:** Пружины с критическим затуханием (ζ = 1.0) и кривая `popIn` (`0.05 0.9 0.1 1.05`) с лёгким пятипроцентным микро-отскоком при открытии окон.
-* (´・ω・`) **Умный фокус (Strict Hover Focus):** В Niri фокус следует за курсором строго для окон, полностью находящихся в поле зрения (`max-scroll-amount="0%"`), без дерганья ленты.
-* (⌐■_■) **Аппаратный Dual-Kawase Блюр:** Чистое матовое стекло без артефактов на скруглениях Fuzzel и Mako (`ignore_alpha` / `geometry-corner-radius 16`).
-* (ノ°益°)ノ **Киберспортивный Tearing для игр:** В Hyprland включён моментальный скан-аут (`immediate = true`) строго для игр (CS2), при этом рабочий стол остаётся на 100% плавным без разрывов кадров.
-* (•̀ᴗ•́)و **Ультра-легкий Mako (23 MB RAM):** Моментальные уведомления с отступами `outer-margin=16`, сидящими точно по контуру карточки.
-* (つ◉益◉)つ **Рандомайзер обоев (`Win + A`):** Мгновенная плавная смена артов через `awww` на 144 Гц без открытия лишних меню.
-* ┐(´д`)┌ **Мобильный мост Termux:** Прямая связь со смартфоном по ADB/SSH с поддержкой SponsorBlock и 8-поточного скачивания через `aria2c`.
-
----
-
-<a id="screenshots"></a>
-## (☞ﾟヮﾟ)☞ Скриншоты
-
-### (≧▽≦) Рабочий стол Niri (Неоновый градиент и лента)
-
-<img width="1920" height="1080" alt="Рабочий стол Niri" src="https://github.com/user-attachments/assets/9bda9395-cdd8-405f-9b35-91aea3766662" />
-
-### (ง •̀_•́)ง Kitty (Obsidian Violet + Альтернативные глифы)
-
-<img width="1920" height="1080" alt="Терминал Kitty" src="https://github.com/user-attachments/assets/d9374899-04b3-4da5-84fb-7541dc64075d" />
-
-### ヽ(´▽`)/ Меню приложений Fuzzel (Скруглённый выбор)
-
-<img width="1920" height="1080" alt="Меню Fuzzel" src="https://github.com/user-attachments/assets/b00d2c73-017c-4ed6-aa48-d468aa745c5d" />
-
-### ಠ_ಠ Двухэтажный экран блокировки (Hyprlock)
-
-<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/d2343fb1-603c-4172-a3eb-650917234ac9" />
-
-### (๑•̀ㅂ•́)و Всплывающая шпаргалка по хоткеям (Fuzzel + keybinds)
-
-<img width="1920" height="1080" alt="keybinds_fuzzel" src="https://github.com/user-attachments/assets/4584abe4-04e6-4941-8c3f-42c923e04b09" />
+* (•̀ᴗ•́)و **Скроллящийся колоночный тайлинг.** Окна не сжимаются до нечитаемых размеров: они выстраиваются в бесконечную горизонтальную ленту колонок. Вы перемещаетесь вдоль ленты, фокусируясь на нужных задачах.
+* (ง •̀_•́)ง **Конфигурация в формате KDL.** Все настройки мониторов, устройств ввода, биндов, правил окон и автозапуска описаны в `.config/niri/config.kdl`.
+* (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧ **XWayland Satellite.** Полная изоляция и эффективная работа X11-приложений по требованию через отдельный сервис без блокировки основного композитора.
+* (｡♥‿♥｡) **Обзор окон (Overview).** Наглядный режим предпросмотра всех открытых окон на экране по клавише `Mod+O`.
+* (✿´‿`) **Плавная динамическая физика.** Физические пружины (spring physics) при перемещении, открытии и скролле колонок с нулевым тирингом на 144 Hz.
 
 ---
 
 <a id="hotkeys"></a>
-## (ง'̀-'́)ง Горячие клавиши (Hotkeys)
+## (⌨️_⌨️) Горячие клавиши (Niri)
 
-Клавиша `Super` (`Mod`) — это клавиша `Windows` на клавиатуре.
+Модификатор: `Mod` = `Super` (клавиша Windows).
 
-### (ノ°益°)ノ Запуск приложений и системных утилит
-| Комбинация | Действие |
+### Навигация и окна
+
+| Сочетание | Действие |
 | :--- | :--- |
-| `Super + Enter` | Открыть эмулятор терминала (Kitty) |
-| `Super + D` | Меню запуска приложений (Fuzzel) |
-| `Super + A` | **Случайные обои в 1 клик с 144Hz wipe-шторкой (`wall-random`) + перегенерация палитры matugen** |
-| `Super + W` | Интерактивное меню выбора обоев из `~/wallpapers` (Fuzzel + `awww`) + перегенерация палитры matugen |
-| `Super + V` | **Переключить окно в плавающий / тайловый режим (Floating Toggle)** |
-| `Super + Shift + V` | **История буфера обмена (Cliphist + Fuzzel)** |
-| `Super + N` | Восстановить последнее скрытое уведомление (`makoctl restore`) |
-| `Super + Shift + N` | Очистить и закрыть все активные уведомления (`makoctl dismiss -a`) |
-| `Super + L` | Заблокировать экран (Hyprlock со сбросом раскладки на US) |
-| `Super + O` | Панорамный обзор всех рабочих столов (Overview) |
-| `Super + /` *(или `code:61`)* | Всплывающая шпаргалка по хоткеям (работает на US и RU раскладках!) |
-| `Super + Space` | Переключение раскладки клавиатуры (US ⇄ RU) |
-| `Super + Scroll` | Быстрое переключение рабочих столов колесом мыши |
+| `Mod + Return` | Запуск терминала Kitty |
+| `Mod + D` | Запуск меню приложений Fuzzel |
+| `Mod + Q` | Закрыть активное окно |
+| `Mod + O` | Переключить режим обзора (Overview) |
+| `Mod + V` | Переключить окно в плавающий / плиточный режим |
+| `Mod + Left / Right` или `Mod + H / L` | Фокус на соседнюю колонку слева / справа |
+| `Mod + Up / Down` или `Mod + J / K` | Фокус на окно выше / ниже внутри колонки |
+| `Mod + Shift + Left / Right` или `H / L` | Переместить колонку влево / вправо |
+| `Mod + Shift + Up / Down` или `J / K` | Переместить окно вверх / вниз внутри колонки |
+| `Mod + Home / End` | Переход к первой / последней колонке |
+| `Mod + 1..9` | Переключение рабочих пространств |
+| `Mod + Shift + 1..9` | Перемещение колонки на рабочее пространство |
+| `Mod + R` | Режим изменения размера окна (Resize) |
+| `Mod + F` | Полноэкранный режим (Fullscreen) |
+| `Mod + Shift + E` | Завершить сессию Niri |
 
-### (つ◉益◉)つ Управление окнами и колонками (Niri / Hyprland)
-| Комбинация | Действие |
-| :--- | :--- |
-| `Super + Q` | Закрыть активное окно |
-| `Super + Shift + E` | Выйти из графической сессии |
-| `Super + F` | Развернуть колонку во всю ширину (Maximized) |
-| `Super + Shift + F` | Полноэкранный режим (Fullscreen) |
-| `Super + R` | Переключить ширину колонки (33% ➔ 50% ➔ 66%) / Сплит |
-| `Super + C` | Отцентрировать текущую колонку |
-| `Super + -` | Затянуть соседнее окно в текущую колонку (Вертикальный стек) |
-| `Super + =` | Вытолкнуть окно из колонки в отдельную |
+### Утилиты и мультимедиа
 
-### (｀・ω・´) Навигация и перемещение
-| Комбинация | Действие |
+| Сочетание | Действие |
 | :--- | :--- |
-| `Super + ← / →` *(или `H / L`)* | Переход между колонками / окнами (влево / вправо) |
-| `Super + Shift + ← / →` | Переместить колонку / окно влево / вправо |
-| `Super + Alt + ↓ / ↑` | Переход между окнами внутри одной колонки (вверх / вниз) |
-| `Super + Alt + Shift + ↓ / ↑` | Поменять окна местами внутри одной колонки |
+| `Mod + L` | Блокировка экрана (Hyprlock с безопасным сбросом раскладки) |
+| `Mod + Shift + V` | История буфера обмена (cliphist + Fuzzel) |
+| `Mod + A` | Установить случайные обои (`wall-random`) |
+| `Mod + W` | Меню выбора обоев (`wall-picker`) |
+| `Print` | Интерактивный скриншот области |
+| `Mod + Print` | Скриншот всего экрана |
+| `Mod + N` | Восстановить последнее уведомление |
+| `Mod + Shift + N` | Очистить все уведомления на экране |
+| `XF86AudioRaiseVolume` | Увеличить громкость на 5% |
+| `XF86AudioLowerVolume` | Уменьшить громкость на 5% |
+| `XF86AudioMute` | Заглушить / включить звук |
 
-### (✿◠‿◠) Рабочие столы (Workspaces)
-| Комбинация | Действие |
-| :--- | :--- |
-| `Super + ↓ / ↑` *(или `PgUp / PgDn`)* | Переход на рабочий стол ниже / выше |
-| `Super + Shift + ↓ / ↑` | Перенести текущую колонку на рабочий стол ниже / выше |
-| `Super + 1..9` | Прямой переход на рабочий стол 1..9 |
-| `Super + Shift + 1..9` | Перенести колонку / окно на рабочий стол 1..9 |
+---
 
-### ( ͡° ͜ʖ ͡°) Скриншоты и Мультимедиа
-| Комбинация | Действие |
-| :--- | :--- |
-| `Ctrl + Shift + S` *(или `code:39`)* | Интерактивный скриншот выделенной области в файл и буфер |
-| `Ctrl + Print` | Скриншот всего экрана |
-| `Alt + Print` | Скриншот активного окна |
-| `Media Keys` | Регулировка громкости (`wpctl`) и яркости (`brightnessctl`) |
+<a id="scripts"></a>
+## 🛠️ Скрипты и окружение
+
+Все пользовательские скрипты находятся в `.local/bin` и автоматически доступны в `$PATH`:
+
+* `wall-random` — плавная смена обоев на базе `awww` с анимацией перелистывания (144 fps).
+* `wall-restore` — восстановление последних выбранных обоев при старте сессии.
+* `wall-picker` — графическое меню выбора фонового рисунка через Fuzzel.
+* `screenshot` — скриншоты выделенной области или полного экрана через `grim` и `slurp`.
+* `powermenu` — меню управления питанием (сон, перезагрузка, выключение).
 
 ---
 
 <a id="install"></a>
-## (╯°□°)╯ Быстрая установка на чистую Arch-систему
+## (╯°□°)╯ Быстрая установка
 
-> Сборка рассчитана на Arch Linux x86_64 с AMD GPU.
-> На NVIDIA, Intel или других конфигурациях могут потребоваться правки драйверов, VRR, tearing и compositor-настроек.
-
-### Шаг 1. Базовые зависимости и Oh My Zsh
+### Шаг 1. Клонирование репозитория
 
 ```bash
-sudo pacman -S --needed base-devel git zsh curl
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+git clone -b niri https://github.com/kudryashalex367-create/dotfiles.git ~/dotfiles
 ```
 
-### Шаг 2. Тема Powerlevel10k и плагины Zsh
+### Шаг 2. Подготовка менеджера пакетов и базы Arch Linux
 
-```bash
-git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+Убедитесь, что репозиторий `[multilib]` активирован в `/etc/pacman.conf`:
+
+```ini
+[multilib]
+Include = /etc/pacman.d/mirrorlist
 ```
 
-### Шаг 3. Загрузка базы данных Dotfiles (Git Bare) и обоев
+Обновите систему и установите помощник AUR (`yay` или `paru`):
 
 ```bash
-git clone --bare https://github.com/kudryashalex367-create/dotfiles.git $HOME/.cfg
-git clone https://github.com/kudryashalex367-create/wallpapers.git ~/wallpapers
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+sudo pacman -Syu --needed base-devel git
 ```
 
-> (ノಠ益ಠ)ノ **Внимание:** установка перезаписывает существующие dotfiles в `$HOME`.
-> Сделай резервную копию важных конфигураций перед продолжением:
->
-> ```bash
-> mkdir -p ~/dotfiles-backup
-> cp -a ~/.zshrc ~/.p10k.zsh ~/.config ~/dotfiles-backup/ 2>/dev/null
-> ```
-
-### Шаг 4. Распаковка конфигураций на диск
+### Шаг 3. Установка пакетов
 
 ```bash
-mkdir -p ~/dotfiles-backup
+cd ~/dotfiles
+# Официальные пакеты репозиториев
+sudo pacman -S --needed - < .config/pkglist_repo.txt
 
-for f in ~/.zshrc ~/.bashrc ~/.p10k.zsh ~/README.md; do
-  [ -e "$f" ] && mv "$f" ~/dotfiles-backup/
-done
+# Пакеты из пользовательского репозитория AUR
+yay -S --needed - < .config/pkglist_aur.txt
+```
 
-config checkout -f
-config config --local status.showUntrackedFiles no
+### Шаг 4. Размещение конфигурационных файлов
+
+В ветке `niri` файлы организованы с прямой структурой `.config/` и `.local/`:
+
+```bash
+# Создание базовых каталогов
+mkdir -p ~/.config ~/.local/bin
+
+# Копирование / симлинковка конфигураций
+cp -rs ~/dotfiles/.config/* ~/.config/
+cp -rs ~/dotfiles/.local/bin/* ~/.local/bin/
+chmod +x ~/.local/bin/*
+
+# Конфигурация шелла
+ln -sf ~/dotfiles/.zshrc ~/.zshrc
+ln -sf ~/dotfiles/.p10k.zsh ~/.p10k.zsh
+```
+
+### Шаг 5. Настройка темы курсора и шрифтов
+
+```bash
+gsettings set org.gnome.desktop.interface cursor-theme "Bibata-Modern-Ice"
+gsettings set org.gnome.desktop.interface cursor-size 24
+fc-cache -fv
+```
+
+### Шаг 6. Запуск сессии
+
+Запустите Niri через системный дисплейный менеджер (GDM, SDDM, Ly) или напрямую из TTY:
+
+```bash
+niri-session
 ```
 
 ---
 
 <a id="packages"></a>
-## (づ｡◕‿‿◕｡)づ 2. Восстановление пакетов
+## (ง •̀_•́)ง Восстановление пакетов
 
-### Шаг 1. Официальные пакеты Arch Linux
+Списки пакетов поддерживаются в актуальном состоянии:
 
-```bash
-sudo pacman -S --needed - < ~/.config/pkglist_repo.txt
-```
+* `.config/pkglist_repo.txt` — нативные пакеты официальных репозиториев Arch Linux.
+* `.config/pkglist_aur.txt` — пакеты из AUR.
 
-### Шаг 2. AUR-пакеты через `yay`
-
-```bash
-git clone https://aur.archlinux.org/yay.git /tmp/yay && cd /tmp/yay && makepkg -si --noconfirm && cd ~
-yay -S --needed - < ~/.config/pkglist_aur.txt
-```
-
----
-
-## (ᵔᴥᵔ) 3. Финальный запуск
+Экспорт текущего набора пакетов системы (при необходимости обновления):
 
 ```bash
-chmod +x ~/.local/bin/* 2>/dev/null || true
-fc-cache -fv
-chsh -s /usr/bin/zsh
-exec zsh
+pacman -Qqe | grep -vx "$(pacman -Qqm)" > ~/dotfiles/.config/pkglist_repo.txt
+pacman -Qqm > ~/dotfiles/.config/pkglist_aur.txt
 ```
 
 ---
 
 <a id="manage"></a>
-## (≧▽≦) 4. Управление конфигурациями
+## ( •̀ ω •́ )✧ Управление конфигурацией
 
-Управление репозиторием осуществляется через встроенные алиасы и функции в `.zshrc`:
+Для синхронизации изменений с удалённым репозиторием используйте стандартный рабочий процесс Git:
 
-* `config status` — проверить статус измененных файлов.
-* `config diff` — просмотреть точные побайтовые изменения перед коммитом.
-* `cpush "сообщение"` — автоматически добавить отслеживаемые файлы, закоммитить и запушить в `main`.
-* `cpull` — подтянуть свежие изменения с GitHub без лишнего ребейза.
-* `aider-dotfiles <файлы>` — запустить терминального AI-ассистента для точечной правки конфигов.
-* `matugen image <путь к обоям>` — вручную пересобрать цветовую схему из любой картинки.
-
-  ## (︶︹︶) Лицензия
-
-Проект распространяется по лицензии [GNU GPL v3.0](./LICENSE).
+```bash
+cd ~/dotfiles
+git status
+git add .config/niri/config.kdl
+git commit -m "Актуализация параметров раскладки Niri"
+git push origin niri
+```
