@@ -1,9 +1,8 @@
-# ʕ•ᴥ•ʔ Arch Linux Dotfiles by zev1ce — Hyprland, Mango & Material You
+# ʕ•ᴥ•ʔ Arch Linux Dotfiles by zev1ce — Ветка Hyprland (Модульный Lua-конфиг)
 
 <p align="center">
   <img src="https://img.shields.io/badge/OS-Arch_Linux-a78bfa?style=flat-square&logo=archlinux&logoColor=white&labelColor=15111f" alt="Arch Linux">
   <img src="https://img.shields.io/badge/WM-Hyprland-a78bfa?style=flat-square&labelColor=15111f" alt="Hyprland">
-  <img src="https://img.shields.io/badge/WM-Mango-a78bfa?style=flat-square&labelColor=15111f" alt="Mango">
   <img src="https://img.shields.io/badge/Packages-GNU_Stow-c4b5fd?style=flat-square&labelColor=15111f" alt="GNU Stow">
   <a href="./LICENSE">
     <img src="https://img.shields.io/badge/License-GPL_v3-c4b5fd?style=flat-square&labelColor=15111f" alt="GNU GPL v3">
@@ -12,9 +11,11 @@
 
 > *"I use Arch, btw." — минималистичная 144Hz рабочая станция с динамической темой Material You.*
 
-Репозиторий конфигов для Arch Linux: основная сессия **Hyprland** с модульным Lua-конфигом, вторая сессия **Mango (mangowm)** с тем же набором биндов и оформления, плюс установленный **GNOME** как запасной вариант. Цвета генерируются из обоев через **matugen** (Material You), fallback — палитра **Obsidian Violet & Soft Lavender**.
+Ветка [`hyprland`](https://github.com/kudryashalex367-create/dotfiles/tree/hyprland) содержит полную конфигурацию сессии **Hyprland** с нативным модульным Lua-конфигом (`hyprland.lua`), анимациями на физических пружинах, игровым Direct Scanout / Tearing и сквозной динамической темой **Material You** через **matugen 4.x** (fallback — палитра **Obsidian Violet & Soft Lavender**).
 
-Разворачивание — через **GNU Stow**: каждый каталог верхнего уровня является отдельным пакетом и линкуется в `$HOME`. Агентские правила лежат в [`AGENTS.md`](./AGENTS.md).
+> (o_o) **Другие ветки:** основная ветка с сессией **Mango** находится в [`main`](https://github.com/kudryashalex367-create/dotfiles/tree/main), а сессия **Niri** — в ветке [`niri`](https://github.com/kudryashalex367-create/dotfiles/tree/niri).
+
+Разворачивание — через **GNU Stow**: каждый каталог верхнего уровня является отдельным пакетом и линкуется в `$HOME`. Правила агентов лежат в [`AGENTS.md`](./AGENTS.md).
 
 ---
 
@@ -23,10 +24,9 @@
 - [Характеристики системы](#specs)
 - [Ключевые особенности](#features)
 - [Структура репозитория](#structure)
-- [Скриншоты](#screenshots)
 - [Горячие клавиши](#hotkeys)
 - [Скрипты и автоматизация](#scripts)
-- [Шелл, алиасы и медиа-пайплайн](#shell)
+- [Шелл и медиа-пайплайн](#shell)
 - [Быстрая установка](#install)
 - [Восстановление пакетов](#packages)
 - [Темы и сессии](#themes)
@@ -41,370 +41,127 @@
 * ʕ•ᴥ•ʔ **OS:** Arch Linux (x86_64)
 * (ง'̀-'́)ง **Kernel:** `linux-zen` (с BORE-планировщиком и оптимизацией задержек)
 * (๑•̀ㅂ•́)و **CPU:** AMD Ryzen 5 5600H (6C/12T, Zen 3, до 4.28 GHz, 45W TDP)
-* (☞ﾟヮﾟ)☞ **GPU:** AMD Radeon Vega 7 / Cezanne (открытый драйвер `amdgpu` + Vulkan RADV + VA-API `radeonsi`)
-* (≧▽≦) **Display:** `DP-2` — 1920x1080 @ 144 Hz (с автоматическим fallback-каскадом `144 → 120 → 60 → preferred`)
-* (｡◕‿◕｡) **WM / Session:** Hyprland (Lua-конфиг) — основная; Mango — вторая; GNOME (GDM) — запасная
+* (☞ﾟヮﾟ)☞ **GPU:** AMD Radeon Vega 7 / Cezanne (драйвер `amdgpu` + Vulkan RADV + VA-API `radeonsi`)
+* (≧▽≦) **Display:** `DP-2` — 1920x1080 @ 144 Hz (с fallback-каскадом `144 → 120 → 60 → preferred`)
+* (｡◕‿◕｡) **WM / Session:** Hyprland (нативный модульный Lua-конфиг)
 * (✿◠‿◠) **Browser:** Firefox (Wayland-нативный режим, uBlock Origin)
-* ( ͡° ͜ʖ ͡°) **Terminal:** Kitty (начальный размер 960x600, OpenType-глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
+* ( ͡° ͜ʖ ͡°) **Terminal:** Kitty (OpenType-глифы `+ss01 +ss02 +cv01`, Powerline-табы, шлейф курсора)
 * (づ｡◕‿‿◕｡)づ **Shell:** Zsh + Oh My Zsh + Starship
 * ヽ(´▽`)/ **UI Suite:** Fuzzel (Overlay, скругление 16px), Mako, Hyprlock + Hypridle, awww (144Hz Wipe Engine)
-* (⌐■_■) **Theming:** `matugen` 4.x — генерация палитры Material You из обоев для Hyprland, Mango, Kitty, Fuzzel, Mako, Hyprlock, GTK 3/4 и Telegram (fallback — Obsidian Violet)
+* (⌐■_■) **Theming:** `matugen` 4.x — генерация палитры Material You из обоев для Hyprland, Kitty, Fuzzel, Mako, Hyprlock, GTK 3/4 и Telegram
 * (｀・ω・´) **Cursor:** Bibata-Modern-Ice (24px, сквозная синхронизация в Hyprcursor, XCursor и GSettings)
 * (ง •̀_•́)ง **Bootloader:** systemd-boot
 
 ---
 
 <a id="features"></a>
-## ٩(◕‿◕)۶ Ключевые особенности сборки
+## ٩(◕‿◕)۶ Ключевые особенности Hyprland-сессии
 
-* (づ｡◕‿‿◕｡)づ **Две Wayland-сессии.** Hyprland — рабочая, Mango — альтернатива с той же раскладкой биндов, прозрачностью, тенью и блюром. Обе используют общие скрипты из `~/.local/bin` и общую палитру matugen.
-* (•̀ᴗ•́)و **Модульный Lua-конфиг Hyprland.** Точка входа `hyprland.lua` через `dofile` загружает 8 независимых модулей: `theme`, `monitors`, `env`, `input`, `animations`, `autostart`, `binds`, `rules`.
-* (◕‿◕) **Один конфиг Mango.** `~/.config/mango/config.conf` плюс `autostart.sh` и `source_optional` для сгенерированных `colors.conf` и `proxy.conf`.
-* (ง •̀_•́)ง **Чистая обработка микрофона (PipeWire).** Виртуальный источник `source.clean_mic` на уровне PipeWire filter-chain без тяжелых GUI: High-Pass 80 Гц (срез вибраций стола), Peaking EQ 3500 Гц (+1.5 dB разборчивости речи), мягкий LADSPA-компрессор `sc4m` и прозрачный `fast_lookahead_limiter` (-1.5 dB защита от клиппинга).
-* (づ｡◕‿‿◕｡)づ **Динамическая палитра Material You (`matugen`).** Смена обоев автоматически перекрашивает рамки и тени окон Hyprland, Mango, терминал Kitty, лаунчер Fuzzel, уведомления Mako, экран блокировки Hyprlock, темы GTK 3/4 (Nautilus и системные диалоги) и генерирует тёмную тему Telegram Desktop со сплошным фоном чата и контрастным текстом. Если файл палитры отсутствует, система откатывается к тёмно-фиолетовой схеме **Obsidian Violet** (`#0b0912`, `#a78bfa`, `#c4b5fd`).
-* (︶︹︶) **Безбаровый стол.** 100% площади экрана отдано контенту без панелей задач. Воркспейсы `1–5` закреплены как постоянные и не схлопываются при пустоте, навигация замкнута в кольцо.
-* (o゜▽゜)o☆ **Выверенный объём и фокус.** Окна обрамлены компактными мягкими тенями (`range = 12`, `render_power = 2`). Неактивные окна приглушаются на **5.5%** (`dim_strength = 0.055`) и получают лёгкую прозрачность `inactive_opacity = 0.975` (у Kitty — отдельное правило `opacity = 0.97 0.95`).
-* ヽ(´▽`)/ **Физическая пружина в анимациях.** Перемещение окон, смена воркспейсов и выезд scratchpad работают на кастомной пружине `smoothSpring` без лишних колебаний, а открытие окон использует кривую `popIn` с живым микро-отскоком.
-* (⌐■_■) **Чистый аппаратный блюр.** Размытие применяется только к прозрачным оверлеям (`fuzzel`, `mako`, `hyprlock`) и не нагружает GPU под непрозрачными окнами.
-* (ノ°益°)ノ **Игровой Tearing и Direct Scanout.** `allow_tearing = true` + `render:direct_scanout = true` + правило `games-tearing` активирует мгновенный вывод кадров для `cs2`, `horizon` и всех игр Steam (`steam_app_*`), сохраняя плавность рабочего стола.
-* ಠ_ಠ **Умная блокировка (`hypridle` + `hyprlock`).** Через **150 с** бездействия гаснет экран (`dpms off`), через **300 с** запускается `hyprlock` с двухэтажными часами, индикатором раскладки и текущим треком.
-* (•̀ᴗ•́)و **Единый переключатель прокси (`Super + Shift + P`).** Скрипт `proxy` синхронно включает HTTP/SOCKS5-прокси в окружении обоих композиторов, GSettings и `environment.d`, состояние переживает перезагрузку.
-* (ง'̀-'́)ง **Агентский регламент.** `AGENTS.md` задаёт границы для opencode/Antigravity: stow-правки только внутри `~/dotfiles`, обязательные проверки, ритуал коммита с подтверждением, запрет секретов.
+* (•̀ᴗ•́)و **Модульный Lua-конфиг.** Точка входа `hyprland.lua` загружает 8 модулей: `theme.lua`, `monitors.lua`, `env.lua`, `input.lua`, `animations.lua`, `autostart.lua`, `binds.lua`, `rules.lua`.
+* (づ｡◕‿‿◕｡)づ **Динамическая палитра Material You (`matugen 4.x`).** Смена обоев автоматически обновляет границы окон Hyprland, Mako, Kitty, Fuzzel, Hyprlock, GTK 3/4 и тему Telegram Desktop.
+* ヽ(´▽`)/ **Физическая пружина в анимациях.** Перемещение окон, смена воркспейсов и выезд scratchpad работают на кастомной пружине `smoothSpring` без лишних колебаний, а открытие окон использует кривую `popIn` с микро-отскоком.
+* (ノ°益°)но **Игровой Tearing и Direct Scanout.** Активация `allow_tearing = true` + `render:direct_scanout = true` для Steam-игр и киберспорта.
+* ಠ_ಠ **Умная блокировка (`hypridle` + `hyprlock`).** 150 с бездействия → гашение экрана (`dpms off`), 300 с → экран блокировки `hyprlock` с двухэтажными часами и текущим треком.
+* (^-^)b **PipeWire-пайплайн.** Аппаратная обработка микрофона `source.clean_mic` и автообъединение аудиоустройств `audio-combine.service`.
 
 ---
 
 <a id="structure"></a>
-## (｀・ω・´) Структура репозитория
+## (o_o) Структура репозитория
 
-Каждый каталог — пакет Stow; путь внутри пакета повторяет путь в `$HOME`.
-
-```text
-~/dotfiles
-├── install.sh                     # симлинкует все пакеты через stow --no-folding -R
-├── AGENTS.md                      # правила для AI-агента
-├── ai/.config/opencode/           # конфиг opencode (провайдер AITunnel)
-├── bin/.local/bin/                # пользовательские скрипты
-│   ├── audio-combine              # объединяет устройства в один sink
-│   ├── audio-menu                 # выбор аудиовыхода и микрофона через Fuzzel
-│   ├── bluetooth-menu             # управление Bluetooth через Fuzzel
-│   ├── hub                        # единый центр управления (дашборд со всеми меню)
-│   ├── keybinds                   # живой парсер binds.lua → шпаргалка в Fuzzel
-│   ├── media-menu                 # управление музыкой и плеерами через Fuzzel
-│   ├── mic-toggle                 # фоновая запись микрофона в Opus + копирование в буфер
-│   ├── nowplaying                 # текущий трек из playerctl для hyprlock
-│   ├── powermenu                  # меню выключения, сна и блокировки через Fuzzel
-│   ├── proxy                      # менеджер прокси (on/off/toggle/status/restore)
-│   ├── screenshot                 # скриншоты (area/window/full) в файл и буфер
-│   ├── telegram-theme-pack        # упаковка Material You темы Telegram (.tdesktop-theme)
-│   ├── wall-colors                # пайплайн: matugen + hot-reload (mako, kitty, hyprland, mango)
-│   ├── wall-picker                # выбор обоев через Fuzzel + awww + синхронизация
-│   ├── wall-random                # случайные обои из ~/wallpapers в 1 клик
-│   ├── wall-restore               # восстановление палитры последних обоев при старте
-│   └── wifi-menu                  # выбор и подключение к Wi-Fi через Fuzzel
-├── fastfetch/.config/fastfetch/   # инфо-блок
-├── fuzzel/.config/fuzzel/         # лаунчер (генерируется matugen)
-├── hypr/.config/hypr/
-│   ├── hyprland.lua               # загрузчик модулей (dofile)
-│   ├── theme.lua                  # палитра, гапсы, тени (range 12), dim (5.5%), blur, dwindle
-│   ├── monitors.lua               # монитор DP-2 (144/120/60 Гц) + дефолтный fallback + persistent workspaces 1–5
-│   ├── env.lua                    # курсор Bibata, Wayland-флаги, AMD VA-API (radeonsi)
-│   ├── input.lua                  # клавиатура, мышь, DPMS-пробуждение, direct_scanout
-│   ├── animations.lua             # пружина smoothSpring и кривые Безье (popIn)
-│   ├── autostart.lua              # демоны, cliphist, восстановление палитры и прокси
-│   ├── binds.lua                  # все хоткеи, таб-группы, ресайз, прокси, скриншоты
-│   ├── rules.lua                  # правила окон (игры, диалоги, PiP, kitty) и слоёв
-│   ├── colors.lua                 # динамические цвета рамок и теней (генерируется matugen)
-│   ├── hypridle.conf              # таймауты экрана (150 с DPMS off, 300 с hyprlock)
-│   └── hyprlock.conf              # экран блокировки (генерируется matugen)
-├── kitty/.config/kitty/           # терминал
-├── mako/.config/mako/             # уведомления (генерируется matugen)
-├── mango/.config/                 # Mango: config.conf, autostart.sh, порталы
-├── matugen/.config/matugen/       # config.toml и шаблоны для kitty, mako, hypr, fuzzel, mango
-├── pipewire/.config/pipewire/     # цепочка фильтров микрофона (99-mic-eq.conf)
-├── pkglists/.config/              # pkglist_repo.txt / pkglist_aur.txt
-├── starship/.config/starship.toml # промпт Starship (генерируется matugen)
-├── .config/systemd/user/          # unit для audio-combine
-└── zsh/                           # .zshrc
 ```
-
-Сгенерированные matugen файлы — `hypr/colors.lua`, `hyprlock.conf`, `fuzzel.ini`, `mako/config`, `mango/colors.conf`, `starship.toml` — руками не правятся: меняйте шаблоны в `matugen/`.
-
----
-
-<a id="screenshots"></a>
-## (☞ﾟヮﾟ)☞ Скриншоты
-
-### (ง •̀_•́)ง Kitty (Динамическая тема)
-
-<img width="1920" height="1080" alt="kitty_showcase" src="https://github.com/user-attachments/assets/3e5fdd3c-cf52-422c-809b-63b5e370efde" />
-
-### ヽ(´▽`)/ Меню приложений Fuzzel
-
-<img width="1920" height="1080" alt="fuzzel_showcase" src="https://github.com/user-attachments/assets/4631dbc7-7d97-4210-92fb-0f50617a6963" />
-
-### ಠ_ಠ Двухэтажный экран блокировки (Hyprlock)
-
-<img width="1920" height="1080" alt="hyprlock_showcase" src="https://github.com/user-attachments/assets/9035e268-c086-4862-8dbb-2e5b9dc99303" />
-
-### (๑•̀ㅂ•́)و Всплывающая шпаргалка по хоткеям (Fuzzel + keybinds)
-
-<img width="1920" height="1080" alt="keybinds_showcase" src="https://github.com/user-attachments/assets/aac3ccf6-1437-42ee-9e94-db56de700452" />
-
-### (•̀ᴗ•́)و Центр управления Quick Settings (Fuzzel + Hub)
-
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fe4160f9-bee6-489e-979d-09d33816980d" />
-
-### ( ˘▽˘)っ Тёмная тема Telegram Desktop (Material You)
-
-<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/a3cf759e-d49a-4c89-b0ca-c9e16c654507" />
+~/dotfiles/
+├── hypr/
+│   └── .config/hypr/
+│       ├── hyprland.lua        # Точка входа композитора
+│       ├── theme.lua           # Внешний вид, рамки, тени, блюр
+│       ├── monitors.lua        # Настройки дисплеев и частоты 144Hz
+│       ├── env.lua             # Переменные окружения Wayland / Qt / GTK
+│       ├── input.lua           # Раскладка клавиатуры, чувствительность мыши
+│       ├── animations.lua      # Кривые и пружинные анимации
+│       ├── autostart.lua       # Демоны, утилиты и порталы
+│       ├── binds.lua           # Горячие клавиши и действия
+│       ├── rules.lua           # Правила плавающих окон и исключений
+│       ├── hypridle.conf       # Демон тайм-аута экрана и сна
+│       └── hyprlock.conf       # Экран блокировки Material You
+├── bin/.local/bin/             # Пользовательские скрипты управления
+├── kitty/                      # Конфиг Kitty и стили
+├── fuzzel/                     # Лаунчер приложений и оверлеи
+├── mako/                       # Уведомления Mako
+├── matugen/                    # Шаблоны Material You палитры
+├── pipewire/                   # Фильтры и маршрутизация звука
+├── pkglists/                   # Списки пакетов репозитория и AUR
+├── starship/                   # Промпт Starship
+├── zsh/                        # Конфиг оболочки zsh
+├── install.sh                  # Развёртывание через GNU Stow
+└── AGENTS.md                   # Правила для AI-агентов
+```
 
 ---
 
 <a id="hotkeys"></a>
-## (ง'̀-'́)ง Горячие клавиши
+## (•̀ᴗ•́)و Горячие клавиши (Hyprland)
 
-Клавиша `Super` (`Mod`) — клавиша Windows. Полный актуальный список всегда доступен по нажатию `Super + /`. Бинды Mango повторяют Hyprland, кроме отмеченного ниже.
-
-### (ノ°益°)ノ Программы, утилиты и сессия
-| Комбинация | Действие |
+| Хоткей | Действие |
 | :--- | :--- |
-| `Super + Enter` | Открыть терминал (`kitty`) |
-| `Super + T` | Мессенджер Telegram (`Telegram`) |
-| `Super + D` | Меню запуска приложений (`fuzzel`) |
-| `Super + E` | Файловый менеджер (`nautilus`) |
-| `Super + A` | **Случайные обои с 144Hz wipe-шторкой (`wall-random`) + перегенерация палитры `matugen`** |
-| `Super + W` | Меню выбора обоев из `~/wallpapers` (`wall-picker`) + перегенерация палитры `matugen` |
-| `Super + Shift + V` | История буфера обмена (`cliphist` + `fuzzel --dmenu` + `wl-copy`) |
-| `Super + N` | Вернуть последнее скрытое уведомление (`makoctl restore`) |
-| `Super + Shift + N` | Закрыть все активные уведомления (`makoctl dismiss -a`) |
-| `Super + Shift + P` | **Переключить системный прокси Вкл / Выкл (`proxy toggle`)** |
-| `Super + Shift + R` | Перезагрузить конфиг (`hyprctl reload` / `mmsg dispatch reload_config`) |
-| `Super + /` *(или `code:61`)* | Всплывающая шпаргалка по хоткеям (работает на US и RU раскладках) |
-| `Super + Space` | Переключение раскладки клавиатуры (US ⇄ RU) |
-| `Super + X` | **Центр управления (`hub`: единый дашборд со всеми меню)** |
-| `Super + Escape` | **Меню питания (`powermenu`: выключение, перезагрузка, сон, лок, выход)** |
-| `Super + M` | **Управление музыкой и плеерами через Fuzzel (`media-menu`)** |
-| `Super + Shift + M` | **Фоновая запись микрофона (`mic-toggle`: старт/стоп в Opus + копирование в буфер)** |
-| `Super + Shift + A` | **Выбор аудиовыхода и микрофона (`audio-menu`)** |
-| `Super + Shift + W` | **Выбор и подключение к Wi-Fi (`wifi-menu`)** |
-| `Super + B` | **Управление Bluetooth устройствами (`bluetooth-menu`)** |
-| `Super + L` | Заблокировать экран (`hyprlock` с автосбросом раскладки на US) |
-| `Super + Shift + Q` | Выйти из сессии |
-
-### (つ◉益◉)つ Управление окнами и раскладкой
-| Комбинация | Действие |
-| :--- | :--- |
+| `Super + Return` | Терминал Kitty |
+| `Super + D` | Меню приложений Fuzzel |
+| `Super + X` | Центр управления Hub |
 | `Super + Q` | Закрыть активное окно |
-| `Super + V` | Плавающее / плиточное |
-| `Super + F` | Развернуть окно с сохранением отступов (`maximized`) |
-| `Super + Shift + F` | Настоящий полноэкранный режим (`fullscreen`) |
-| `Super + C` | Центрировать плавающее окно |
-| `Super + R` | Повернуть направление сплита (`togglesplit` / `dwindle_toggle_current_split`) |
-| `Super + P` | Pseudo-tile (только Hyprland) |
-
-### (｀・ω・´) Фокус, перемещение, обмен и ресайз окон
-| Комбинация | Действие |
-| :--- | :--- |
-| `Super + ←/→/↑/↓` | Переместить фокус на соседнее окно по направлению |
-| `Super + Shift + ←/→/↑/↓` | Переместить активное окно в указанном направлении |
-| `Super + Ctrl + Shift + ←/→/↑/↓` | Поменять активное окно местами с соседним (`swapwindow`) |
-| `Super + Ctrl + ←/→/↑/↓` | Изменить размер активного окна с шагом `40px` |
-| `Super + Alt + Ctrl + ←/→/↑/↓` | Точный попиксельный ресайз плавающего окна |
-| `Super + ЛКМ` / `Super + ПКМ` | Перетаскивание и изменение размера окна мышью |
-
-### (｡◕‿◕｡) Группы окон (табы)
-| Комбинация | Действие |
-| :--- | :--- |
-| `Super + G` | Таб-группа (Hyprland: `togglegroup`, Mango: `groupjoin left`) |
-| `Super + Alt + ←/→` | Переключиться на соседнюю вкладку группы |
-| `Super + Alt + Shift + ←/→/↑/↓` | Включить активное окно в соседнюю группу |
-| `Super + Alt + L` | Hyprland: lockgroups; Mango: показать/скрыть groupbar |
-
-### (✿◠‿◠) Рабочие столы и Scratchpad
-| Комбинация | Действие |
-| :--- | :--- |
-| `Super + 1..9` | Перейти на рабочий стол `1..9` (столы `1–5` постоянные) |
-| `Super + Shift + 1..9` | Перенести активное окно на рабочий стол `1..9` |
-| `Super + PgUp / PgDn` | Предыдущий / следующий рабочий стол |
-| `Super + Колесо вверх/вниз` | Быстрая прокрутка рабочих столов колесом мыши |
-| `Super + S` | Показать / скрыть `special:scratchpad` поверх стола |
-| `Super + Shift + S` | Тихо отправить активное окно в `special:scratchpad` |
-
-### ( ͡° ͜ʖ ͡°) Скриншоты и мультимедиа
-| Комбинация | Действие |
-| :--- | :--- |
-| `Ctrl + Shift + S` *(или `code:39`)* | Скриншот выбранной области в файл и буфер обмена (US/RU) |
-| `Ctrl + Print` | Скриншот всего экрана в файл и буфер обмена |
+| `Super + V` | Переключить плавающий режим (Float) |
+| `Super + F` | Развернуть окно на весь экран |
+| `Super + L` | Заблокировать экран (Hyprlock) |
+| `Super + Escape` | Меню питания Powermenu |
+| `Super + A` / `Super + W` | Случайные обои / Выбор обоев из списка |
+| `Super + R` | Переключить разделение тайлов (Dwindle Split) |
+| `Super + G` | Создать / войти в группу окон (вкладки) |
+| `Super + Shift + P` | Включение / выключение системного прокси |
+| `Super + Shift + R` | Перезагрузить Hyprland (`hyprctl reload`) |
+| `Super + 1..9` | Переключить воркспейс 1..9 |
+| `Super + Shift + 1..9` | Переместить окно на воркспейс 1..9 |
+| `Ctrl + Shift + S` | Скриншот выделенной области |
+| `Ctrl + Print` | Скриншот всего экрана |
 | `Alt + Print` | Скриншот активного окна |
-| `XF86AudioRaiseVolume / LowerVolume` | Громкость `+5%` / `-5%` через `wpctl` |
-| `XF86AudioMute / MicMute` | Mute звука / микрофона через `wpctl` |
-| `XF86AudioPlay / Next / Prev` | Управление медиаплеером через `playerctl` |
-
----
-
-<a id="scripts"></a>
-## (ง'̀-'́)ง Скрипты и автоматизация (`~/.local/bin`)
-
-* **`wall-colors [--colors-only] <img>`** — ядро динамической темы. Сохраняет путь к обоям в `~/.cache/wall-colors/last`, генерирует тёмную палитру Material You через `matugen` и на лету обновляет цвета в `mako`, `kitty` (`SIGUSR1`), `fuzzel`, `hyprlock`, `Hyprland` (`hyprctl reload`), `Mango` (`mmsg dispatch reload_config`), `GTK 3/4` (CSS переменные) и упаковывает тему Telegram.
-* **`telegram-theme-pack [--open]`** — собирает валидный `.tdesktop-theme` архив с тёмной палитрой Material You и сплошным фоном чата цвета `windowBg` (без растягивания обоев). Входящие и исходящие пузыри тёмные (в стиле Catppuccin Mocha), весь текст сообщений — высококонтрастный белый (`#ffffff`), ссылки и галочки прочтения — акцентные. Флаг `--open` открывает окно применения темы в Telegram (также доступно через `hub` по `Super + X`).
-* **`wall-restore`** — запускается при старте сессии, восстанавливает палитру последних обоев из кэша.
-* **`wall-random` / `wall-picker`** — выбор случайной картинки или интерактивный поиск через `fuzzel -d`. Смена идёт через `awww` на 144 Гц с эффектом `wipe`, параллельно обновляется фон в GSettings и вызывается `wall-colors`.
-* **`proxy {on|off|toggle|status|restore}`** — централизованное управление прокси (`HTTP 127.0.0.1:10809`, `SOCKS5 127.0.0.1:10808`). Синхронно прописывает настройки в переменные окружения Hyprland, Mango (`proxy.conf` + reload), GSettings и `~/.config/environment.d/proxy.conf`. Состояние сохраняется в `~/.local/state/proxy`.
-* **`keybinds`** — читает и парсит `~/.config/hypr/binds.lua` при каждом вызове, нормализует названия клавиш и выводит шпаргалку в `fuzzel -d`. Никогда не отстаёт от реального конфига.
-* **`screenshot {area|window|full}`** — захват экрана через `grim`, `slurp` и `jq` с одновременным сохранением PNG, копированием в `wl-copy` и уведомлением с миниатюрой.
-* **`mic-toggle`** — фоновая запись микрофона по хоткею `Super + Shift + M`. Первый вызов запускает `pw-record` с источника `source.clean_mic` в `$XDG_RUNTIME_DIR`, второй вызов останавливает запись, пережимает в `.opus` (48 kbps VBR), складывает в `~/Recordings` и через `wl-copy -t text/uri-list` копирует готовый файл в буфер обмена для быстрой отправки в браузер или мессенджер.
-* **`nowplaying`** — информер для `hyprlock`: берёт метаданные из `playerctl`, обрезает строку до 50 символов и выводит `♪ Исполнитель — Название` (молчит, если ничего не играет).
-* **`hub`** — единый центр управления («дашборд»), объединяющий меню музыки, аудио, Wi-Fi, Bluetooth, обоев, хоткеев и питания с бесшовным циклом.
-* **`audio-menu`** — выбор аудиовыхода (sinks) и микрофона (sources) через Fuzzel с переносом потоков и быстрым тогглом мута микрофона.
-* **`audio-combine`** — объединяет несколько аудиоустройств в один sink (unit `audio-combine.service`).
-* **`powermenu`** — всплывающее меню питания: выключение/перезагрузка (с защитой от случайного нажатия), сон, блокировка (`hyprlock`) и выход из текущей сессии (`Hyprland` / `Mango`).
-* **`media-menu`** — легковесный пульт плееров: статус трека прямо в промпте, плей/пауза, переключение, перемотка на 10с, громкость и смена активного плеера.
-* **`wifi-menu`** — сканер сетей через `nmcli` с индикацией сигнала и защиты, быстрое переподключение и защищенный ввод пароля через `fuzzel` (режим скрытого ввода).
-* **`bluetooth-menu`** — включение/выключение адаптера и быстрое подключение/отключение сопряженных устройств через `bluetoothctl`.
-
----
-
-<a id="shell"></a>
-## (づ｡◕‿‿◕｡)づ Шелл, алиасы и медиа-пайплайн (`.zshrc`)
-
-При открытии интерактивного терминала запускается компактный `fastfetch -l arch_small` (подавляется, если шелл вызван внутри AI-агента).
-
-### Медиа и утилиты
-* `recmic` — терминальная запись микрофона в WAV с мгновенной конвертацией в Opus при остановке по `Ctrl+C`.
-* `y <url>` — скачать видео в максимальном качестве в контейнер `mp4` через `yt-dlp`.
-* `ya <url>` — скачать аудиодорожку в `~/Music` с вырезанием рекламы через **SponsorBlock**, вшиванием обложки и метаданных.
-* `nya [номер_первой_серии] <url1> <url2> ...` — потоковый загрузчик серий аниме в `~/Videos/Anime` с вшиванием субтитров, глав и обложки через `aria2c` (**5 одновременных фрагментов**).
-* `phone` — мобильный мост с Termux: `adb forward tcp:8022 tcp:8022` + SSH-сессия на смартфон.
-* `update` — быстрое обновление системы и AUR (`yay`).
-* `set-wall <путь>` — быстрая смена обоев через `awww img`.
-
-### Декоративные скринсейверы для терминала
-* `matrix` — матрица в пурпурных тонах (`cmatrix -b -C magenta -u 3`).
-* `lava` — лава-лампа в терминале (`lavat -c magenta -s 2 -R 1`).
-* `zen` — процедурное дерево бонсай (`cbonsai -l -i -w 3 -m "zev1ce"`).
-* `clock` — минималистичные терминальные часы (`tty-clock -s -c -b -C 5`).
 
 ---
 
 <a id="install"></a>
-## (╯°□°)╯ Быстрая установка на чистую Arch-систему
+## (•̀ᴗ•́)و Развёртывание с нуля и восстановление
 
-> **Требования:** Arch Linux (x86_64), свежий Hyprland с поддержкой нативного Lua-конфига, Mango (mangowm), matugen 2.x. Сборка заточена под AMD GPU.
-
-### Шаг 1. Базовые зависимости и Oh My Zsh
-
+### Шаг 1. Клонирование ветки Hyprland
 ```bash
-sudo pacman -S --needed base-devel git zsh curl starship
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+git clone -b hyprland https://github.com/kudryashalex367-create/dotfiles.git "$HOME/dotfiles"
+cd "$HOME/dotfiles"
 ```
 
-### Шаг 2. Плагины Zsh
+### Шаг 2. Подключение [multilib] и установка пакетов
+Перед установкой убедитесь, что в `/etc/pacman.conf` раскомментирован репозиторий `[multilib]`:
 
 ```bash
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+sudo pacman -Syu
+sudo pacman -S --needed - < pkglists/.config/pkglist_repo.txt
+yay -S --needed - < pkglists/.config/pkglist_aur.txt
 ```
 
-### Шаг 3. Клонирование dotfiles и обоев
-
+### Шаг 3. Линковка конфигов через Stow
 ```bash
-git clone https://github.com/kudryashalex367-create/dotfiles.git "$HOME/dotfiles"
-git clone https://github.com/kudryashalex367-create/wallpapers.git "$HOME/wallpapers"
+cd "$HOME/dotfiles"
+./install.sh hypr bin kitty fuzzel mako matugen starship zsh systemd pipewire pkglists
 ```
+*Конфликтующие файлы автоматически перемещаются в `~/dotfiles-backup/stow-<timestamp>/`.*
 
-### Шаг 4. Разворачивание через Stow
-
-```bash
-cd ~/dotfiles
-./install.sh
-```
-
-`install.sh` автоматически находит все директории пакетов (или принимает конкретные аргументами: `./install.sh hypr`), переносит конфликтующие файлы в `~/dotfiles-backup/stow-<дата>` и выполняет `stow --no-folding -R`. Новые, удалённые и переименованные файлы подхватываются повторным запуском.
-
----
-
-<a id="packages"></a>
-## (づ｡◕‿‿◕｡)づ Восстановление пакетов и финальная настройка
-
-### Официальные пакеты Arch Linux
-
-```bash
-sudo pacman -S --needed - < ~/.config/pkglist_repo.txt
-```
-
-### AUR-пакеты через `yay`
-
-```bash
-git clone https://aur.archlinux.org/yay.git /tmp/yay && cd /tmp/yay && makepkg -si --noconfirm && cd ~
-yay -S --needed - < ~/.config/pkglist_aur.txt
-```
-
-### Права, шрифты и шелл
-
+### Шаг 4. Права, сервисы и запуск
 ```bash
 chmod +x ~/.local/bin/*
-fc-cache -fv
+systemctl --user daemon-reload
+systemctl --user enable --now audio-combine.service 2>/dev/null || true
 chsh -s /usr/bin/zsh
 ```
 
-* **Сессия Mango и стриминг:** пакет `mangowm` и портал `xdg-desktop-portal-wlr` (необходим для трансляции экрана в Vesktop под Mango) включены в `pkglist_repo.txt`.
-* **Аватар для `hyprlock`:** положите картинку в `~/.config/hypr/assets/avatar.png` (путь динамический через `$HOME`, править шаблон не нужно) и нажмите `Super + A` для генерации темы.
-* **Ключ для AI-агента (опционально):** создайте файл `~/.zshrc_secrets` с вашим `export OPENAI_API_KEY="..."` (игнорируется git и защищён от чтения агентом).
-
-Перезапустите оболочку:
-
+Запуск сессии:
 ```bash
-exec zsh
+Hyprland
 ```
-
----
-
-<a id="themes"></a>
-## (｡◕‿◕｡) Темы и сессии
-
-* **Hyprland:** правки Lua-модулей применяются при сохранении; проверка — `hyprctl configerrors`, перезагрузка — `Super + Shift + R`.
-* **Mango:** `mmsg dispatch reload_config` (или `Super + Shift + R`); проверки конфига — по логу композитора.
-* **Обои и палитра:** `Super + A` / `Super + W` → `awww` → `matugen` → перегенерация файлов и reload во всех сессиях.
-* **Fallback:** если `colors.conf` нет, используется Obsidian Violet (`#0b0912`, `#a78bfa`, `#c4b5fd`).
-
----
-
-<a id="ai"></a>
-## (¬‿¬) AI-агент
-
-Конфиги пишутся с помощью [opencode](https://opencode.ai) и [Antigravity](https://antigravity.dev) — провайдер AITunnel, модель DeepSeek V4.1 Flash, README пишет Claude. Правила лежат в [`AGENTS.md`](./AGENTS.md): правки только внутри `~/dotfiles`, запрет `sudo`/`pacman`/`systemctl`/секретов, обязательные проверки, ритуал коммита с подтверждением. Конфиг opencode — в `ai/.config/opencode/opencode.json`, ключ берётся из `OPENAI_API_KEY` (файл `~/.zshrc_secrets`, в git не попадает).
-
-Запуск из каталога дотфайлов: `oc-dots` (opencode) или `agy-dots` (Antigravity).
-
-**Регламент (`AGENTS.md`):**
-* **Безопасность:** запрещено вызывать `sudo`, `pacman`/`yay`, `systemctl`, `rm -rf`, перезапускать сессию, использовать сырой `git push` или читать секреты (`~/.zshrc_secrets`, `~/.ssh`, `~/.gnupg`, `.env`).
-* **Страховка и бэкапы:** перед правкой «грязных» или неотслеживаемых файлов агент сохраняет копию в `~/dotfiles-backup/agent/<timestamp>/` и следит, чтобы файл не «похудел».
-* **Автопроверки:** `hyprctl configerrors` для Hyprland, `zsh -n` / `bash -n` / `shellcheck` для скриптов, `makoctl reload` для уведомлений, `jq` и `tomllib` для JSON/TOML.
-* **Ритуал коммита:** агент одной командой собирает `status`, `diff`, `log`, проверяет дифф на утечку ключей/токенов и ждёт явного подтверждения перед `git push`.
-
----
-
-<a id="manage"></a>
-## (≧▽≦) Управление конфигами
-
-Дотфайлы хранятся в обычном git-репозитории `~/dotfiles` и линкуются в `$HOME` через **GNU Stow** (`./install.sh`). Все правки вносятся **только внутри `~/dotfiles`**, а git используется напрямую:
-
-```bash
-cd ~/dotfiles        # или алиас dots
-
-# Стандартный рабочий процесс
-git status
-git diff
-git add <файл>
-git commit -m "описание изменений"
-git push origin main
-
-# Быстрые хелперы из .zshrc
-dpush "сообщение"    # add -u + commit + push origin main (предупредит о неотслеживаемых файлах)
-cpull                # pull --no-rebase + install.sh (рестоу) + exec zsh
-```
-
-> **Важно:** никогда не редактируйте файлы по путям в `$HOME`, если утилита ломает симлинки (например, `sed -i`). Конфиги правим только внутри `~/dotfiles` — изменения сразу видны в системе. Новые, удалённые или переименованные файлы подхватываются повторным запуском `./install.sh`.
 
 ---
 
