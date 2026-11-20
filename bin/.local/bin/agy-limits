@@ -1,0 +1,168 @@
+#!/usr/bin/env bash
+# Проверка квот Gemini в Antigravity CLI (agy) с выводом в Mako.
+set -euo pipefail
+
+export PATH="$HOME/.local/bin:/usr/local/bin:/usr/bin:$PATH"
+
+# Доступ к D-Bus при вызове с хоткея композитора
+if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
+    _rt="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=${_rt}/bus"
+fi
+
+# Подхватываем прокси из environment.d, если включён через ~/.local/bin/proxy
+_proxy_env="${XDG_CONFIG_HOME:-$HOME/.config}/environment.d/proxy.conf"
+if [[ -r "$_proxy_env" ]]; then
+    set -a
+    # shellcheck disable=SC1090
+    source "$_proxy_env"
+    set +a
+fi
+
+notify() {
+    command -v notify-send >/dev/null 2>&1 || return 0
+    notify-send -a "agy" \
+        -h string:x-canonical-private-synchronous:agy-limits \
+        "$@" 2>/dev/null || true
+}
+
+debug=0
+[[ "${1:-}" == "--debug" ]] && debug=1
+
+if ! command -v agy >/dev/null 2>&1; then
+    notify -u critical "(>_<) Ошибка" "Бинарник agy не найден в PATH"
+    exit 1
+fi
+
+(( debug == 0 )) && notify "(o_o) Лимиты AGY" "Запрашиваю квоты Gemini..."
+
+limits=$(DEBUG_MODE="$debug" python3 - <<'PY'
+import fcntl
+import os
+import pty
+import re
+import select
+import signal
+import struct
+import termios
+import time
+
+debug = os.environ.get("DEBUG_MODE") == "1"
+
+pid, master_fd = pty.fork()
+if pid == 0:
+    os.environ["TERM"] = "xterm-256color"
+    os.environ["NO_COLOR"] = "1"
+    os.environ["AI_AGENT_RUNNING"] = "1"
+    try:
+        os.execvp("agy", ["agy"])
+    except OSError:
+        os._exit(127)
+
+fcntl.ioctl(master_fd, termios.TIOCSWINSZ, struct.pack("HHHH", 40, 120, 0, 0))
+
+def read_chunk(timeout=0.25):
+    out = []
+    deadline = time.monotonic() + timeout
+    while time.monotonic() < deadline:
+        r, _, _ = select.select([master_fd], [], [], 0.05)
+        if not r:
+            continue
+        try:
+            data = os.read(master_fd, 4096)
+            if not data:
+                break
+            out.append(data.decode("utf-8", errors="replace"))
+        except OSError:
+            break
+    return "".join(out)
+
+def strip_ansi(text):
+    text = re.sub(r"\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)", "", text)
+    text = re.sub(r"\x1b(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "", text)
+    return text.replace("\r", "\n")
+
+raw_buf = ""
+try:
+    boot = ""
+    t0 = time.monotonic()
+    while time.monotonic() - t0 < 2.5:
+        boot += read_chunk(0.15)
+        clean_boot = strip_ansi(boot)
+        if ">" in clean_boot or "Antigravity" in clean_boot:
+            time.sleep(0.15)
+            break
+
+    os.write(master_fd, b"/usage\r")
+
+    t0 = time.monotonic()
+    while time.monotonic() - t0 < 8.0:
+        raw_buf += read_chunk(0.2)
+        clean = strip_ansi(raw_buf)
+        if re.search(r"gemini", clean, re.I) and "%" in clean:
+            raw_buf += read_chunk(0.35)
+            break
+finally:
+    try:
+        os.write(master_fd, b"\x1b\x03")
+    except OSError:
+        pass
+    try:
+        os.kill(pid, signal.SIGTERM)
+        for _ in range(10):
+            if os.waitpid(pid, os.WNOHANG)[0] != 0:
+                break
+            time.sleep(0.05)
+        else:
+            os.kill(pid, signal.SIGKILL)
+            os.waitpid(pid, 0)
+    except OSError:
+        pass
+    try:
+        os.close(master_fd)
+    except OSError:
+        pass
+
+clean_text = re.sub(r"[│┃┆┇┊┋─━┄┅┈┉╭╮╯╰┌┐└┘├┤┬┴┼▀▄█▌▐░▒▓]+", " ", strip_ansi(raw_buf))
+lines = [re.sub(r"\s+", " ", ln).strip() for ln in clean_text.splitlines()]
+lines = [ln for ln in lines if ln]
+
+if debug:
+    print("\n".join(lines))
+    raise SystemExit(0)
+
+stop_re = re.compile(r"\b(claude|gpt|openai|anthropic|other models|press esc|esc to close)\b", re.I)
+metric_re = re.compile(r"(%|\b(5h|5-hour|weekly|7d|reset|resets|left|used|window|quota)\b)", re.I)
+
+result = []
+sublines = 0
+for ln in lines:
+    if stop_re.search(ln) and not re.search(r"gemini", ln, re.I):
+        sublines = 0
+        continue
+    if re.search(r"gemini", ln, re.I):
+        if ln.startswith("/"):
+            continue
+        result.append(ln)
+        sublines = 2
+    elif sublines > 0 and metric_re.search(ln):
+        result.append("  " + ln)
+        sublines -= 1
+    else:
+        sublines = 0
+
+print("\n".join(dict.fromkeys(result)))
+PY
+)
+
+if (( debug == 1 )); then
+    printf '%s\n' "$limits"
+    exit 0
+fi
+
+if [[ -z "$limits" ]]; then
+    notify -u critical "(>_<) Лимиты AGY" "Не удалось получить квоты Gemini (agy-limits --debug)"
+    exit 1
+fi
+
+notify "(⌐■_■) лимиты:" "$limits"

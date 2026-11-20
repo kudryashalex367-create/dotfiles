@@ -4,20 +4,15 @@
 - Общайся по-русски, коротко, без воды.
 - Не добавляй фразы вроде «Конечно!», «Отлично!», «Я помогу вам».
 
-## Безопасность — запрещено без явной команды
+## Репозиторий dotfiles
+- Правила репозитория dotfiles лежат в `AGENTS.md` в корне `~/dotfiles`.
+
+## Красные линии (запрещено без явной команды)
 - `sudo`, `su`, `doas` — любая команда с повышением прав.
-- `pacman`, `yay`, `paru` — управление пакетами.
-- `systemctl`, `journalctl` с флагами изменения состояния.
-- `rm -rf`, `chsh`, `kill`, `pkill`.
-- Читать, выводить, коммитить файлы: `~/.zshrc_secrets`, `~/.ssh/**`, `~/.gnupg/**`, `~/.gemini/**`, `*.env`, `*.env.*`, файлы с `secret/key/token/credential/password` в имени.
-- `env`, `printenv`, `echo $...KEY` — не выводить секреты из окружения.
-
-## Git
-- `push` — только после явного «да» от меня.
-- Запрещено: `git add -A`, `git add .`, `git add -f`, `push --force`, `git reset --hard`, `git clean -f`, `git stash`, `git rebase`.
-- Разрешено читающее: `status`, `diff`, `log`, `show`, `ls-files`, `branch`.
-
-## Экономия
-- Не запускай команды «на всякий случай».
-- Нужна секция файла — используй `grep -n`, `sed -n 'A,Bp'`, `head`, `tail`.
-- Не повторяй проверки, если файл не менялся.
+- `pacman`, `yay`, `paru` — управление пакетами; `chsh`.
+- `rm -rf` и любое рекурсивное удаление вне `~/dotfiles` и `~/dotfiles-backup`.
+- `git push --force/-f/--force-with-lease/--tags/--mirror`, push не в целевую ветку, `git add -f`, `git reset --hard`, `git clean -f`, `git checkout -f`.
+- `git push` — только после ритуала и явного подтверждения «да».
+- Выход из сессии, перезапуск композитора, запуск `hyprlock`.
+- `systemctl` без `--user`.
+- Секреты: `~/.zshrc_secrets`, `~/.ssh/**`, `~/.gnupg/**`, содержимое `~/.gemini/**` (кроме `ai/.gemini/...`), `*.env`, `*.env.*`, файлы с `secret/key/token/credential/password` в имени; не печатать окружение (`env`, `printenv`, `echo $...KEY`).

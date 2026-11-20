@@ -35,7 +35,7 @@ choose_player() {
     players=$(playerctl -l 2>/dev/null || true)
     if [[ -z "$players" ]]; then
         notify-send -a "Медиа" "(>_<) Медиа" "Плееры не найдены"
-        return ""
+        return 0
     fi
     chosen=$(printf "%s\n" "$players" | fuzzel -d -p "󰋋 Выбор плеера ❯ " -l 6 -w 30 || true)
     echo "$chosen"

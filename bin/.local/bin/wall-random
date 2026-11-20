@@ -10,12 +10,18 @@ if [ ! -d "$WALL_DIR" ]; then
 fi
 
 # Находим все картинки (jpg, png, webp) и выбираем одну случайную через shuf
-RANDOM_WALL=$(find "$WALL_DIR" -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) | shuf -n 1)
+RANDOM_WALL=$(find "$WALL_DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.webp" \) | shuf -n 1)
 
 # Если ничего не нашли — выходим
 if [ -z "$RANDOM_WALL" ]; then
     notify-send -u low -a "Wall-Random" "(╥﹏╥) Нет картинок" "В папке $WALL_DIR нет изображений!"
     exit 1
+fi
+
+# Запуск демона awww, если не запущен
+if ! pgrep -x "awww-daemon" > /dev/null; then
+    awww-daemon &
+    sleep 0.15
 fi
 
 # 1. Загружаем обои через awww с кинематографичной wipe-шторкой

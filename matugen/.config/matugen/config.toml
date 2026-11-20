@@ -1,4 +1,4 @@
-# matugen 2.x. Для 1.x замени .hex_stripped на .hex в шаблонах.
+# matugen 4.x.
 [config]
 
 [templates.kitty]
@@ -10,13 +10,6 @@ output_path = '~/.config/kitty/colors.conf'
 [templates.mako]
 input_path  = '~/.config/matugen/templates/mako-colors.conf'
 output_path = '~/.config/mako/config'
-
-# hyprctl keyword для gradient-опций col.*_border отказывает (unknown request),
-# а reload работает. Поэтому генерируем lua-таблицу и подключаем её в
-# hyprland.lua; wall-colors после matugen делает hyprctl reload.
-[templates.hypr]
-input_path  = '~/.config/matugen/templates/hypr-colors.lua'
-output_path = '~/.config/hypr/colors.lua'
 
 # fuzzel не умеет include-файлы: генерируем целиком. Ручные правки — в шаблоне.
 [templates.fuzzel]

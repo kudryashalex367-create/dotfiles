@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# ~/.local/bin/dpms — переключение питания мониторов (DPMS) для Hyprland и Mango.
+set -euo pipefail
+
+cmd="${1:-}"
+
+case "$cmd" in
+    on|off)
+        if command -v hyprctl >/dev/null 2>&1 && hyprctl activeworkspace >/dev/null 2>&1; then
+            hyprctl dispatch dpms "$cmd"
+        else
+            # В Mango встроенного способа DPMS нет через mmsg, wlr-randr не установлен
+            exit 0
+        fi
+        ;;
+    *)
+        echo "Usage: dpms {on|off}" >&2
+        exit 1
+        ;;
+esac

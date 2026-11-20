@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Устанавливает конфиги AGY (Antigravity CLI) из dotfiles
-# Вызывается вручную или из install.sh
+# Вызывается вручную
 
 set -euo pipefail
 
@@ -9,6 +9,8 @@ AGY_CONFIG="$HOME/.gemini/config"
 AGY_SOURCE="$(dirname "$SCRIPT_DIR")/.gemini/config"
 
 echo "→ AGY config: $AGY_SOURCE → $AGY_CONFIG"
+
+mkdir -p "$AGY_CONFIG"
 
 # AGENTS.md
 ln -sf "$AGY_SOURCE/AGENTS.md" "$AGY_CONFIG/AGENTS.md"

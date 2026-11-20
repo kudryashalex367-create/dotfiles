@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+# rec-toggle — фоновая запись экрана по хоткею (wf-recorder + VA-API, видео + микрофон + звук системы).
+# Первый вызов: стартует запись в .mp4, уведомляет Mako.
+# Второй вызов: останавливает запись, копирует файл в буфер (wl-copy), уведомляет Mako.
+
+set -uo pipefail
+
+RUNTIME="${XDG_RUNTIME_DIR:-/run/user/$(id -u)}"
+PIDFILE="$RUNTIME/rec-toggle.pid"
+OUTFILE="$RUNTIME/rec-toggle.path"
+MODFILE="$RUNTIME/rec-toggle.mods"
+DIR="$HOME/Recordings"
+
+# Гарантируем доступ к D-Bus сессии (нужно при запуске из хоткея без полного окружения)
+if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=${RUNTIME}/bus"
+fi
+
+notify() {
+    notify-send -a "rec-toggle" -t 4000 "$1" "${2:-}" 2>/dev/null || true
+}
+
+cleanup_audio() {
+    if [[ -r "$MODFILE" ]]; then
+        local m
+        for m in $(<"$MODFILE"); do
+            pactl unload-module "$m" >/dev/null 2>&1 || true
+        done
+        rm -f "$MODFILE"
+    fi
+}
+
+setup_audio_mix() {
+    command -v pactl >/dev/null 2>&1 || return 1
+    local def_sink def_mic
+    def_sink=$(pactl get-default-sink 2>/dev/null || true)
+    if pactl list short sources 2>/dev/null | awk '{print $2}' | grep -qx "source.clean_mic"; then
+        def_mic="source.clean_mic"
+    else
+        def_mic=$(pactl get-default-source 2>/dev/null || true)
+    fi
+
+    [[ -n "$def_sink" && -n "$def_mic" ]] || return 1
+
+    local m1 m2 m3
+    m1=$(pactl load-module module-null-sink sink_name=rec_mix sink_properties=device.description=RecMix 2>/dev/null || true)
+    m2=$(pactl load-module module-loopback source="${def_sink}.monitor" sink=rec_mix 2>/dev/null || true)
+    m3=$(pactl load-module module-loopback source="${def_mic}" sink=rec_mix 2>/dev/null || true)
+
+    if [[ -n "$m1" && -n "$m2" && -n "$m3" ]]; then
+        printf '%s %s %s\n' "$m3" "$m2" "$m1" > "$MODFILE"
+        echo "rec_mix.monitor"
+        return 0
+    fi
+
+    for m in $m3 $m2 $m1; do
+        pactl unload-module "$m" >/dev/null 2>&1 || true
+    done
+    return 1
+}
+
+stop_record() {
+    local pid out
+    pid=$(cat "$PIDFILE" 2>/dev/null) || { cleanup_audio; notify "(>_<) Нет активной записи" ""; exit 0; }
+    out=$(cat "$OUTFILE" 2>/dev/null) || out=""
+    rm -f "$PIDFILE" "$OUTFILE"
+
+    # SIGINT обязателен, чтобы wf-recorder корректно финализировал заголовок MP4
+    kill -INT "$pid" 2>/dev/null || true
+    local i=0
+    while kill -0 "$pid" 2>/dev/null && (( i++ < 50 )); do sleep 0.1; done
+
+    cleanup_audio
+
+    if [[ -z "$out" || ! -s "$out" ]]; then
+        notify "(╥﹏╥) Файл пустой" "Запись не удалась или была слишком короткой"
+        exit 1
+    fi
+
+    printf 'file://%s' "$out" | wl-copy -t text/uri-list 2>/dev/null || true
+    notify "(^_^)b Запись сохранена" "$(basename "$out") — скопировано в буфер"
+}
+
+start_record() {
+    if ! command -v wf-recorder >/dev/null 2>&1; then
+        notify -u critical "(>_<) Ошибка" "wf-recorder не установлен"
+        exit 1
+    fi
+
+    cleanup_audio
+
+    local audio_dev
+    local args=(-r 60 -C aac)
+    if audio_dev=$(setup_audio_mix); then
+        args+=(--audio="$audio_dev")
+    else
+        args+=(--audio)
+    fi
+
+    if [[ "${1:-}" == "area" ]]; then
+        local geom
+        geom=$(slurp 2>/dev/null) || { cleanup_audio; exit 0; }
+        args+=(-g "$geom")
+    fi
+
+    if [[ -r /dev/dri/renderD128 ]]; then
+        args+=(-c h264_vaapi -d /dev/dri/renderD128 -p qp=23)
+    else
+        args+=(-c libx264 -p preset=veryfast -p crf=23)
+    fi
+
+    mkdir -p "$DIR"
+    local out="$DIR/rec_$(date +%F_%H-%M-%S).mp4"
+
+    wf-recorder "${args[@]}" -f "$out" >/dev/null 2>&1 &
+    local pid=$!
+    sleep 0.2
+
+    if ! kill -0 "$pid" 2>/dev/null; then
+        rm -f "$PIDFILE" "$OUTFILE" "$out"
+        cleanup_audio
+        notify -u critical "(>_<) Ошибка записи" "Не удалось запустить wf-recorder"
+        exit 1
+    fi
+
+    echo "$pid" > "$PIDFILE"
+    echo "$out" > "$OUTFILE"
+    notify "(o_o) Запись экрана..." "Super+Alt+R — остановить и сохранить"
+}
+
+if [[ -f "$PIDFILE" ]] && kill -0 "$(cat "$PIDFILE" 2>/dev/null)" 2>/dev/null; then
+    stop_record
+else
+    rm -f "$PIDFILE" "$OUTFILE"
+    start_record "${1:-}"
+fi

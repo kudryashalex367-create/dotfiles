@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Шпаргалка по хоткеям системы (Hyprland / Mango).
+# Шпаргалка по хоткеям системы (Mango).
 # Открывается по Super+/ или через Hub. Выводит список в fuzzel -d.
 
 LIST=$(cat <<'EOF'
@@ -13,6 +13,8 @@ Super + M                  󰝚  Меню музыки и медиа
 Super + Shift + W          󰤨  Меню сетей Wi-Fi
 Super + B                  󰂯  Меню устройств Bluetooth
 Super + Shift + A          󰕾  Меню звука и микрофонов
+Super + Shift + M          󰍬  Запись микрофона
+Super + Alt + R            󰕧  Запись экрана
 Super + Escape             󰐥  Меню питания и сессии
 Super + Shift + V          󰅍  История буфера (Cliphist)
 Super + Shift + Q          󰗼  Выход из системы
@@ -26,16 +28,18 @@ Super + Shift + F          󰊓  Полный экран (Fullscreen)
 Super + C                  󰆢  Центрировать активное окно
 Super + R                  󰕰  Переключить разделение (Dwindle Split)
 Super + Tab                󱂬  Сменить раскладку окон (Layout)
+Super + Space              󰌌  Переключение раскладки
 Super + Стрелки            󰁌  Фокус окна (Влево/Вправо/Вверх/Вниз)
 Super + Shift + Стрелки    󰁌  Переместить окно в направлении
 Super + Ctrl + Стрелки     󰁌  Изменить размер окна (Resize)
 Super + Alt + Ctrl + Стр   󰁌  Точный пиксельный ресайз
 Super + Ctrl + Shift + Стр 󰁌  Поменять окна местами (Swap)
+Super + ЛКМ / ПКМ          󰆾  Перетаскивание и ресайз мышью
 Super + G                  󰓩  Создать / войти в группу окон (Табы)
 Super + Alt + G            󰓩  Вынуть окно из группы
 Super + Alt + Left/Right   󰓩  Переключение вкладок в группе
 Super + Alt + Shift + Стр  󰓩  Закинуть окно в группу
-Super + Alt + L            󰓩  Заблокировать группу
+Super + Alt + L            󰓩  Показать / скрыть панель групп
 Super + S                  󱂬  Показать / скрыть Scratchpad
 Super + Shift + S          󱂬  Отправить окно в Scratchpad
 Super + 1..9               󰎤  Перейти на рабочий стол 1..9

@@ -28,6 +28,7 @@ SOCKS_URL="socks5://${PROXY_HOST}:${SOCKS_PORT}"
 NO_PROXY_LIST="localhost,127.0.0.1,::1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,*.local"
 
 STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/proxy"
+APPLIED_FILE="${STATE_FILE}.applied"
 ENV_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/environment.d/proxy.conf"
 
 mkdir -p "$(dirname "$STATE_FILE")" "$(dirname "$ENV_FILE")"
@@ -145,15 +146,21 @@ port_open() {
     (exec 3<>"/dev/tcp/${PROXY_HOST}/$1") >/dev/null 2>&1
 }
 
-set_state() {
+wait_for_ports() {
+    local count=0
+    while (( count < 40 )); do
+        if port_open "$HTTP_PORT" && port_open "$SOCKS_PORT"; then
+            return 0
+        fi
+        sleep 0.5
+        (( count++ ))
+    done
+    return 1
+}
+
+apply_state() {
     local state="$1"
-
-    if [[ "$state" == "on" ]] && { ! port_open "$HTTP_PORT" || ! port_open "$SOCKS_PORT"; }; then
-        notify "(>_<) Прокси не запущен" "${PROXY_HOST}:${HTTP_PORT}/${SOCKS_PORT} не слушает — включение отменено"
-        return 1
-    fi
-
-    echo "$state" > "$STATE_FILE"
+    echo "$state" > "$APPLIED_FILE"
 
     if [[ "$state" == "on" ]]; then
         apply_compositor_env "$HTTP_URL" "$SOCKS_URL" "$NO_PROXY_LIST"
@@ -167,6 +174,18 @@ set_state() {
         apply_environment_d off
         notify "(•_•) Прокси выключен" "прямое подключение"
     fi
+}
+
+set_state() {
+    local state="$1"
+
+    if [[ "$state" == "on" ]] && { ! port_open "$HTTP_PORT" || ! port_open "$SOCKS_PORT"; }; then
+        notify "(>_<) Прокси не запущен" "${PROXY_HOST}:${HTTP_PORT}/${SOCKS_PORT} не слушает — включение отменено"
+        return 1
+    fi
+
+    echo "$state" > "$STATE_FILE"
+    apply_state "$state"
 }
 
 apply_compositor_env() {
@@ -197,17 +216,35 @@ case "${1:-status}" in
         set_state off
         ;;
     toggle)
-        if [[ "$(current_state)" == "on" ]]; then
+        applied="off"
+        if [[ -r "$APPLIED_FILE" ]]; then
+            applied=$(cat "$APPLIED_FILE")
+        else
+            applied=$(current_state)
+        fi
+        if [[ "$applied" == "on" ]]; then
             set_state off
         else
             set_state on
         fi
         ;;
     restore)
-        set_state "$(current_state)"
+        desired="$(current_state)"
+        if [[ "$desired" == "on" ]]; then
+            if wait_for_ports; then
+                apply_state on
+            else
+                apply_state off
+                notify "(•_•) Прокси: порты не поднялись" "${PROXY_HOST}:${HTTP_PORT}/${SOCKS_PORT} не ответили за 20с — прокси выключен (сохранено: on)"
+            fi
+        else
+            apply_state off
+        fi
         ;;
     status)
-        echo "proxy: $(current_state)"
+        applied="unknown"
+        [[ -r "$APPLIED_FILE" ]] && applied=$(cat "$APPLIED_FILE")
+        echo "proxy: $(current_state) (applied: $applied)"
         ;;
     *)
         echo "usage: proxy {on|off|toggle|status|restore}" >&2

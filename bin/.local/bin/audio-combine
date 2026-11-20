@@ -9,18 +9,32 @@ BUDS="bluez_output.2C_BE_EE_3F_67_BB.1"
 SINK="multi"
 
 sink_exists() {
-    pactl list short sinks | awk '{print $2}' | grep -qx "$1"
+    pactl list short sinks 2>/dev/null | awk '{print $2}' | grep -qx "$1"
+}
+
+cleanup_multi() {
+    local mod_id
+    mod_id=$(pactl list short modules 2>/dev/null | awk '$2 == "module-combine-sink" && $0 ~ /sink_name=multi/ {print $1}')
+    if [[ -n "$mod_id" ]]; then
+        pactl unload-module "$mod_id" >/dev/null 2>&1 || true
+    fi
 }
 
 ensure() {
-    sink_exists "$SINK" && return
+    if sink_exists "$SINK"; then
+        if ! sink_exists "$MCHOSE" || ! sink_exists "$BUDS"; then
+            cleanup_multi
+        else
+            return
+        fi
+    fi
     sink_exists "$MCHOSE" || return
     sink_exists "$BUDS" || return
-    pactl load-module module-combine-sink sink_name="$SINK" slaves="$MCHOSE,$BUDS" >/dev/null
-    pactl set-default-sink "$SINK"
+    pactl load-module module-combine-sink sink_name="$SINK" slaves="$MCHOSE,$BUDS" >/dev/null 2>&1 || true
+    pactl set-default-sink "$SINK" 2>/dev/null || true
 }
 
 ensure
-pactl subscribe | while read -r _; do
+pactl subscribe | grep --line-buffered -E "'(new|remove)' on (sink|card)" | while read -r _; do
     ensure
 done

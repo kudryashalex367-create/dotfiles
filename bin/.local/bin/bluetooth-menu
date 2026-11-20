@@ -13,7 +13,9 @@ command -v fuzzel >/dev/null 2>&1 || {
 
 # Проверяем питание Bluetooth-адаптера
 is_powered() {
-    LC_ALL=C bluetoothctl show 2>/dev/null | grep -q "Powered: yes"
+    local out
+    out=$(LC_ALL=C bluetoothctl show 2>/dev/null) || true
+    [[ "$out" == *"Powered: yes"* ]]
 }
 
 # Список подключенных MAC-адресов
@@ -55,8 +57,12 @@ if [[ -n "$paired_devices" ]]; then
         is_conn=0
         if [[ "$connected_list" == *" $mac "* ]]; then
             is_conn=1
-        elif bluetoothctl info "$mac" 2>/dev/null | grep -q "Connected: yes"; then
-            is_conn=1
+        else
+            local info_out
+            info_out=$(bluetoothctl info "$mac" 2>/dev/null) || true
+            if [[ "$info_out" == *"Connected: yes"* ]]; then
+                is_conn=1
+            fi
         fi
 
         if (( is_conn == 1 )); then
@@ -118,11 +124,12 @@ else
     fi
 
     notify-send -a "Bluetooth" "(o_o) Подключение" "Подключение к «$name»..."
-    output=$(bluetoothctl connect "$mac" 2>&1)
-    status=$?
-
-    if (( status == 0 )) && ! echo "$output" | grep -qi "Failed to connect"; then
-        notify-send -a "Bluetooth" "(^_^)b Подключено" "Подключено к «$name»"
+    if output=$(bluetoothctl connect "$mac" 2>&1); then
+        if ! echo "$output" | grep -qi "Failed to connect"; then
+            notify-send -a "Bluetooth" "(^_^)b Подключено" "Подключено к «$name»"
+        else
+            notify-send -u critical -a "Bluetooth" "(>_<) Ошибка подключения" "$output"
+        fi
     else
         notify-send -u critical -a "Bluetooth" "(>_<) Ошибка подключения" "$output"
     fi

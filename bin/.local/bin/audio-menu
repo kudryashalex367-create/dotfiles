@@ -120,6 +120,10 @@ select_sink() {
 
     pactl set-default-sink "$name" 2>/dev/null || true
 
+    pactl list short sink-inputs 2>/dev/null | awk '{print $1}' | while read -r input_id; do
+        [[ -n "$input_id" ]] && pactl move-sink-input "$input_id" "$name" 2>/dev/null || true
+    done
+
     notify-send -a "Аудио" -i "audio-speakers" "(^_^)b Выход изменён" "$desc"
 }
 
@@ -171,6 +175,10 @@ select_source() {
     desc="${desc#   }"
 
     pactl set-default-source "$name" 2>/dev/null || true
+
+    pactl list short source-outputs 2>/dev/null | awk '{print $1}' | while read -r output_id; do
+        [[ -n "$output_id" ]] && pactl move-source-output "$output_id" "$name" 2>/dev/null || true
+    done
 
     notify-send -a "Аудио" -i "audio-input-microphone" "(^_^)b Микрофон изменён" "$desc"
 }
