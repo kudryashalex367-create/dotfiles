@@ -13,6 +13,12 @@
       "args": [
         "mcp-server-fetch"
       ]
+    },
+    "horizon": {
+      "command": "/home/zev1ce/.local/bin/horizon-launcher",
+      "args": [
+        "mcp"
+      ]
     }
   }
 }
