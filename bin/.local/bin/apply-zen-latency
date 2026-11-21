@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# apply-zen-latency — применение низколатентных настроек ядра под 144Hz
+set -euo pipefail
+
+if [[ ${EUID:-$(id -u)} -ne 0 ]]; then
+    echo "Запустите скрипт через sudo: sudo $0" >&2
+    exit 1
+fi
+
+cat > /etc/sysctl.d/99-zen-latency.conf << 'EOF'
+kernel.sched_cfs_bandwidth_slice_us = 1000
+kernel.sched_autogroup_enabled = 0
+vm.max_map_count = 2147483642
+EOF
+
+sysctl -p /etc/sysctl.d/99-zen-latency.conf
+echo "ʕ•ᴥ•ʔ Готово: параметры задержек ядра под 144Hz успешно применены!"
