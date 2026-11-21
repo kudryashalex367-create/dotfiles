@@ -33,6 +33,7 @@ main() {
             "󰝚 Музыка и плееры" \
             "󰕧 Запись экрана" \
             "󰸉 Сменить обои" \
+            "󰧑 Лимиты AGY" \
             "󰒱 Применить тему Telegram" \
             "󰭹 Telegram" \
             "󰌌 Шпаргалка по хоткеям" \
@@ -60,6 +61,9 @@ main() {
                 ;;
             "󰸉 Сменить обои")
                 run_menu "wall-picker"
+                ;;
+            "󰧑 Лимиты AGY")
+                run_menu "agy-limits"
                 ;;
             "󰒱 Применить тему Telegram")
                 if [[ -x "$HOME/.local/bin/telegram-theme-pack" ]]; then

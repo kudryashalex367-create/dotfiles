@@ -22,22 +22,25 @@
   },
   "mcp": {
     "git": {
-      "command": "uvx",
-      "args": [
+      "type": "local",
+      "command": [
+        "uvx",
         "mcp-server-git",
         "--repository",
-        "/home/zev1ce/dotfiles"
+        "{env:HOME}/dotfiles"
       ]
     },
     "fetch": {
-      "command": "uvx",
-      "args": [
+      "type": "local",
+      "command": [
+        "uvx",
         "mcp-server-fetch"
       ]
     },
     "horizon": {
-      "command": "/home/zev1ce/.local/bin/horizon-launcher",
-      "args": [
+      "type": "local",
+      "command": [
+        "horizon-launcher",
         "mcp"
       ]
     }

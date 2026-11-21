@@ -1,11 +1,10 @@
 {
   "mcpServers": {
     "git": {
-      "command": "uvx",
+      "command": "sh",
       "args": [
-        "mcp-server-git",
-        "--repository",
-        "/home/zev1ce/dotfiles"
+        "-c",
+        "exec uvx mcp-server-git --repository \"$HOME/dotfiles\""
       ]
     },
     "fetch": {
@@ -15,10 +14,11 @@
       ]
     },
     "horizon": {
-      "command": "/home/zev1ce/.local/bin/horizon-launcher",
+      "command": "horizon-launcher",
       "args": [
         "mcp"
       ]
     }
   }
 }
+

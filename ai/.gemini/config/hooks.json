@@ -2,7 +2,7 @@
   "security-guard": {
     "PreToolUse": [
       {
-        "matcher": "run_command",
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
