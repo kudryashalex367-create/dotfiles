@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Wall GNOME Sync
+Comment=Sync GNOME wallpaper to Mango and Matugen
+Exec=wall-gnome-sync --watch
+Terminal=false
+Categories=Utility;
+X-GNOME-Autostart-enabled=true

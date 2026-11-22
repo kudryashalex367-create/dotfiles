@@ -31,6 +31,9 @@ printf '%s\n' "$img" > "$state_dir/last"
 # 1. Обои (пропускаем, если вызвано с --colors-only)
 if (( colors_only == 0 )); then
     awww img "$img" 2>/dev/null || true
+    printf '%s\n' "$img" > "$state_dir/last_awww" 2>/dev/null || true
+    gsettings set org.gnome.desktop.background picture-uri "file://$img" 2>/dev/null || true
+    gsettings set org.gnome.desktop.background picture-uri-dark "file://$img" 2>/dev/null || true
 fi
 
 # 2. Палитра (M3). Тип и приоритет цвета можно переопределить из окружения,

@@ -1,13 +1,40 @@
 #!/usr/bin/env bash
-# Восстанавливает палитру от последних обоев без переустановки обоев.
-# Нужен в автозапуске Hyprland: hyprctl keyword не сохраняется между сессиями.
+# Восстанавливает обои и палитру.
+# Подтягивает изменения из GNOME, если обои менялись в сессии GNOME.
 set -euo pipefail
 
-state_file="${XDG_CACHE_HOME:-$HOME/.cache}/wall-colors/last"
+state_dir="${XDG_CACHE_HOME:-$HOME/.cache}/wall-colors"
+state_file="${state_dir}/last"
+last_awww_file="${state_dir}/last_awww"
+
+# 1. Синхронизируем из GNOME, если там выставлены другие валидные обои
+if command -v wall-gnome-sync >/dev/null 2>&1; then
+    wall-gnome-sync --once >/dev/null 2>&1 || true
+elif [[ -x "$HOME/.local/bin/wall-gnome-sync" ]]; then
+    "$HOME/.local/bin/wall-gnome-sync" --once >/dev/null 2>&1 || true
+fi
+
 [[ -r "$state_file" ]] || exit 0
 img="$(<"$state_file")"
 [[ -f "$img" ]] || exit 0
 
+# 2. Если awww доступен, проверяем нужно ли обновить обои в awww
+last_awww=""
+[[ -r "$last_awww_file" ]] && last_awww="$(<"$last_awww_file")"
+
+if command -v awww >/dev/null 2>&1; then
+    if [[ "$img" != "$last_awww" ]]; then
+        for _ in {1..20}; do
+            if awww query >/dev/null 2>&1; then
+                awww img "$img" 2>/dev/null && printf '%s\n' "$img" > "$last_awww_file"
+                break
+            fi
+            sleep 0.1
+        done
+    fi
+fi
+
+# 3. Палитра matugen
 command -v matugen >/dev/null 2>&1 || exit 0
 
 matugen image "$img" --mode dark --type scheme-fidelity --prefer saturation </dev/null >/dev/null 2>&1 || exit 0
@@ -15,7 +42,7 @@ matugen image "$img" --mode dark --type scheme-fidelity --prefer saturation </de
 makoctl reload 2>/dev/null || true
 pkill -SIGUSR1 -x kitty 2>/dev/null || true
 
-# Композитор: Hyprland читает colors.lua, Mango — colors.conf.
+# 4. Композитор: Hyprland читает colors.lua, Mango — colors.conf.
 # Перечитываем конфиг, чтобы подхватить только что перезаписанные matugen цвета.
 reload_wm() {
     if command -v hyprctl >/dev/null 2>&1 && hyprctl version >/dev/null 2>&1; then

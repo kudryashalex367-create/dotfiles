@@ -26,6 +26,8 @@ fi
 
 # Плавная смена обоев шторкой на 144 Гц
 awww img "$FULL_PATH" --transition-type wipe --transition-step 90 --transition-fps 144
+mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/wall-colors"
+printf '%s\n' "$FULL_PATH" > "${XDG_CACHE_HOME:-$HOME/.cache}/wall-colors/last_awww" 2>/dev/null || true
 
 # Синхронизация с GNOME
 gsettings set org.gnome.desktop.background picture-uri "file://$FULL_PATH" 2>/dev/null

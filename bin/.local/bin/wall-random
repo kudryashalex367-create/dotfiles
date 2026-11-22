@@ -26,6 +26,8 @@ fi
 
 # 1. Загружаем обои через awww с кинематографичной wipe-шторкой
 awww img "$RANDOM_WALL" --transition-type wipe --transition-fps 144 --transition-duration 1.2
+mkdir -p "${XDG_CACHE_HOME:-$HOME/.cache}/wall-colors"
+printf '%s\n' "$RANDOM_WALL" > "${XDG_CACHE_HOME:-$HOME/.cache}/wall-colors/last_awww" 2>/dev/null || true
 
 # 2. Синхронизируем с GNOME (на случай переключения в сессию №3)
 gsettings set org.gnome.desktop.background picture-uri "file://$RANDOM_WALL"

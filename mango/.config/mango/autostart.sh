@@ -13,6 +13,7 @@ dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP
 mako >/dev/null 2>&1 &
 pidof hypridle >/dev/null || hypridle >/dev/null 2>&1 &
 awww-daemon >/dev/null 2>&1 &
+pgrep -f "wall-gnome-sync --watch" >/dev/null || "$HOME/.local/bin/wall-gnome-sync" --watch >/dev/null 2>&1 &
 
 # Палитра от последних обоев (matugen) + reload композитора
 "$HOME/.local/bin/wall-restore" >/dev/null 2>&1 &

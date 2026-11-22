@@ -1,0 +1,232 @@
+#!/usr/bin/env python3
+"""Sync wallpaper and color palette from GNOME to Mango/matugen."""
+
+import argparse
+import fcntl
+import os
+import signal
+import subprocess
+import sys
+import urllib.parse
+
+import gi
+
+try:
+    from gi.repository import Gio, GLib
+except ImportError:
+    sys.exit(1)
+
+
+def get_cache_dir():
+    base = os.environ.get("XDG_CACHE_HOME") or os.path.expanduser("~/.cache")
+    path = os.path.join(base, "wall-colors")
+    os.makedirs(path, exist_ok=True)
+    return path
+
+
+def lock_watch_instance(cache_dir):
+    lock_file = os.path.join(cache_dir, "gnome-sync-watch.lock")
+    try:
+        lock_fd = open(lock_file, "w", encoding="utf-8")
+        fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        return lock_fd
+    except (BlockingIOError, OSError):
+        sys.exit(0)
+
+
+def get_gnome_wallpaper():
+    try:
+        bg_settings = Gio.Settings.new("org.gnome.desktop.background")
+    except Exception:
+        return None
+
+    try:
+        if_settings = Gio.Settings.new("org.gnome.desktop.interface")
+        color_scheme = if_settings.get_string("color-scheme")
+    except Exception:
+        color_scheme = "prefer-dark"
+
+    if color_scheme == "prefer-dark":
+        keys = ["picture-uri-dark", "picture-uri"]
+    else:
+        keys = ["picture-uri", "picture-uri-dark"]
+
+    for key in keys:
+        try:
+            uri = bg_settings.get_string(key)
+        except Exception:
+            continue
+        if not uri:
+            continue
+        parsed = urllib.parse.urlparse(uri)
+        if parsed.scheme == "file":
+            path = urllib.parse.unquote(parsed.path)
+        else:
+            path = uri.strip("'\"")
+        if path and os.path.isfile(path):
+            return os.path.abspath(path)
+    return None
+
+
+def awww_is_running():
+    try:
+        res = subprocess.run(
+            ["awww", "query"],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        return res.returncode == 0
+    except Exception:
+        return False
+
+
+def sync_wallpaper(force=False):
+    path = get_gnome_wallpaper()
+    if not path:
+        return False
+
+    cache_dir = get_cache_dir()
+    last_file = os.path.join(cache_dir, "last")
+    last_awww_file = os.path.join(cache_dir, "last_awww")
+
+    current_last = None
+    if os.path.isfile(last_file):
+        try:
+            with open(last_file, "r", encoding="utf-8") as f:
+                current_last = f.read().strip()
+        except Exception:
+            pass
+
+    changed = (path != current_last)
+
+    if changed or force:
+        try:
+            with open(last_file, "w", encoding="utf-8") as f:
+                f.write(path + "\n")
+        except Exception:
+            pass
+
+        # Update palette and theme targets
+        wall_colors = os.path.expanduser("~/.local/bin/wall-colors")
+        if os.path.isfile(wall_colors) and os.access(wall_colors, os.X_OK):
+            subprocess.run(
+                [wall_colors, "--colors-only", path],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+
+    # If awww is running, make sure background is displayed
+    if awww_is_running():
+        current_awww = None
+        if os.path.isfile(last_awww_file):
+            try:
+                with open(last_awww_file, "r", encoding="utf-8") as f:
+                    current_awww = f.read().strip()
+            except Exception:
+                pass
+        if current_awww != path or changed:
+            subprocess.run(
+                [
+                    "awww",
+                    "img",
+                    path,
+                    "--transition-type",
+                    "wipe",
+                    "--transition-step",
+                    "90",
+                    "--transition-fps",
+                    "144",
+                ],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                check=False,
+            )
+            try:
+                with open(last_awww_file, "w", encoding="utf-8") as f:
+                    f.write(path + "\n")
+            except Exception:
+                pass
+
+    return True
+
+
+def watch():
+    cache_dir = get_cache_dir()
+    _lock = lock_watch_instance(cache_dir)
+
+    # Initial sync
+    sync_wallpaper()
+
+    try:
+        bg_settings = Gio.Settings.new("org.gnome.desktop.background")
+    except Exception:
+        sys.exit(1)
+
+    try:
+        if_settings = Gio.Settings.new("org.gnome.desktop.interface")
+    except Exception:
+        if_settings = None
+
+    debounce_id = [0]
+
+    def on_timeout():
+        debounce_id[0] = 0
+        sync_wallpaper()
+        return False
+
+    def on_change(_settings, _key):
+        if debounce_id[0] != 0:
+            GLib.source_remove(debounce_id[0])
+        debounce_id[0] = GLib.timeout_add(150, on_timeout)
+
+    bg_settings.connect("changed::picture-uri", on_change)
+    bg_settings.connect("changed::picture-uri-dark", on_change)
+    if if_settings is not None:
+        if_settings.connect("changed::color-scheme", on_change)
+
+    loop = GLib.MainLoop()
+
+    def sig_handler(_sig, _frame):
+        loop.quit()
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
+    try:
+        loop.run()
+    except (KeyboardInterrupt, SystemExit):
+        pass
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Sync wallpaper from GNOME to Mango and Matugen"
+    )
+    parser.add_argument(
+        "-w",
+        "--watch",
+        action="store_true",
+        help="Run continuously in background, watching for GNOME wallpaper changes",
+    )
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        help="Check and sync wallpaper once, then exit (default)",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="Force re-applying theme even if path has not changed",
+    )
+    args = parser.parse_args()
+
+    if args.watch:
+        watch()
+    else:
+        sync_wallpaper(force=args.force)
+
+
+if __name__ == "__main__":
+    main()
