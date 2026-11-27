@@ -50,9 +50,7 @@
         "npx",
         "@playwright/mcp@latest",
         "--browser",
-        "firefox",
-        "--executable-path",
-        "/home/zev1ce/.local/bin/firefox"
+        "firefox"
       ]
     }
   },
