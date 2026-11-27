@@ -26,12 +26,6 @@
         "--browser",
         "firefox"
       ]
-    },
-    "computer-use": {
-      "command": "/home/zev1ce/.local/bin/computer-use-linux",
-      "args": [
-        "mcp"
-      ]
     }
   }
 }
