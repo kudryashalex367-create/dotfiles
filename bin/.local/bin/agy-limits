@@ -10,14 +10,11 @@ if [[ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ]]; then
     export DBUS_SESSION_BUS_ADDRESS="unix:path=${_rt}/bus"
 fi
 
-# Подхватываем прокси из environment.d, если включён через ~/.local/bin/proxy
-_proxy_env="${XDG_CONFIG_HOME:-$HOME/.config}/environment.d/proxy.conf"
-if [[ -r "$_proxy_env" ]]; then
-    set -a
-    # shellcheck disable=SC1090
-    source "$_proxy_env"
-    set +a
-fi
+# Прокси для agy (как в agy-dots из .zshrc, независимо от скрипта proxy)
+export http_proxy="http://127.0.0.1:10809"
+export https_proxy="http://127.0.0.1:10809"
+export HTTP_PROXY="http://127.0.0.1:10809"
+export HTTPS_PROXY="http://127.0.0.1:10809"
 
 notify() {
     command -v notify-send >/dev/null 2>&1 || return 0
@@ -38,10 +35,9 @@ fi
 
 # Запрос квот через официальный неинтерактивный print-mode agy (-p "/usage")
 raw_output=""
-if raw_output=$(agy --output-format json -p "/usage" 2>/dev/null) && [[ -n "$raw_output" ]]; then
-    :
-elif raw_output=$(agy -p "/usage" 2>/dev/null) && [[ -n "$raw_output" ]]; then
-    :
+raw_output=$(agy --output-format json -p "/usage" 2>/dev/null || true)
+if [[ -z "$raw_output" ]]; then
+    raw_output=$(agy -p "/usage" 2>/dev/null || true)
 fi
 
 if (( debug == 1 )); then
@@ -63,6 +59,13 @@ out = []
 # 1. Попытка распарсить как JSON
 try:
     doc = json.loads(raw, strict=False)
+    if doc.get("status") == "ERROR" and doc.get("error"):
+        err = doc["error"].strip()
+        if "PERMISSION_DENIED" in err or "location" in err.lower():
+            print("ERROR:Нет доступа (403 location) — проверь прокси")
+        else:
+            print(f"ERROR:{err[:160]}")
+        sys.exit(0)
     groups = doc.get("command", {}).get("data", {}).get("groups", [])
     if groups:
         for g in groups:
@@ -157,6 +160,11 @@ fi
 
 if [[ -z "$limits" ]]; then
     notify -u critical "(>_<) Лимиты AGY" "Не удалось получить квоты (agy-limits --debug)"
+    exit 1
+fi
+
+if [[ "$limits" == ERROR:* ]]; then
+    notify -u critical "(>_<) Лимиты AGY" "${limits#ERROR:}"
     exit 1
 fi
 
