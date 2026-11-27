@@ -58,7 +58,6 @@ if [[ -n "$paired_devices" ]]; then
         if [[ "$connected_list" == *" $mac "* ]]; then
             is_conn=1
         else
-            local info_out
             info_out=$(bluetoothctl info "$mac" 2>/dev/null) || true
             if [[ "$info_out" == *"Connected: yes"* ]]; then
                 is_conn=1
