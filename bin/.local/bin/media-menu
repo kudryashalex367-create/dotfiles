@@ -57,7 +57,7 @@ main() {
 
         vol_pct=""
         if [[ -n "$vol" ]]; then
-            vol_pct=$(awk -v v="$vol" 'BEGIN { printf "%.0f%%", v * 100 }')
+            vol_pct=$(awk -v v="$vol" 'BEGIN { if (v > 1) v = 1; if (v < 0) v = 0; printf "%.0f%%", v * 100 }')
         fi
 
         # Формируем аккуратный заголовок в промпте
@@ -129,6 +129,10 @@ main() {
                 ;;
             *"Громкость +5%"*)
                 playerctl "${p_args[@]}" volume 0.05+ 2>/dev/null || true
+                local capped
+                capped=$(playerctl "${p_args[@]}" volume 2>/dev/null || true)
+                [[ -n "$capped" ]] && awk -v v="$capped" 'BEGIN { exit !(v > 1) }' \
+                    && playerctl "${p_args[@]}" volume 1.0 2>/dev/null || true
                 sleep 0.05
                 ;;
             *"Громкость -5%"*)
