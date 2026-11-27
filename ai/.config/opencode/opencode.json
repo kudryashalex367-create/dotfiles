@@ -52,6 +52,14 @@
         "--browser",
         "firefox"
       ]
+    },
+    "computer-use": {
+      "type": "local",
+      "command": [
+        "/home/zev1ce/.local/bin/computer-use-linux",
+        "mcp"
+      ],
+      "enabled": true
     }
   },
   "permission": {
